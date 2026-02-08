@@ -63,8 +63,8 @@ def check_drift():
     
     return jsonify({
         "drift_score": current_integrity,       # Should be low (e.g., 0.02)
-        "restored_score": restored_integrity,   # Should be high (e.g., 0.18+)
-        "is_safe": restored_integrity > 0.15,   # The threshold for "Safety"
+        "restored_score": restored_integrity,   # Should be approx 0.707
+        "is_safe": restored_integrity > 0.65,   # The threshold for "Safety"
         "diagnosis": "CRITICAL DRIFT" if current_integrity < 0.05 else "STABLE"
     })
 

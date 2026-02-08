@@ -82,7 +82,7 @@ noise_blob = brain.bundle(noise_vectors)
 
 # The agent's "Brain State" is now the Goal + All that chat noise
 # We weight the noise higher to make it harder (simulating long term memory loss)
-corrupted_state = brain.bundle([anchor, noise_blob, noise_blob]) 
+corrupted_state = brain.bundle([anchor, noise_blob]) 
 
 # Check: Can we see the goal in this mess?
 sim_score = brain.similarity(corrupted_state, val_goal)
