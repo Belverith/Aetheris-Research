@@ -143,6 +143,18 @@ Find a control policy $u=k(x)$ such that for any initial condition $x_0 \in \tex
 \end{problem}
 This formulation stratifies the control problem: safety verification (handled via probabilistic barriers) acts as a hard constraint, while the performance objective (handled via gradient-based steering) acts as a soft preference, resolving the 'Safety-Performance Trade-off' through lexicographic optimization.
 
+\subsection{Standing Assumptions}
+\label{sec:assumptions}
+For clarity, we collect the assumptions underlying the CHDBO framework:
+\begin{enumerate}
+    \item[\textbf{A1.}] \textbf{Lipschitz Continuity:} The drift $f(x)$, control effectiveness $g(x)$, and barrier $h(x)$ are locally Lipschitz continuous on $\mathcal{X}$ \cite{khalil2002}.
+    \item[\textbf{A2.}] \textbf{Barrier Differentiability:} $h(x)$ is continuously differentiable ($C^1$), and $0$ is a regular value of $h$ (i.e., $\nabla h(x) \neq 0$ on $\partial\mathcal{S}$).
+    \item[\textbf{A3.}] \textbf{Relative Degree One:} The barrier $h(x)$ has relative degree one with respect to the control input $u$, i.e., $L_g h(x) \neq 0$ on $\partial\mathcal{S}$. For higher relative degree, an Exponential CBF extension is employed (Section~5.5).
+    \item[\textbf{A4.}] \textbf{Bounded Control:} The control input set $\mathcal{U}$ is compact and the CBF-QP (Equation~\ref{eq:cbfqp}) is feasible for all $x \in \partial\mathcal{S}$.
+    \item[\textbf{A5.}] \textbf{Local Convexity or Star-Shapedness:} The safe set $\mathcal{S}$ is locally convex or star-shaped near $\partial\mathcal{S}$ for the boundary projection to be well-defined. For non-convex $\mathcal{S}$, tangent half-space inner-approximations are used (Section~3.3).
+    \item[\textbf{A6.}] \textbf{Utility Smoothness:} $U(x)$ is continuously differentiable. For global convergence guarantees, $U$ is concave or satisfies the Polyak-{\L}ojasiewicz condition \cite{polyak1963}.
+\end{enumerate}
+
 \section{High-Dimensional Probabilistic Verification}
 The central contribution of this work is the assertion that absolute deterministic safety is a luxury of low-dimensional systems, while high-confidence probabilistic safety is a necessity for high-dimensional ones. In this section, we present the Monte Carlo Barrier Certificate (MCBC), a method that circumvents the scaling limitations of grid-based verification by estimating the volume of the safe invariant set $\mathcal{S}$ rather than delineating its exact boundary.
 
