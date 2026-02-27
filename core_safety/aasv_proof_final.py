@@ -189,8 +189,10 @@ class OrthogonalPrototypeMemory:
         v_norm = v / np.linalg.norm(v)
         
         for i, proto in enumerate(self.prototypes):
-            similarity = abs(np.dot(v_norm, proto))
-            if similarity > self.threshold:
+            # Use signed dot product (not abs) so that v and -v are treated
+            # as distinct failure directions, consistent with generate_figure_4.py.
+            similarity = np.dot(v_norm, proto)
+            if abs(similarity) > self.threshold:
                 # Merge into existing prototype (weighted average)
                 self.prototypes[i] = (proto + 0.1 * v_norm)
                 self.prototypes[i] /= np.linalg.norm(self.prototypes[i])

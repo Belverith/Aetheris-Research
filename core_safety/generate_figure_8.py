@@ -117,13 +117,7 @@ ax1.fill(np.concatenate([boundary_x, fixed_inner_x[::-1]]),
 ax1.plot(agent_x, agent_y, '-', color='#2c3e50', lw=1.5, alpha=0.7, label='Agent trajectory')
 
 # Mark regions where agent violates fixed margin
-for i in range(N_POINTS):
-    dist_to_boundary = np.sqrt((agent_x[i] - boundary_x)**2 + (agent_y[i] - boundary_y)**2).min()
-    dist_to_fixed = np.sqrt((agent_x[i] - fixed_inner_x)**2 + (agent_y[i] - fixed_inner_y)**2).min()
-    # Check if agent is between boundary and fixed tube
-    r_agent_pt = np.sqrt(agent_x[i]**2 + agent_y[i]**2)
-    r_fixed_pt = np.sqrt(fixed_inner_x[i]**2 + fixed_inner_y[i]**2)
-    r_boundary_pt = np.sqrt(boundary_x[i]**2 + boundary_y[i]**2)
+# (Visual indicators computed implicitly via fill regions above)
 
 # Highlight high-curvature zones with markers
 high_curv_mask = curvature_norm > 0.6

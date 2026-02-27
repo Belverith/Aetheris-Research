@@ -52,16 +52,12 @@ def barrier_gradient(x):
     grad = np.zeros_like(x)
     base_val = barrier_function(x)
     
-    # Standard Finite Difference (High-Dim efficient versions exist, simple here)
-    # Optimization: We only compute gradient for the subspace aligned with x
-    # But for the Hunter, we need full gradient.
+    # Full finite-difference gradient across all dimensions.
+    # In production, use autodiff (PyTorch/JAX) for O(n) cost.
     for i in range(DIMENSIONS):
-        # Trick: Only compute for first 10 dims + random others for speed in demo
-        # In production: Use autodiff (PyTorch/JAX)
-        if i < 10 or np.random.rand() < 0.01: 
-            perturb = np.zeros_like(x)
-            perturb[i] = epsilon
-            grad[i] = (barrier_function(x + perturb) - base_val) / epsilon
+        perturb = np.zeros_like(x)
+        perturb[i] = epsilon
+        grad[i] = (barrier_function(x + perturb) - base_val) / epsilon
             
     return grad
 
