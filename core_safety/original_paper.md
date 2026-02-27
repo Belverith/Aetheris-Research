@@ -668,7 +668,7 @@ with standard parameters $(\sigma, \rho, \beta) = (10, 28, 8/3)$ and a scaling f
 
 \textbf{Results:} Over 50 adversarial trials (500 steps each), the CBF-QP maintains \textbf{0/50 safety violations} despite mean drift magnitude $\|f(x)\| \approx 9.6$ and strongly negative $L_f h$ (mean $\approx -16.3$). The maximum observed norm is 0.97, demonstrating that the quadratic CBF-QP handles genuinely nonlinear cubic coupling terms without modification. This experiment extends the linear-drift validation of Experiment~V to a chaotic nonlinear regime, confirming that the continuous-relaxation safety theory (Theorem~1) holds in practice for the most challenging class of drift dynamics tested.
 
-\subsection{Experiment IX: Scalability Beyond $n = 128$}
+\subsection{Experiment IX: Scalability Beyond \texorpdfstring{$n = 128$}{n = 128}}
 All previous experiments operate at $n = 128$. To validate that CHDBO scales practically to higher dimensions, we run the full pipeline---linear drift ($\sigma_{\max}(A) \approx 1.04$), CBF-QP enforcement, and Hutchinson spectral estimation ($k = 5$ probes)---at $n \in \{128, 512, 1024\}$ with 20 trials $\times$ 300 steps per dimension.
 
 \begin{figure}[htbp]
