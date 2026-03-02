@@ -12,6 +12,11 @@ Setup:
       dx_{3i+1} = x_{3i}(ρ - x_{3i+2}) - x_{3i+1}
       dx_{3i+2} = x_{3i} * x_{3i+1} - β * x_{3i+2}
     (scaled so the attractor fits inside the unit ball)
+  - Adjacent triplets are coupled via diffusive terms:
+      dx_{3i}   += κ * (x_{3(i+1)} - x_{3i})       (nearest-neighbor coupling)
+      dx_{3i+2} += κ * (x_{3(i-1)+2} - x_{3i+2})   (wrap-around ring topology)
+    with coupling strength κ = 0.5, creating a genuinely high-dimensional
+    chaotic system rather than 42 independent 3D copies.
   - Safe set: unit ball, h(x) = 1 - ||x||^2
   - CBF-QP enforces h(x) ≥ 0 at every step
   - 50 trials, 500 steps each, dt = 0.005
@@ -49,6 +54,9 @@ BETA_L = 8.0 / 3.0
 # Standard Lorenz attractor has amplitude ~20-30; we scale by 1/40
 LORENZ_SCALE = 1.0 / 40.0
 
+# Inter-triplet diffusive coupling strength
+KAPPA = 0.5
+
 N_TRIPLETS = N // 3  # 42 triplets = 126 dims, 2 dims are passive
 
 # ============================================================================
@@ -58,6 +66,8 @@ def lorenz_drift(x):
     """
     Nonlinear drift f(x) in R^128.
     Groups state into Lorenz triplets with cubic coupling.
+    Adjacent triplets are coupled via diffusive terms (ring topology)
+    to create genuinely high-dimensional chaos.
     Extra dimensions have mild linear drift.
     """
     f = np.zeros_like(x)
@@ -76,6 +86,18 @@ def lorenz_drift(x):
     
     # Scale derivatives back
     f[:3*N_TRIPLETS] *= LORENZ_SCALE
+    
+    # Inter-triplet diffusive coupling (ring topology)
+    # Couples the x-component of each triplet to its neighbors' x-component,
+    # and the z-component to neighbors' z-component, creating cross-dimensional
+    # information flow that makes the system genuinely high-dimensional.
+    for i in range(N_TRIPLETS):
+        i_prev = (i - 1) % N_TRIPLETS
+        i_next = (i + 1) % N_TRIPLETS
+        # Diffusive coupling on x-component (first of each triplet)
+        f[3*i] += KAPPA * (x[3*i_next] - x[3*i])
+        # Diffusive coupling on z-component (third of each triplet)
+        f[3*i+2] += KAPPA * (x[3*i_prev+2] - x[3*i+2])
     
     # Passive dims: mild linear drift
     for j in range(3*N_TRIPLETS, N):
