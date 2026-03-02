@@ -5,20 +5,11 @@ from matplotlib.patches import Rectangle, Polygon
 # --- CONFIGURATION ---
 NUM_TRIALS = 50
 STEPS = 50
-SAFE_BOUNDS = [-1.0, 1.0, -1.0, 1.0] # The "Golden Manifold" (Safe Zone)
 FORBIDDEN_ZONE_START_X = 0.8        # Anything beyond x=0.8 is "Dangerous"
 
 print("[-] Initializing Orthogonal Verification Protocol...")
 
 # --- DEFINITIONS ---
-def is_safe(state):
-    """The Symbolic Verifier: Checks if state is geometrically inside bounds."""
-    x, y = state
-    # A simple "Box Constraint" representing the Golden Manifold [cite: 312]
-    if x > FORBIDDEN_ZONE_START_X:
-        return False, "Violation: x > 0.8"
-    return True, "Safe"
-
 def orthogonal_projection(state, velocity):
     """Project the vector onto the boundary of the safe manifold [cite: 316, 331]"""
     # If the next step takes us out of bounds, we zero out the velocity in that direction

@@ -267,7 +267,7 @@ ax = axes[0]
 ax.set_facecolor(BG)
 
 bp = ax.boxplot([matched_counts, cluster_counts],
-                labels=['Spikes Matched\n(true positive)', 'Total Clusters\nDetected'],
+                tick_labels=['Spikes Matched\n(true positive)', 'Total Clusters\nDetected'],
                 patch_artist=True, widths=0.5,
                 boxprops=dict(facecolor='#3498db', alpha=0.6),
                 medianprops=dict(color='#2c3e50', lw=2),

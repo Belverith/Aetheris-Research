@@ -157,20 +157,16 @@ def project_2d(vecs):
 # Generate the theoretical boundary for plotting
 angles = np.linspace(-1, 1, 500) # Cosine similarity
 boundary_r = []
+# Use a FIXED orthogonal complement for consistent 2D cross-section
+np.random.seed(999)  # deterministic orth vector
+orth_fixed = np.random.randn(DIMENSIONS)
+orth_fixed = orth_fixed - np.dot(orth_fixed, BLACK_SWAN_DIR) * BLACK_SWAN_DIR
+orth_fixed = orth_fixed / np.linalg.norm(orth_fixed)
+
 for ang in angles:
-    # Reconstruct a representative vector
-    # v = ang * swan + sqrt(1-ang^2) * orth
-    # But we just need to pass it to barrier function
-    # We construct a synthetic vector with this angle
-    orth = np.random.randn(DIMENSIONS)
-    orth = orth - np.dot(orth, BLACK_SWAN_DIR) * BLACK_SWAN_DIR
-    orth = orth / np.linalg.norm(orth)
+    # Reconstruct a representative vector in the (swan, orth_fixed) plane
+    vec_dir = (BLACK_SWAN_DIR * ang) + (orth_fixed * np.sqrt(max(0, 1 - ang**2)))
     
-    vec_dir = (BLACK_SWAN_DIR * ang) + (orth * np.sqrt(1 - ang**2))
-    
-    # Find r where h(r * vec_dir) = 0
-    # h = 1 - r - spike
-    # 0 = 1 - r - spike -> r = 1 - spike
     # Calculate spike magnitude for this angle
     if ang > 0:
         spike = np.exp(-(1 - ang)**2 / (2 * 0.01**2)) * SPIKE_DEPTH

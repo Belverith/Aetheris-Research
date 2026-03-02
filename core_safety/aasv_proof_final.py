@@ -243,6 +243,9 @@ def hunter_attack(
         grad = barrier_gradient(current_x, use_surrogate)
         
         # Add repulsion from known failures (explore new regions)
+        # Paper Eq. 12: J(x) = h(x) + λ Σ Sim(x, c), so gradient of the
+        # repulsion term points TOWARD prototypes; adding it to the descent
+        # direction means the Hunter moves AWAY from known failures.
         repulsion_grad = np.zeros(DIMENSIONS)
         for proto in memory.prototypes:
             sim = np.dot(current_x, proto) / (np.linalg.norm(current_x) + 1e-8)
@@ -251,8 +254,10 @@ def hunter_attack(
         # Add noise for saddle point escape
         noise = np.random.randn(DIMENSIONS) * NOISE_SCALE
         
-        # Momentum update
-        velocity = MOMENTUM * velocity - LEARNING_RATE * (grad - repulsion_grad) + noise
+        # Momentum update — note the '+' sign: we ADD repulsion_grad because
+        # the cost J = h + λΣSim means ∇J = ∇h + ∇(repulsion), and we
+        # descend along -∇J = -(∇h + ∇repulsion).
+        velocity = MOMENTUM * velocity - LEARNING_RATE * (grad + repulsion_grad) + noise
         current_x = current_x + velocity
         
         # Project back to boundary region
@@ -373,13 +378,20 @@ def visualize_results(traces: List, memory: OrthogonalPrototypeMemory):
     # Plot theoretical boundary
     angles = np.linspace(-1, 1, 500)
     boundary_r = []
+    # Build a fixed orthogonal complement once for consistent cross-section
+    orth_fixed = np.random.randn(DIMENSIONS)
+    orth_fixed = orth_fixed - np.dot(orth_fixed, swan_dir) * swan_dir
+    orth_fixed = orth_fixed / np.linalg.norm(orth_fixed)
     for ang in angles:
-        # Calculate total spike at this angle
-        spike = sum(
-            np.exp(-(1 - ang)**2 / (2 * SPIKE_WIDTH**2)) * SPIKE_DEPTH
-            for _ in BLACK_SWAN_DIRS  # Simplified - uses primary direction
-        )
-        boundary_r.append(SAFE_RADIUS - spike if ang > 0.8 else SAFE_RADIUS)
+        # Construct vector in the (swan_dir, orth_fixed) plane at this angle
+        vec = ang * swan_dir + np.sqrt(max(0, 1 - ang**2)) * orth_fixed
+        vec = vec / np.linalg.norm(vec)  # unit vector
+        # Evaluate total spike contribution from ALL Black Swan directions
+        total_spike = 0.0
+        for bsd in BLACK_SWAN_DIRS:
+            sim_to_spike = np.dot(vec, bsd)
+            total_spike += np.exp(-(1 - sim_to_spike)**2 / (2 * SPIKE_WIDTH**2)) * SPIKE_DEPTH
+        boundary_r.append(SAFE_RADIUS - total_spike)
     boundary_r = np.array(boundary_r)
     
     bx = boundary_r * angles

@@ -181,7 +181,8 @@ ax1.set_ylabel('$e_2$ (spike 2 direction)', fontsize=13)
 textstr = ('PCA Failure Mode:\n'
            f'cos(centroid, spike1) = {cos_pca_1:.3f}\n'
            f'cos(centroid, spike2) = {cos_pca_2:.3f}\n'
-           '\u2192 Memory of BOTH spikes erased!')
+           f'cos(centroid, spike3) = {cos_pca_3:.3f}\n'
+           '\u2192 Memory of ALL spikes erased!')
 props = dict(boxstyle='round,pad=0.4', facecolor='#e74c3c', alpha=0.2)
 ax1.text(0.02, 0.02, textstr, transform=ax1.transAxes, fontsize=10.5,
          verticalalignment='bottom', bbox=props)

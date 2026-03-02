@@ -389,7 +389,7 @@ def plot_mc(ax, pts, viol, dirs, b1, b2):
 
 def plot_hunter(ax, trajs, dets, dirs, mem, b1, b2, n_restarts=None):
     ax.set_facecolor(BG_COL); draw_bnd(ax)
-    k = n_restarts if n_restarts is not None else len(trajs)
+    k = len(trajs)  # total restarts (phase 1 + phase 2)
 
     # Draw trajectories — non-finding first (behind), then finding on top
     for tr, found in trajs:

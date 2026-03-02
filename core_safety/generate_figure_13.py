@@ -73,10 +73,12 @@ def hutchinson_spectral_estimate(A, x, k, rng):
     return np.sqrt(max(est_trace, 0.0))  # ||A||_F estimate
 
 
-def cbf_qp_step(x, u_nom, A, gamma=GAMMA):
+def cbf_qp_step(x, u_nom, A, gamma=GAMMA, spectral_margin=0.0):
     """
     CBF-QP for dx = Ax + u, barrier h(x) = 1 - ||x||^2.
-    Constraint: ∇h · (Ax + u) ≥ -γ h(x)
+    Robust constraint: ∇h · (Ax + u) ≥ -γ (h(x) - spectral_margin)
+    The spectral_margin term tightens the barrier to account for
+    Hutchinson-estimated drift volatility (Equation 8 in paper).
     """
     h_val = barrier(x)
     grad_h = barrier_grad(x)
@@ -85,7 +87,8 @@ def cbf_qp_step(x, u_nom, A, gamma=GAMMA):
     Lg_h = grad_h
 
     lhs_nom = np.dot(Lg_h, u_nom)
-    rhs = -gamma * h_val - Lf_h
+    # Tighten RHS by the spectral safety tube δ(x) = σ̂_max · d_step
+    rhs = -gamma * (h_val - spectral_margin) - Lf_h
 
     if lhs_nom >= rhs:
         return u_nom, False
@@ -131,13 +134,16 @@ for n in DIMS:
             sig_hat = hutchinson_spectral_estimate(A, x, K_PROBES, rng)
             sigma_hats.append(sig_hat)
 
+            # Compute adaptive spectral margin: δ(x) = σ̂_max · d_step
+            spectral_margin = sig_hat * DT
+
             # Nominal control toward goal outside safe set
             goal = np.zeros(n)
             goal[0] = 1.5
             u_nom = 0.3 * (goal - x) / max(np.linalg.norm(goal - x), 1e-8)
 
-            # CBF-QP
-            u_star, active = cbf_qp_step(x, u_nom, A)
+            # CBF-QP with Hutchinson-inflated tube margin
+            u_star, active = cbf_qp_step(x, u_nom, A, spectral_margin=spectral_margin)
             if active:
                 n_intervene += 1
 
@@ -194,14 +200,19 @@ ax.set_title('(a) Computation Time vs Dimension', fontsize=13, fontweight='bold'
 ax.legend(fontsize=10)
 ax.grid(True, alpha=0.2, axis='y')
 
-# (b) Hutchinson estimates
+# (b) Hutchinson estimates - box plots
 ax = axes[0, 1]
-for n in DIMS:
-    ax.hist(results[n]['sigma_hat'], bins=15, alpha=0.5,
-            label=f'n={n} (σ_true={results[n]["sigma_true"]:.2f})')
-    ax.axvline(results[n]['sigma_true'], ls='--', lw=1.5)
-ax.set_xlabel('Hutchinson $\\hat{\\sigma}$ (mean over trial)', fontsize=12)
-ax.set_ylabel('Count', fontsize=12)
+data_sigma = [results[n]['sigma_hat'] for n in DIMS]
+colors_sigma = ['#3498db', '#e67e22', '#2ecc71']
+bp_sigma = ax.boxplot(data_sigma, tick_labels=dim_labels, patch_artist=True,
+                      boxprops=dict(alpha=0.6))
+for patch, color in zip(bp_sigma['boxes'], colors_sigma):
+    patch.set_facecolor(color)
+# Add true sigma reference line
+ax.axhline(results[DIMS[0]]['sigma_true'], color='red', ls='--', lw=2,
+           label=f'$\\sigma_{{true}} = {results[DIMS[0]]["sigma_true"]:.2f}$')
+ax.set_xlabel('Dimension $n$', fontsize=12)
+ax.set_ylabel('Hutchinson $\\hat{\\sigma}$ (mean over trial)', fontsize=12)
 ax.set_title('(b) Spectral Estimates vs Dimension', fontsize=13, fontweight='bold')
 ax.legend(fontsize=9)
 ax.grid(True, alpha=0.2)

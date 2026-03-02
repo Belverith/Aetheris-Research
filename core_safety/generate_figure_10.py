@@ -392,18 +392,19 @@ ax.text(0.03, 0.03,
         '$\\nabla h$ directly guides the\n'
         'Hunter to the violation.\n'
         'Black-box FD gradients suffice.',
-        transform=ax.transAxes, fontsize=9, va='bottom',
-        bbox=dict(boxstyle='round,pad=0.3', fc='#e8f8e8', alpha=0.85))
+        transform=ax.transAxes, fontsize=9, va='bottom', zorder=10,
+        bbox=dict(boxstyle='round,pad=0.3', fc='#e8f8e8', alpha=0.95))
 
 # ---- Panel (b): Multi-modal landscape ----
 ax = axes[1]
 ax.set_facecolor(BG)
 ax.plot(restart_counts, wta_multi, 'D-', color='#e67e22', lw=2.5, ms=9,
         label='WTA gradient (oracle)', zorder=5)
-ax.plot(restart_counts, sum_oracle_multi, 'o--', color='#2ecc71', lw=2, ms=8,
-        label='Sum $\\nabla h$ (oracle)')
+# Purple behind green, both at actual y=0, both behind text (zorder < 6)
 ax.plot(restart_counts, sum_fd_multi, 's--', color='#8e44ad', lw=2, ms=8,
-        label='Sum $\\nabla h$ (FD)')
+        label='Sum $\\nabla h$ (FD)', zorder=3)
+ax.plot(restart_counts, sum_oracle_multi, 'o--', color='#2ecc71', lw=2, ms=8,
+        label='Sum $\\nabla h$ (oracle)', zorder=4)
 ax.axhline(3, color='#e74c3c', ls=':', lw=2, label='Ground truth (3 spikes)')
 ax.set_xlabel('Hunter Restarts ($k$)', fontsize=12)
 ax.set_ylabel('Distinct Spikes Detected', fontsize=12)
@@ -419,8 +420,8 @@ ax.text(0.03, 0.03,
         'centroid of spike directions\n'
         '(a saddle, not a violation).\n'
         'WTA targets one spike per restart.',
-        transform=ax.transAxes, fontsize=9, va='bottom',
-        bbox=dict(boxstyle='round,pad=0.3', fc='#fff3e0', alpha=0.85))
+        transform=ax.transAxes, fontsize=9, va='bottom', zorder=10,
+        bbox=dict(boxstyle='round,pad=0.3', fc='#fff3e0', alpha=0.95))
 
 fig.suptitle('Experiment VI: Gradient Structure & Multi-Modal Discovery '
              '($\\mathbb{R}^{128}$, $\\theta_w = 0.05$ rad)',

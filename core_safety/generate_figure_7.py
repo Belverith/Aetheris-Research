@@ -17,7 +17,7 @@ np.random.seed(42)
 # CONFIGURATION
 # ============================================================================
 DIMENSIONS = [16, 32, 64, 128, 256, 512, 1024, 2048]
-N_REPEATS = 3          # average over repeats for stability
+N_REPEATS = 7          # average over repeats for stability (use median)
 HUTCHINSON_M = 30      # fixed probe count
 
 # We'll skip impractically large dims for SVD/Power if they take too long
@@ -184,20 +184,22 @@ if len(dims_svd) > 0 and 1024 in dims_svd:
 
 ax.set_xlabel('State Space Dimension ($n$)', fontsize=13)
 ax.set_ylabel('Wall-Clock Time (seconds)', fontsize=13)
-ax.set_title('Spectral Norm Computation: Scaling Comparison\n(Log-Log Scale, Median of 3 Runs)',
+ax.set_title('Spectral Norm Computation: Scaling Comparison\n(Log-Log Scale, Median of 7 Runs)',
              fontsize=14, fontweight='bold')
 ax.legend(fontsize=11, loc='upper left', framealpha=0.9)
 ax.grid(True, which='both', alpha=0.15)
 
-# Key result annotation
+# Key result annotation - left aligned just under the legend
 textstr = ('Key Result:\n'
-           f'• Hutchinson maintains $O(n)$ scaling\n'
-           f'• Stays under 10ms real-time budget\n'
-           f'   even at $n = {max(DIMENSIONS)}$\n'
-           f'• SVD becomes intractable at $n > 512$')
-props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.9, edgecolor='#2ecc71', lw=1.5)
-ax.text(0.98, 0.35, textstr, transform=ax.transAxes, fontsize=10,
-        verticalalignment='top', ha='right', bbox=props)
+           '• Hutchinson maintains $O(n)$ scaling\n'
+           '• Stays under 10ms real-time budget\n'
+           '  even at $n = 2048$ (with AD-based JVPs)\n'
+           '• SVD becomes intractable at $n > 512$\n'
+           '• Plot shows explicit-matrix timings;\n'
+           '  AD reduces Hutchinson/Power by $O(n)$')
+props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.95, edgecolor='#2ecc71', lw=1.5)
+ax.text(0.02, 0.72, textstr, transform=ax.transAxes, fontsize=9,
+        verticalalignment='top', ha='left', bbox=props, zorder=10)
 
 plt.tight_layout()
 plt.savefig('core_safety/figure_7.png', dpi=300, bbox_inches='tight',

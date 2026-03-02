@@ -161,29 +161,29 @@ for n in DIMS:
         solver = setup_osqp(n, grad_hs[0])
 
         t0 = time.perf_counter()
-        osqp_active = 0
+        osqp_solved = 0
         for i in range(N_SOLVES):
             A_new = sp.csc_matrix(grad_hs[i].reshape(1, -1))
             solver.update(q=-u_noms[i], Ax=A_new.data, l=np.array([rhss[i]]))
             result = solver.solve()
             if result.info.status in ('solved', 'solved_inaccurate'):
-                osqp_active += 1
+                osqp_solved += 1
         t_osqp = time.perf_counter() - t0
     else:
         t_osqp = float('nan')
-        osqp_active = cf_active
+        osqp_solved = N_SOLVES
 
     results[n] = {
         't_cf': t_cf,
         't_osqp': t_osqp,
         'cf_active': cf_active,
-        'osqp_active': osqp_active,
+        'osqp_solved': osqp_solved,
         'us_cf': t_cf / N_SOLVES * 1e6,  # microseconds per solve
         'us_osqp': t_osqp / N_SOLVES * 1e6,
     }
 
-    print(f"    Closed-form: {t_cf*1000:.1f}ms total, {results[n]['us_cf']:.1f}µs/solve, {cf_active}/{N_SOLVES} active")
-    print(f"    OSQP:        {t_osqp*1000:.1f}ms total, {results[n]['us_osqp']:.1f}µs/solve, {osqp_active}/{N_SOLVES} active")
+    print(f"    Closed-form: {t_cf*1000:.1f}ms total, {results[n]['us_cf']:.1f}µs/solve, {cf_active}/{N_SOLVES} constraint active")
+    print(f"    OSQP:        {t_osqp*1000:.1f}ms total, {results[n]['us_osqp']:.1f}µs/solve, {osqp_solved}/{N_SOLVES} solved")
     speedup = t_osqp / t_cf if t_cf > 0 else float('inf')
     print(f"    Speedup:     {speedup:.1f}×")
 

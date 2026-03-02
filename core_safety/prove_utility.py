@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from numpy.linalg import norm
 
 # --- CONFIGURATION ---
-DIMENSIONS = 4096
+DIMENSIONS = 128
 NUM_TRIALS = 1000
 SAFE_RADIUS = 1.0
 
@@ -62,13 +62,11 @@ for i in range(NUM_TRIALS):
 plt.figure(figsize=(10, 7))
 plt.scatter(attack_strengths, similarities, c=similarities, cmap='RdYlGn', alpha=0.6, s=20)
 
-# Theoretical Curve line for comparison
-x_line = np.linspace(0, 1, 100)
-# Theoretical similarity roughly follows sqrt(1-x^2) or similar decay depending on noise
-# We just plot the trend
-z = np.polyfit(attack_strengths, similarities, 2)
-p = np.poly1d(z)
-plt.plot(x_line, p(x_line), "k--", linewidth=2, label="Response Curve")
+# Theoretical Curve: orthogonal projection yields sqrt(1 - alpha^2) decay
+# (the Pythagorean theorem in high-dimensional Euclidean space)
+x_line = np.linspace(0, 0.99, 200)
+theoretical_curve = np.sqrt(1 - x_line**2)
+plt.plot(x_line, theoretical_curve, "k--", linewidth=2, label=r"Theoretical $\sqrt{1-\alpha^2}$")
 
 plt.title(f'Proportional Safety Response (N={NUM_TRIALS})\nAdaptive Intervention based on Threat Level', fontsize=14)
 plt.xlabel('Adversarial Intensity (0=Safe, 1=Malicious)', fontsize=12)

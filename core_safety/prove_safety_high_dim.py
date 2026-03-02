@@ -84,6 +84,10 @@ for i in range(NUM_TRIALS):
         # Check safety of the INTENDED move
         safe_velocity = orthogonal_projection_hypersphere(state_ver, grad_ver)
         state_ver += safe_velocity
+        # Re-project to sphere surface to prevent numerical drift
+        norm_ver = np.linalg.norm(state_ver)
+        if norm_ver > SAFE_RADIUS:
+            state_ver = (state_ver / norm_ver) * SAFE_RADIUS
         traj_ver.append(state_ver.copy())
 
     all_states_std.append(np.array(traj_std))

@@ -214,8 +214,8 @@ fig.suptitle('Tube-Based Adaptive Safety Margins: Avoiding the Frozen Robot Prob
 # Formula as compact caption below the figure (keeps plot area clean)
 fig.text(0.5, -0.02,
          r'Robust Barrier Condition: $h(x) \geq \delta(x) + \epsilon_{model} + \Delta_{noise}$'
-         r'   \u2022   Thick where dynamics are volatile   \u2022   Thin where dynamics are smooth'
-         r'   \u2022   Agent retains mobility everywhere',
+         '   •   Thick where dynamics are volatile   •   Thin where dynamics are smooth'
+         '   •   Agent retains mobility everywhere',
          ha='center', fontsize=11.5, style='italic',
          bbox=dict(boxstyle='round,pad=0.4', facecolor='#eaf6ff', alpha=0.8, edgecolor=ADAPTIVE_COLOR, lw=1))
 
