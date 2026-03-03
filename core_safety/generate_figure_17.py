@@ -85,7 +85,7 @@ for n in DIMENSIONS:
     violations = 0
     
     for _ in range(N_samples):
-        # Sample uniformly on S^{n-1}
+        # Sample uniformly on S^{n-1} 
         z = np.random.randn(n)
         z = z / np.linalg.norm(z)
         

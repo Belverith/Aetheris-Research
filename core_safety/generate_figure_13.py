@@ -208,17 +208,18 @@ bp_sigma = ax.boxplot(data_sigma, tick_labels=dim_labels, patch_artist=True,
                       boxprops=dict(alpha=0.6))
 for patch, color in zip(bp_sigma['boxes'], colors_sigma):
     patch.set_facecolor(color)
-# Add per-dimension true sigma reference lines
+# Add per-dimension true sigma reference lines with clear labels
 for i, n in enumerate(DIMS):
     st = results[n]['sigma_true']
     ax.hlines(st, i + 0.6, i + 1.4, colors='red', linestyles='--', lw=2,
-              label=f'$\\sigma_{{true}}={st:.2f}$' if i == 0 else '_nolegend_')
-    if i > 0:
-        ax.text(i + 1.05, st + 0.02, f'{st:.2f}', fontsize=8, color='red', ha='left')
+              label='$\\sigma_{true}$' if i == 0 else '_nolegend_')
+    ax.text(i + 1.0, st + 0.3, f'$\\sigma_{{true}}$={st:.2f}',
+            fontsize=10, color='red', ha='center', fontweight='bold',
+            bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='red', alpha=0.8))
 ax.set_xlabel('Dimension $n$', fontsize=12)
 ax.set_ylabel('Hutchinson $\\hat{\\sigma}$ (mean over trial)', fontsize=12)
 ax.set_title('(b) Spectral Estimates vs Dimension', fontsize=13, fontweight='bold')
-ax.legend(fontsize=9, labels=['$\\sigma_{true}$ (per dim)'])
+ax.legend(fontsize=10)
 ax.grid(True, alpha=0.2)
 
 # (c) Min barrier value
@@ -228,7 +229,7 @@ bp = ax.boxplot(data_h, tick_labels=dim_labels, patch_artist=True,
                 boxprops=dict(facecolor='#2ecc71', alpha=0.6))
 ax.axhline(0.0, color='red', ls='--', lw=2, label='$h=0$ (unsafe)')
 ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel('Min $h(x)$ across trial', fontsize=12)
+ax.set_ylabel('Min $h(x)$ across trial', fontsize=12) 
 ax.set_title('(c) Safety Margin vs Dimension', fontsize=13, fontweight='bold')
 ax.legend(fontsize=10)
 ax.grid(True, alpha=0.2, axis='y')

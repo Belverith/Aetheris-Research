@@ -53,7 +53,7 @@ for i in range(NUM_TRIALS):
     original_velocity = (tangent * np.sqrt(1.0 - alpha**2) + radial * alpha) + noise
     
     # 5. Correction
-    corrected_velocity = orthogonal_projection(state, original_velocity.copy())
+    corrected_velocity = orthogonal_projection(state, original_velocity.copy()) 
     
     # 6. Measure
     sim = cosine_similarity(original_velocity, corrected_velocity)
