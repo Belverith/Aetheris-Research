@@ -120,8 +120,41 @@ where:
 \end{itemize}
 In the context of an Agentic Control System (ACS), $x$ represents the combined state of the agent's internal cognition and external environment, while $u$ represents the discrete or continuous actions taken to modify that state.
 
+\subsubsection{Notation Summary}
+For reference, we summarize the principal notation used throughout this paper:
+
+\begin{table}[htbp]
+\centering
+\caption{Notation Summary}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Symbol} & \textbf{Description} \\ \midrule
+$x \in \mathcal{X} \subseteq \mathbb{R}^n$ & System state vector \\
+$u \in \mathcal{U} \subseteq \mathbb{R}^m$ & Control input \\
+$f(x), g(x)$ & Drift and control-effectiveness vector fields \\
+$h(x): \mathbb{R}^n \to \mathbb{R}$ & Control Barrier Function (CBF) \\
+$\mathcal{S} = \{x : h(x) \geq 0\}$ & Safe set (forward-invariant region) \\
+$\partial\mathcal{S} = \{x : h(x) = 0\}$ & Safety boundary \\
+$L_f h, L_g h$ & Lie derivatives of $h$ along $f$ and $g$ \\
+$\gamma > 0$ & Class-$\mathcal{K}$ decay rate for CBF condition \\
+$L_h$ & Lipschitz constant of barrier function $h$ \\
+$\epsilon, \delta$ & Hoeffding confidence parameters \\
+$\delta(x)$ & Adaptive spectral safety margin \\
+$\epsilon_{\text{model}}$ & Surrogate model error bound \\
+$\Delta_{\text{noise}}$ & Physical disturbance bound \\
+$U(x): \mathbb{R}^n \to \mathbb{R}$ & Utility function (to be maximized) \\
+$\sigma_{\max}(A)$ & Spectral norm (largest singular value) of matrix $A$ \\
+$\|A\|_F$ & Frobenius norm of matrix $A$ \\
+$k, T$ & AASV Hunter restart count and iterations per restart \\
+$\mathcal{M}_{\text{ban}}$ & Orthogonal prototype memory (Anti-Memory) \\
+\bottomrule
+\end{tabular}
+\label{tab:notation}
+\end{table}
+
 \textbf{Remark (Continuous Relaxation for Discrete Semantic Systems).}
-When applying the control-affine ODE formulation to semantic embedding spaces---where Large Language Models transition states discretely, token by token---a continuous relaxation is required. We adopt the \textit{Neural Ordinary Differential Equation} paradigm \cite{chen2018, kidger2022}, which models the evolution of hidden states in deep networks as the solution to a continuous-time ODE $\dot{x} = f_\theta(x, t)$, treating discrete layer transitions as Euler discretizations of an underlying continuous flow. Under this interpretation, the embedding trajectory between autoregressive steps is modeled as continuous, with the Lie derivative and barrier conditions evaluated on this continuous interpolant. The \textit{discretization error} introduced by the finite step size $\Delta t$ between tokens is bounded by $O(\Delta t^2 \cdot L_{\nabla f})$ (one-step local truncation error of the Euler method); the \textit{global} accumulated error over $T$ steps is $O(\Delta t \cdot L_{\nabla f})$ by standard ODE convergence theory. Because the barrier condition and $\epsilon_{\text{model}}$ are re-evaluated at each step using the \textit{current} state $x(t)$---not propagated from a fixed initial condition---the relevant error is the single-step local truncation, which is absorbed into the surrogate error term $\epsilon_{\text{model}}$ of the robust barrier condition (Equation~\ref{eq:robust_barrier}). Multi-step drift is bounded by a Gronwall-type argument: $\|x_{\text{true}}(t) - x_{\text{Euler}}(t)\| \leq C \cdot \Delta t \cdot (e^{L_f T} - 1)$, which remains small when $\Delta t \ll 1/L_f$ \cite{khalil2002}. We emphasize that when the semantic dynamics are highly discontinuous---for instance, when a microscopic embedding perturbation induces a macroscopic semantic divergence (a known phenomenon in adversarial NLP \cite{goodfellow2014})---the Lipschitz constant $L_f$ may become locally very large, inflating both $\epsilon_{\text{model}}$ and the safety tube $\delta(x)$. In this regime, the framework correctly becomes highly conservative (shrinking the feasible set), which is the appropriate behavior for a safety-critical system operating near a discontinuity. The CHDBO guarantees therefore apply rigorously to the continuous relaxation; their fidelity to the true discrete system is governed by the tightness of the Euler discretization bound, which practitioners must validate empirically for their specific architecture.
+When applying the control-affine ODE formulation to semantic embedding spaces---where Large Language Models transition states discretely, token by token---a continuous relaxation is required. We adopt the \textit{Neural Ordinary Differential Equation} paradigm \cite{chen2018, kidger2022, geshkovski2024, lu2020}, which models the evolution of hidden states in deep networks as the solution to a continuous-time ODE $\dot{x} = f_\theta(x, t)$, treating discrete layer transitions as Euler discretizations of an underlying continuous flow. Recent theoretical work has established that Transformer architectures---particularly the attention mechanism---can be interpreted as discretizations of continuous interacting particle systems \cite{geshkovski2024, sander2022}, lending formal justification to this continuous relaxation for semantic embedding spaces. Under this interpretation, the embedding trajectory between autoregressive steps is modeled as continuous, with the Lie derivative and barrier conditions evaluated on this continuous interpolant. The \textit{discretization error} introduced by the finite step size $\Delta t$ between tokens is bounded by $O(\Delta t^2 \cdot L_{\nabla f})$ (one-step local truncation error of the Euler method); the \textit{global} accumulated error over $T$ steps is $O(\Delta t \cdot L_{\nabla f})$ by standard ODE convergence theory. Because the barrier condition and $\epsilon_{\text{model}}$ are re-evaluated at each step using the \textit{current} state $x(t)$---not propagated from a fixed initial condition---the relevant error is the single-step local truncation, which is absorbed into the surrogate error term $\epsilon_{\text{model}}$ of the robust barrier condition (Equation~\ref{eq:robust_barrier}). Multi-step drift is bounded by a Gronwall-type argument: $\|x_{\text{true}}(t) - x_{\text{Euler}}(t)\| \leq C \cdot \Delta t \cdot (e^{L_f T} - 1)$, which remains small when $\Delta t \ll 1/L_f$ \cite{khalil2002}. We emphasize that when the semantic dynamics are highly discontinuous---for instance, when a microscopic embedding perturbation induces a macroscopic semantic divergence (a known phenomenon in adversarial NLP \cite{goodfellow2014})---the Lipschitz constant $L_f$ may become locally very large, inflating both $\epsilon_{\text{model}}$ and the safety tube $\delta(x)$. In this regime, the framework correctly becomes highly conservative (shrinking the feasible set), which is the appropriate behavior for a safety-critical system operating near a discontinuity. The CHDBO guarantees therefore apply rigorously to the continuous relaxation; their fidelity to the true discrete system is governed by the tightness of the Euler discretization bound, which practitioners must validate empirically for their specific architecture.
 
 \subsection{Recap of Topological Safety}
 Following the standard formulation in \cite{ames2019} and \cite{blanchini1999}, we define safety through the lens of set invariance. A set $\mathcal{S} \subset \mathcal{X}$ is defined as the safe set, representing the region of the state space where the system is permitted to operate (e.g., ``Sanity'', ``Goal Alignment''). We define $\mathcal{S}$ as the super-level set of a continuously differentiable scalar function $h(x): \mathbb{R}^n \to \mathbb{R}$, known as the Control Barrier Function (CBF):
@@ -221,6 +254,26 @@ It may be argued that in high-dimensional spaces ($n=128$), even Lipschitz-conti
 
 Furthermore, we leverage the Lipschitz property of the barrier function $h(x)$. Given the Lipschitz constant $L_h$ of $h$---estimated via conservative local sampling or spectral norm bounds \cite{fazlyab2019}---any verified point $x_i$ with $h(x_i) > 0$ guarantees that all points within the hyper-ball $B(x_i, h(x_i)/L_h)$ also satisfy $h(x) > 0$. This provides a local deterministic guarantee: each verified sample ``covers'' a neighborhood of radius $r = h(x_i)/L_h$, amplifying the probabilistic certification with geometric coverage. We note, however, that the volume of each such ball scales as $r^n$, and near the boundary where $h(x_i) \to 0$, the coverage radius shrinks correspondingly. In very high dimensions ($n = 128$), this means the Lipschitz coverage amplification provides diminishing practical benefit for near-boundary points---a further motivation for the active adversarial search of AASV, which does not rely on volumetric coverage arguments.
 
+\subsubsection{Dimension-Independence of Lipschitz Constants for Standard Barriers}
+A critical question is whether the Lipschitz constant $L_h$ grows with dimension $n$, which would undermine the $O(1)$ sample complexity claim. The following lemma establishes that for geometrically natural barrier functions, $L_h$ remains dimension-independent.
+
+\begin{lemma}[Dimension-Independent Lipschitz Constants]
+\label{lem:lipschitz_dim}
+Let $\mathcal{S} = \{x \in \mathbb{R}^n : \|x\| \leq R\}$ be a hyperspherical safe set of radius $R > 0$. Consider the following barrier functions:
+\begin{enumerate}
+    \item \textbf{Linear barrier:} $h_1(x) = R - \|x\|$. Then $L_{h_1} = 1$ for all $n$.
+    \item \textbf{Quadratic barrier:} $h_2(x) = R^2 - \|x\|^2$. Then $L_{h_2} = 2R$ for all $n$.
+    \item \textbf{Signed-distance barrier:} $h_3(x) = \text{dist}(x, \partial\mathcal{S}) = R - \|x\|$ for $\|x\| \leq R$. Then $L_{h_3} = 1$ for all $n$.
+\end{enumerate}
+More generally, for any barrier $h(x) = \phi(\|x\|)$ where $\phi: \mathbb{R}_{\geq 0} \to \mathbb{R}$ is $L_\phi$-Lipschitz, the composite barrier satisfies $L_h = L_\phi$, independent of $n$.
+\end{lemma}
+
+\begin{proof}
+For $h(x) = \phi(\|x\|)$, we have $\nabla h(x) = \phi'(\|x\|) \cdot x/\|x\|$ for $x \neq 0$. Thus $\|\nabla h(x)\| = |\phi'(\|x\|)| \leq L_\phi$, and by the mean value theorem, $|h(x) - h(y)| \leq L_\phi \|x - y\|$. For the linear barrier $h_1(x) = R - \|x\|$, we have $\phi(r) = R - r$, so $\phi'(r) = -1$ and $L_{h_1} = 1$. For the quadratic barrier $h_2(x) = R^2 - \|x\|^2$, we have $\phi(r) = R^2 - r^2$, so $|\phi'(r)| = 2r \leq 2R$ on $\{\|x\| \leq R\}$, giving $L_{h_2} = 2R$. In all cases, the Lipschitz constant depends only on the radial profile $\phi$ and the radius $R$, not on the ambient dimension $n$.
+\end{proof}
+
+\textbf{Remark (Non-Spherical Barriers).} For general safe sets $\mathcal{S}$ defined by smooth barrier functions, the Lipschitz constant may depend on the curvature of $\partial\mathcal{S}$, which can vary with dimension for certain families. However, for barriers constructed from finite intersections of half-spaces (polytopes) or smooth signed-distance functions \cite{ledoux2001}, the Lipschitz constant typically scales with the geometric complexity of the constraint---not with the ambient dimension. Practitioners should verify that their specific barrier construction admits a dimension-independent $L_h$ or adjust the sample complexity bound accordingly.
+
 \subsection{Algorithm 1: High-Dimensional Safety Verification}
 The formal procedure for verifying the safety of a high-dimensional manifold is detailed below.
 
@@ -258,6 +311,8 @@ Let $h: \mathbb{R}^n \to \mathbb{R}$ be $L_h$-Lipschitz, and suppose the MCBC ce
 \end{equation}
 by a union bound. More precisely, if the trajectory visits at most $T_{\partial}$ boundary episodes (periods where $h(x(t)) < \eta$ for a threshold $\eta > 0$), then the failure probability tightens to $T_{\partial} \cdot \epsilon$, since the CBF constraint is slack (inactive) in the interior.
 \end{lemma}
+
+\textbf{Remark (Union Bound Validity).} The union bound $P(\exists t : \text{failure}) \leq T \cdot \epsilon$ is conservative and does not require independence of boundary encounters---it applies directly to arbitrarily correlated (Markovian) trajectory sequences. This is because the bound follows from the subadditivity of probability measures: $P(\bigcup_{t=1}^T A_t) \leq \sum_{t=1}^T P(A_t)$, which holds without any independence assumption \cite{grimmett2001}. The bound is tight when boundary encounters are rare and well-separated in time; it may be pessimistic when the trajectory repeatedly visits the same boundary segment, but in this case the MCBC certificate's coverage of that segment provides additional assurance.
 
 \textbf{Remark.} This union bound is conservative but dimension-free: it depends only on the MCBC confidence $\epsilon$ and the trajectory length $T$, not on $n$. For typical deployments with $\epsilon = 10^{-6}$ and $T = 10^4$ steps, the trajectory-level failure probability is bounded by $10^{-2}$---well within operational safety margins. Moreover, the AASV module (Section~3.5) provides an additional layer of defense by actively attacking the predicted next state at each step, catching precisely the rare boundary configurations that the MCBC may miss.
 
@@ -466,6 +521,7 @@ For intellectual honesty, we state the assumptions underlying AASV:
     \item \textbf{Lipschitz Assumption:} The barrier function $h(x)$ is assumed Lipschitz continuous. Discontinuous dynamics (e.g., contact mechanics) require specialized treatment.
     \item \textbf{Hutchinson Variance:} The spectral estimate has variance $\propto 1/m$. For safety-critical applications, $m$ should be chosen conservatively (e.g., $m \geq 50$).
     \item \textbf{Non-Convexity:} The Hunter's probabilistic guarantee depends on the barrier landscape topology. Pathological geometries with exponentially many local minima can degrade detection probability.
+    \item \textbf{WTA Gradient Decomposability:} For AASV to detect multi-modal, angularly separated failure modes, the barrier gradient must be decomposable into per-spike components via a Winner-Take-All (WTA) selection mechanism. For analytically defined barriers (e.g., sums of Gaussian wells), this holds by construction. For learned neural barriers, practitioners should design multi-head architectures \cite{dawson2023} where each head contributes an independent gradient component, enabling targeted threat hunting toward distinct failure modes. Non-decomposable barriers may cause the Hunter to explore averaged directions rather than individual spikes, reducing detection probability.
 \end{enumerate}
 
 \section{Asymptotic Utility Maximization}
@@ -519,7 +575,7 @@ We establish each claim separately.
 
 \textbf{Convergence.} We analyze the single-integrator case $\dot{x} = u$ (used in our simulations, Section~5) and then state the general result. Define $V(x) = -U(x)$ (to be minimized). With $u_{\text{nom}} = \nabla U(x)$, when the CBF constraint is inactive, $\dot{V} = -\|\nabla U\|^2 \leq 0$. When the constraint is active, the KKT solution $u^* = u_{\text{nom}} + \lambda^* \nabla h$ with $\lambda^* \geq 0$ gives $\dot{V} = -\|\nabla U\|^2 - \lambda^* \nabla U \cdot \nabla h$. If $\nabla U \cdot \nabla h < 0$ (utility points toward the boundary), $\dot{V}$ may be temporarily positive, violating the monotonicity required by classical LaSalle.
 
-We therefore use a \textbf{Barbalat-type argument} \cite{khalil2002} instead of LaSalle's invariance principle \cite{lasalle1960}. Since $V$ is bounded below on compact $\mathcal{S}$ and the trajectory $x(t)$ remains in $\mathcal{S}$ by forward invariance, $V(x(t))$ is a bounded function of time. The integral $\int_0^T \|\nabla U(x(t))\|^2\, dt$ is bounded for all $T$ (since $V$ cannot decrease below $\inf_\mathcal{S} V$ and cannot increase above $V(x(0))$ indefinitely---the time spent with $\dot{V} > 0$ is finite because boundary-sliding with opposing $\nabla U$ and $\nabla h$ can only persist while $\lambda^* > 0$ and $h(x) = 0$, a codimension-1 set from which trajectories generically exit in finite time by the regularity assumption). By Barbalat's Lemma (noting $\ddot{V}$ is bounded by smoothness of $U$ and $h$), $\|\nabla U(x(t))\|^2 \to 0$. Since $\mathcal{S}$ is compact and forward-invariant, the trajectory $\{x(t)\}_{t \geq 0}$ is pre-compact, so its $\omega$-limit set $\Omega \subset \mathcal{S}$ is non-empty, compact, and connected \cite{khalil2002}. Because $\|\nabla U\| \to 0$ along the trajectory, every point of $\Omega$ satisfies $\nabla U(x) + \lambda \nabla h(x) = 0$ for some $\lambda \geq 0$---the KKT conditions of $\max_\mathcal{S} U$. If, additionally, $U$ is real-analytic and satisfies the {\L}ojasiewicz gradient inequality \cite{lojasiewicz1963} on $\mathcal{S}$, then $\Omega$ is a singleton and $x(t)$ converges to a single KKT point $x^*_\mathcal{S}$, rather than merely to the KKT set.
+We therefore use a \textbf{Barbalat-type argument} \cite{khalil2002} instead of LaSalle's invariance principle \cite{lasalle1960}. Since $V$ is bounded below on compact $\mathcal{S}$ and the trajectory $x(t)$ remains in $\mathcal{S}$ by forward invariance, $V(x(t))$ is a bounded function of time. The integral $\int_0^T \|\nabla U(x(t))\|^2\, dt$ is bounded for all $T$ (since $V$ cannot decrease below $\inf_\mathcal{S} V$ and cannot increase above $V(x(0))$ indefinitely---the time spent with $\dot{V} > 0$ is finite because boundary-sliding with opposing $\nabla U$ and $\nabla h$ can only persist while $\lambda^* > 0$ and $h(x) = 0$, a codimension-1 set from which trajectories generically exit in finite time by the regularity assumption). To apply Barbalat's Lemma, we verify that $\ddot{V}$ is bounded: since $\dot{V} = -\nabla U^T (f + gu^*)$ and both $U$, $h$ are $C^1$ (Assumptions A2, A6), and $u^*$ is a continuous function of $x$ (as the KKT solution of the convex QP), $\dot{V}$ is continuous in $x$. On the compact set $\mathcal{S}$, $\dot{V}$ is therefore Lipschitz in $x$, implying $|\ddot{V}| \leq L_{\dot{V}} \|\dot{x}\| \leq L_{\dot{V}} \cdot M$ where $M = \sup_{x \in \mathcal{S}, u \in \mathcal{U}} \|f(x) + g(x)u\|$ is finite by compactness (Assumption A4). With $\ddot{V}$ bounded, Barbalat's Lemma yields $\|\nabla U(x(t))\|^2 \to 0$. Since $\mathcal{S}$ is compact and forward-invariant, the trajectory $\{x(t)\}_{t \geq 0}$ is pre-compact, so its $\omega$-limit set $\Omega \subset \mathcal{S}$ is non-empty, compact, and connected \cite{khalil2002}. Because $\|\nabla U\| \to 0$ along the trajectory, every point of $\Omega$ satisfies $\nabla U(x) + \lambda \nabla h(x) = 0$ for some $\lambda \geq 0$---the KKT conditions of $\max_\mathcal{S} U$. If, additionally, $U$ is real-analytic and satisfies the {\L}ojasiewicz gradient inequality \cite{lojasiewicz1963} on $\mathcal{S}$, then $\Omega$ is a singleton and $x(t)$ converges to a single KKT point $x^*_\mathcal{S}$, rather than merely to the KKT set.
 
 \textbf{Remark (Regularity Condition).} The condition ``$\nabla U$ and $\nabla h$ are not opposing collinear'' excludes the case $\nabla U = -c\, \nabla h$ with $c > 0$ at an interior point of the boundary trajectory. Note that $\nabla U = -c\, \nabla h$ with $c > 0$ is precisely the KKT condition for a constrained maximum---so this condition is violated \textit{only at the desired convergence point} $x^*_\mathcal{S}$ itself (where it is benign) and at boundary saddle points (which are escaped by the Rotational Circulation mechanism of Section~4.4). The regularity condition is therefore generically satisfied along trajectories.
 
@@ -1203,6 +1259,36 @@ Choi, J., Castaneda, F., Tomlin, C. J., \& Sreenath, K. (2020).
 Stellato, B., Banjac, G., Goulart, P., Bemporad, A., \& Boyd, S. (2020).
 ``OSQP: An Operator Splitting Solver for Quadratic Programs.''
 \textit{Mathematical Programming Computation}, 12(4), 637--672.
+
+\bibitem{geshkovski2024}
+Geshkovski, B., Letrouit, C., Polyanskiy, Y., \& Rigollet, P. (2024).
+``A Mathematical Perspective on Transformers.''
+\textit{arXiv preprint arXiv:2312.10794}.
+
+\bibitem{lu2020}
+Lu, Y., Ma, C., Lu, Y., Lu, J., \& Ying, L. (2020).
+``A Mean Field Analysis of Deep ResNet and Beyond: Towards Provably Optimization via Overparameterization.''
+\textit{International Conference on Machine Learning (ICML)}, 6301--6311.
+
+\bibitem{sander2022}
+Sander, M. E., Ablin, P., Blondel, M., \& Peyr{\'e}, G. (2022).
+``Sinkformers: Transformers with Doubly Stochastic Attention.''
+\textit{International Conference on Artificial Intelligence and Statistics (AISTATS)}, 3515--3530.
+
+\bibitem{ledoux2001}
+Ledoux, M. (2001).
+\textit{The Concentration of Measure Phenomenon}.
+American Mathematical Society.
+
+\bibitem{grimmett2001}
+Grimmett, G. R., \& Stirzaker, D. R. (2001).
+\textit{Probability and Random Processes}.
+Oxford University Press, 3rd edition.
+
+\bibitem{avron2011}
+Avron, H., \& Toledo, S. (2011).
+``Randomized Algorithms for Estimating the Trace of an Implicit Symmetric Positive Semi-definite Matrix.''
+\textit{Journal of the ACM}, 58(2), 1--34.
 
 \end{thebibliography}
 
