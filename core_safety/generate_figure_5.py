@@ -160,14 +160,15 @@ ax2.grid(True, alpha=0.2)
 textstr = ('Hutchinson Estimator:\n'
            f'$\\sigma_{{\\max}} = {true_sigma_max:.1f}$, '
            f'$\\|J\\|_F = {true_frobenius:.1f}$\n'
-           '\u2022 Each probe costs $O(n)$ via JVP\n'
-           '\u2022 Total: $O(m \\cdot n) = O(n)$\n'
-           f'\u2022 $m \\approx 30$: error $< {trace_rel_error[29]:.0f}\\%$')
+           '\u2022 Each probe costs $O(n)$ via JVP\u2020\n'
+           '\u2022 Total: $O(m \\cdot n) = O(n)$\u2020\n'
+           f'\u2022 $m \\approx 30$: error $< {trace_rel_error[29]:.0f}\\%$\n'
+           '\u2020 Figure uses dense $O(n^2)$; see \u00a75.10')
 props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.8, edgecolor='#8e44ad')
 ax2.text(0.98, 0.50, textstr, transform=ax2.transAxes, fontsize=9,
          verticalalignment='top', ha='right', bbox=props)
 
-fig.suptitle("Hutchinson's Trace Estimator: $O(n)$ Spectral Norm Estimation for Safety Margins",
+fig.suptitle("Hutchinson's Trace Estimator: $\\|J\\|_F$ Estimation for Safety Margins",
              fontsize=14, fontweight='bold', y=1.02)
 
 plt.tight_layout()

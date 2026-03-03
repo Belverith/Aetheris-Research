@@ -38,9 +38,9 @@ def plot_volume_concentration():
             plt.fill_between(r, pdf, alpha=0.1, color='crimson')
 
     # Add annotations
-    plt.axvline(0.9, color='gray', linestyle=':', alpha=0.5)
+    plt.axvline(0.95, color='gray', linestyle=':', alpha=0.5)
     plt.text(0.5, 4, "Deep Interior\n(Empty in High Dim)", ha='center', color='gray', fontsize=10)
-    plt.text(0.95, 20, "Active Safety Shell\n(Mass Concentrates Here)", ha='right', color='crimson', fontsize=10, fontweight='bold')
+    plt.text(0.94, 20, "Active Safety Shell\n(Mass Concentrates Here)", ha='right', color='crimson', fontsize=10, fontweight='bold')
 
     # Styling
     plt.title("The 'Hollow Ball': Concentration of Measure in High Dimensions", fontsize=14)

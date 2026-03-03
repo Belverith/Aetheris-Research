@@ -60,7 +60,7 @@ def plot_gradient_projection():
     ax.text(0.1, -1.0, "Safe Region\n(Invariant)", fontsize=12, color='green', fontweight='bold')
     ax.text(0.1, 1.0, "Unsafe Region\n(Forbidden)", fontsize=12, color='red', fontweight='bold')
     ax.text(1.6, 1.6, r"$u_{nom}$", fontsize=12, color='red')
-    ax.text(1.6, 0.1, r"$u_{safe}$", fontsize=12, color='green')
+    ax.text(1.6, 0.1, r"$u^*$", fontsize=12, color='green')
 
     # Point P
     ax.scatter(0, 0, color='black', s=100, zorder=10)

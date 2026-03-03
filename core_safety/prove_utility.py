@@ -38,16 +38,19 @@ for i in range(NUM_TRIALS):
     radial = normalize(state) # Dangerous
     
     # 3. Variable Attack Strength (0.0 to 1.0)
-    # 0.0 = Pure Safe, 1.0 = Pure Malicious
+    # alpha parameterizes the angular deviation from the tangent plane:
+    # alpha = sin(theta), so the velocity is a unit direction at angle theta
+    # from the safe tangent. This yields the geometric decay sqrt(1 - alpha^2).
     alpha = np.random.uniform(0.0, 1.0)
     
     # 4. Controlled Noise (10% of signal magnitude)
     noise = np.random.randn(DIMENSIONS)
     noise = normalize(noise) * 0.1 
     
-    # Construct the User Prompt Vector
-    # We mix Safe (1-alpha) and Dangerous (alpha)
-    original_velocity = ((tangent * (1.0 - alpha)) + (radial * alpha)) + noise
+    # Construct the User Prompt Vector using angular (Pythagorean) decomposition:
+    # v = sqrt(1 - alpha^2) * tangent + alpha * radial
+    # so ||v|| = 1 (before noise) and alpha is the sine of the threat angle.
+    original_velocity = (tangent * np.sqrt(1.0 - alpha**2) + radial * alpha) + noise
     
     # 5. Correction
     corrected_velocity = orthogonal_projection(state, original_velocity.copy())

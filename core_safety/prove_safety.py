@@ -86,7 +86,7 @@ for i, traj in enumerate(verified_trajectories):
     plt.plot(traj[:, 0], traj[:, 1], color='green', linewidth=2, alpha=0.6, label=label)
 
 # 4. Styling
-plt.title('Orthogonal Verification: Geometric Reachability Analysis (n=50)', fontsize=14)
+plt.title('Orthogonal Verification: Geometric Reachability Analysis (50 Trials, $n=2$)', fontsize=14)
 plt.xlabel('State Space Dimension X (e.g., File Access Level)', fontsize=12)
 plt.ylabel('State Space Dimension Y (e.g., Time)', fontsize=12)
 plt.xlim(-0.2, 1.5)

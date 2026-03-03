@@ -44,12 +44,12 @@
 \maketitle
 
 \begin{abstract}
-Verifying safety constraints in high-dimensional state spaces is computationally intractable for deterministic methods: grid-based Hamilton-Jacobi reachability scales as $O((1/\eta)^n)$, becoming infeasible for $n > 5$. We introduce Constrained High-Dimensional Barrier Optimization (CHDBO), a framework that replaces deterministic enumeration with probabilistic certification. Using Monte Carlo Barrier Certificates bounded by Lipschitz continuity, CHDBO reduces verification \textit{sample complexity} to $O(1)$ relative to dimension (total cost $O(N \cdot n)$), enabling safety certification for systems with $n \geq 128$. A gradient-based utility maximizer ensures asymptotic convergence to constrained optima without violating the safety envelope. To address rare catastrophic modes invisible to passive sampling, we introduce Active Adversarial Safety Verification (AASV): momentum-accelerated adversarial search with Hutchinson-bounded spectral margins and orthogonal prototype memory, yielding an empirically-calibrated adversarial risk bound with $O(n)$ per-step cost. Experiments across eleven configurations---including non-trivial drift dynamics, nonlinear chaotic attractors, multi-modal barrier landscapes, seed sensitivity analysis in $\mathbb{R}^{128}$, scalability to $n = 1024$, and direct empirical validation of asymptotic utility convergence under adverse drift---confirm that CHDBO maintains safety while preserving utility.
+Verifying safety constraints in high-dimensional state spaces is computationally intractable for deterministic methods: grid-based Hamilton-Jacobi reachability scales as $O((1/\eta)^n)$, becoming infeasible for $n > 5$. We introduce Constrained High-Dimensional Barrier Optimization (CHDBO), a framework that replaces deterministic enumeration with probabilistic certification. Using Monte Carlo Barrier Certificates bounded by Lipschitz continuity, CHDBO achieves a \textit{dimension-independent sample count} for fixed barrier geometry---$N = O(\frac{1}{\epsilon^2}\ln\frac{1}{\delta})$ samples suffice regardless of $n$, with total cost $O(N \cdot n)$---enabling safety certification for systems with $n \geq 128$. A gradient-based utility maximizer ensures asymptotic convergence to constrained optima without violating the safety envelope. To address rare catastrophic modes invisible to passive sampling, we introduce Active Adversarial Safety Verification (AASV): momentum-accelerated adversarial search with Hutchinson-bounded spectral margins and orthogonal prototype memory, yielding an empirically-calibrated adversarial risk bound with $O(n)$ per-step cost. Experiments across thirteen configurations---including non-trivial drift dynamics, nonlinear chaotic attractors, multi-modal barrier landscapes, seed sensitivity analysis in $\mathbb{R}^{128}$, scalability to $n = 1024$, direct empirical validation of asymptotic utility convergence under adverse drift, and head-to-head comparison with scenario-approach verification---confirm that CHDBO maintains safety while preserving utility.
 \end{abstract}
 
 \section{Introduction}
 
-The trajectory of artificial intelligence has shifted rapidly from reactive, token-prediction models to persistent, autonomous Agentic Control Systems (ACS). This evolution has revealed a fundamental fragility in current architectural paradigms: the phenomenon of ``Agent Drift'' \cite{scrivens2026, lecun2022}, which can expose the system to adversarial exploits and alignment failures \cite{wei2023}. A related phenomenon---distributional degradation when models are trained on their own outputs---has been documented as ``Model Collapse'' \cite{shumailov2023}. More broadly, as systems operate over extended temporal horizons, they suffer from a form of structural entropy where behavioral stability and decision quality degrade \cite{amodei2016}.
+The trajectory of artificial intelligence has shifted rapidly from reactive, token-prediction models to persistent, autonomous Agentic Control Systems (ACS). This evolution has revealed a fundamental fragility in current architectural paradigms: the phenomenon of ``Agent Drift'' \cite{scrivens2026, lecun2022}, which can expose the system to adversarial exploits and alignment failures \cite{wei2023}. A related phenomenon---distributional degradation when models are trained on their own outputs---has been documented as ``Model Collapse'' \cite{shumailov2023}. More broadly, as systems operate over extended temporal horizons, they suffer from a form of structural entropy---sometimes termed ``mutational meltdown'' in evolutionary biology \cite{lynch1995}---where behavioral stability and decision quality degrade \cite{amodei2016}.
 
 In our previous work, \textit{Mitigating Large Language Model Context Drift via Holographic Invariant Storage} \cite{scrivens2026}, we addressed the semantic component of this failure. We demonstrated that by anchoring an agent's identity in a Vector Symbolic Architecture (VSA) substrate \cite{kanerva2009}, essentially a holographic ``Read-Only'' memory, we could substantially reduce the corruption of its goals and personality. While Vector Symbolic Architectures inherently possess the high-dimensional noise tolerance required to solve this problem \cite{plate1995, gayler2003}, a distinct but parallel challenge exists in the kinematic domain: dynamical control drift.
 
@@ -87,7 +87,7 @@ The specific contributions of this paper are:
 \subsection{Related Work}
 \label{sec:related_work}
 \textbf{Control Barrier Functions and Set Invariance.}
-The theoretical foundation of safety via set invariance originates in the work of Nagumo (1942) and was formalized for control systems by Blanchini \cite{blanchini1999}. Ames et al.\ \cite{ames2019} established the modern CBF-QP framework for enforcing forward invariance via pointwise optimization, providing deterministic safety guarantees for systems with known dynamics and relative-degree-one barriers. Xiao \& Belta \cite{xiao2019} extended this to higher relative degree via Exponential CBFs. Our work builds directly on this foundation, adapting the CBF-QP to high-dimensional spaces and demonstrating that its closed-form solution scales as $O(n)$, enabling real-time operation at dimensions previously considered intractable.
+The theoretical foundation of safety via set invariance originates in the work of Nagumo \cite{nagumo1942} and was formalized for control systems by Blanchini \cite{blanchini1999}. Ames et al.\ \cite{ames2019} established the modern CBF-QP framework for enforcing forward invariance via pointwise optimization, providing deterministic safety guarantees for systems with known dynamics and relative-degree-one barriers. Xiao \& Belta \cite{xiao2019} extended this to higher relative degree via Exponential CBFs. Our work builds directly on this foundation, adapting the CBF-QP to high-dimensional spaces and demonstrating that its closed-form solution scales as $O(n)$, enabling real-time operation at dimensions previously considered intractable.
 
 \textbf{Learned and Neural Barrier Certificates.}
 A growing body of work replaces hand-designed CBFs with data-driven or neural-network-represented barrier functions. Dawson et al.\ \cite{dawson2023} provide a comprehensive survey of neural Lyapunov, barrier, and contraction methods, identifying training stability and verification of the learned certificate as open challenges. Robey et al.\ \cite{robey2020} learn CBFs from expert demonstrations, while Qin et al.\ \cite{qin2021} extend decentralized neural barrier certificates to multi-agent coordination. Our framework is complementary: CHDBO assumes $h(x)$ is given (possibly learned), and focuses on the verification and real-time enforcement layer rather than the barrier synthesis problem.
@@ -96,10 +96,13 @@ A growing body of work replaces hand-designed CBFs with data-driven or neural-ne
 The scenario approach of Campi \& Garatti \cite{campi2008} and Calafiore \& Campi \cite{calafiore2006} provides PAC-style feasibility guarantees for convex programs with random constraints, requiring $O(n)$ samples in the number of decision variables. Tempo et al.\ \cite{tempo2012} extend randomized methods to analysis and control of uncertain systems. Our Monte Carlo Barrier Certificate differs in that it applies Hoeffding bounds for \textit{verification} of a fixed barrier (checking the volume fraction of violations) rather than for \textit{design} (finding a feasible controller), yielding sample complexity independent of dimension for fixed confidence parameters---though we note that the Lipschitz constant $L_h$ and safety margin $\varepsilon_s$ may implicitly depend on $n$ in practice.
 
 \textbf{Adversarial Robustness and Safety.}
-Madry et al.\ \cite{madry2017} introduced PGD-based adversarial training for neural networks, establishing the paradigm of iterative worst-case search that the AASV module adapts for barrier verification. Goodfellow et al.\ \cite{goodfellow2014} demonstrated that small input perturbations can cause catastrophic misclassification---a phenomenon analogous to the ``Black Swan'' spikes in our barrier landscape. Our AASV Hunter extends adversarial search from the classification setting to continuous-state safety verification, incorporating momentum PGD, spectral margin estimation via Hutchinson's trace estimator \cite{hutchinson1990}, and orthogonal prototype memory for systematic coverage.
+Madry et al.\ \cite{madry2018} introduced PGD-based adversarial training for neural networks, establishing the paradigm of iterative worst-case search that the AASV module adapts for barrier verification. Goodfellow et al.\ \cite{goodfellow2014} demonstrated that small input perturbations can cause catastrophic misclassification---a phenomenon analogous to the ``Black Swan'' spikes in our barrier landscape. Virmaux \& Scaman \cite{virmaux2018} established tight Lipschitz bounds for deep neural networks, directly relevant to estimating $L_f$ for neural dynamics. Our AASV Hunter extends adversarial search from the classification setting to continuous-state safety verification, incorporating momentum PGD, spectral margin estimation via Hutchinson's trace estimator \cite{hutchinson1990}, and orthogonal prototype memory for systematic coverage.
 
 \textbf{Safe Reinforcement Learning.}
-Safe RL approaches broadly fall into constrained optimization \cite{garcia2015}, shielding \cite{alshiekh2018}, and Lagrangian methods \cite{choi2020}. Predictive safety filters \cite{wabersich2021} and reachability-based shielding \cite{fisac2019} provide formal guarantees but typically require accurate forward models and scale as $O(n^3)$ or worse per step due to trajectory optimization. Model Predictive Control with safety constraints \cite{camacho2013, mayne2005} offers robust guarantees for linear systems but faces similar scalability limitations for $n > 50$. CHDBO occupies a distinct niche: it provides probabilistic (not deterministic) safety at $O(n)$ cost, trading guarantee strength for dimensional scalability, and augments statistical certification with adversarial verification (AASV) to bound the risk of rare catastrophic modes.
+Safe RL approaches broadly fall into constrained optimization \cite{garcia2015}, shielding \cite{alshiekh2018}, and Lagrangian methods \cite{choi2020}. Berkenkamp et al.\ \cite{berkenkamp2017} combine Lyapunov stability with Gaussian processes for safe exploration, providing formal guarantees within high-confidence regions but requiring kernel assumptions and scaling cubically in the number of data points. Predictive safety filters \cite{wabersich2021} and reachability-based shielding \cite{fisac2019} provide formal guarantees but typically require accurate forward models and scale as $O(n^3)$ or worse per step due to trajectory optimization. Model Predictive Control with safety constraints \cite{camacho2013, mayne2005} offers robust guarantees for linear systems but faces similar scalability limitations for $n > 50$. CHDBO occupies a distinct niche: it provides probabilistic (not deterministic) safety at $O(n)$ cost, trading guarantee strength for dimensional scalability, and augments statistical certification with adversarial verification (AASV) to bound the risk of rare catastrophic modes.
+
+\textbf{Stochastic Safety and Supermartingale Certificates.}
+For stochastic systems, Clark \cite{clark2021} extends CBFs to It\^{o} diffusions, providing probabilistic safety certificates under Brownian noise. Santoyo et al.\ \cite{santoyo2021} introduce barrier function certificates for discrete-time stochastic systems using supermartingale arguments, yielding tighter trajectory-level safety bounds than the union bound employed in our Lemma~\ref{lem:trajectory_bridge}. Our framework currently assumes deterministic dynamics with bounded disturbances (the $\Delta_{\text{noise}}$ term) rather than stochastic diffusions; integrating supermartingale barrier theory with the CHDBO pipeline is a promising direction for future work.
 
 \textbf{Hamilton-Jacobi Reachability.}
 The gold standard for deterministic safety verification is H-J reachability analysis \cite{mitchell2005}, which computes the backward reachable set via viscosity solutions of the H-J PDE. While providing the strongest possible guarantees, its $O((1/\eta)^n)$ grid complexity limits practical application to $n \leq 5$. Recent work on decomposition-based \cite{chen2018hj} and learning-based approximations aims to extend reachability to moderate dimensions, but the fundamental exponential barrier remains for exact computation. Our probabilistic relaxation sidesteps this barrier entirely.
@@ -211,6 +214,7 @@ For clarity, we collect the assumptions underlying the CHDBO framework:
     \item[\textbf{A4.}] \textbf{Bounded Control:} The control input set $\mathcal{U}$ is compact and the CBF-QP (Equation~\ref{eq:cbfqp}) is feasible for all $x \in \partial\mathcal{S}$.
     \item[\textbf{A5.}] \textbf{Local Convexity or Star-Shapedness:} The safe set $\mathcal{S}$ is locally convex or star-shaped near $\partial\mathcal{S}$ for the boundary projection to be well-defined. For non-convex $\mathcal{S}$, tangent half-space inner-approximations are used (Section~3.3).
     \item[\textbf{A6.}] \textbf{Utility Smoothness:} $U(x)$ is continuously differentiable. For global convergence guarantees, $U$ is concave or satisfies the Polyak-{\L}ojasiewicz condition \cite{polyak1963}.
+    \item[\textbf{A7.}] \textbf{Continuous Relaxation Validity (Semantic Systems):} When applying CHDBO to discrete semantic systems (e.g., Transformer embedding spaces), the dynamics are modeled as a continuous ODE $\dot{x} = f_\theta(x,t)$ via the Neural ODE paradigm \cite{chen2018, kidger2022, geshkovski2024}. This is a modeling assumption whose fidelity to the true discrete dynamics is governed by the single-step Euler local truncation error $O(\Delta t^2 \cdot L_{\nabla f})$, which is absorbed into $\epsilon_{\text{model}}$. For architectures where the Lipschitz constant $L_f$ may be locally unbounded (e.g., softmax attention \cite{virmaux2018, kim2021}), the framework becomes conservative (the feasible set shrinks), which is the appropriate fail-safe behavior. Practitioners must validate the tightness of the discretization bound empirically for their specific architecture.
 \end{enumerate}
 
 \section{High-Dimensional Probabilistic Verification}
@@ -234,7 +238,7 @@ A critical challenge in high-dimensional probability is the concentration of mea
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{figure_concentration.png}
-    \caption{\texorpdfstring{\textbf{The `Hollow Ball': Concentration of Measure in High Dimensions ($n=128$).}}{The 'Hollow Ball': Concentration of Measure in High Dimensions (n=128).} In low dimensions ($n=3$), volume is distributed evenly. In high-dimensional semantic spaces ($n=128$), probability mass concentrates almost exclusively in a thin `Active Safety Shell' near the boundary ($r > 0.95$). This validates the CHDBO sampling strategy: verifying the boundary effectively verifies the entire volume.}
+    \caption{\texorpdfstring{\textbf{The `Hollow Ball': Concentration of Measure in High Dimensions.}}{The 'Hollow Ball': Concentration of Measure in High Dimensions.} In low dimensions ($n=3$), volume is spread broadly across all radii. As dimensionality increases through $n=10$ and $n=50$, the density progressively sharpens toward the boundary. In high-dimensional semantic spaces ($n=128$), probability mass concentrates almost exclusively in a thin `Active Safety Shell' near the boundary ($r > 0.95$, where ${\approx}\,99.9\%$ of the volume resides). This validates the CHDBO sampling strategy: verifying the boundary effectively verifies the entire volume.}
     \label{fig:concentration}
 \end{figure}
 
@@ -316,13 +320,15 @@ by a union bound. More precisely, if the trajectory visits at most $T_{\partial}
 
 \textbf{Remark.} This union bound is conservative but dimension-free: it depends only on the MCBC confidence $\epsilon$ and the trajectory length $T$, not on $n$. For typical deployments with $\epsilon = 10^{-6}$ and $T = 10^4$ steps, the trajectory-level failure probability is bounded by $10^{-2}$---well within operational safety margins. Moreover, the AASV module (Section~3.5) provides an additional layer of defense by actively attacking the predicted next state at each step, catching precisely the rare boundary configurations that the MCBC may miss.
 
+\textbf{Remark (Horizon Limitation).} The union bound becomes vacuous ($\geq 1$) when $T \geq 1/\epsilon$. For $\epsilon = 10^{-6}$, this occurs at $T = 10^6$ steps ($\approx 2.8$ hours at 10\,ms/step). For longer deployment horizons, three mitigations apply: (1)~the AASV module provides per-step adversarial verification independent of horizon length, catching violations the MCBC may miss; (2)~periodic re-certification (re-running Algorithm~\ref{alg:verify}) resets the union bound counter, yielding a failure probability of at most $T_{\text{window}} \cdot \epsilon$ per certification window; and (3)~for stochastic systems, tighter trajectory-level bounds can be obtained via supermartingale barrier certificates \cite{santoyo2021, clark2021}, which exploit the barrier's martingale structure to avoid the linear accumulation of the union bound. Integrating supermartingale arguments with the CHDBO pipeline is an important direction for future work; see Figure~\ref{fig:union_bound_horizon} for a visualization of how trajectory-level safety degrades with horizon length under the union bound versus re-certification strategies.
+
 \subsection{Active Adversarial Safety Verification (AASV)}
 While Algorithm \ref{alg:verify} certifies $P_{\text{fail}} < \epsilon$ via passive sampling, the Concentration of Measure phenomenon (Section 3.3) implies that ``spiky'' failure regions---narrow manifolds with large diameters but negligible volume---may evade uniform sampling entirely. We refer to these as ``Black Swan'' singularities: failure modes that are statistically invisible to random verification yet catastrophic if encountered along the agent's trajectory.
 
 To address this, we augment the probabilistic verification framework with the \textbf{Active Adversarial Safety Verification (AASV)} module, which transitions safety certification from passive statistical assurance to active, optimization-based threat hunting. AASV comprises three interlocking mechanisms.
 
 \subsubsection{The ``Hunter'': Momentum-Accelerated Trajectory Attack}
-Instead of relying solely on random samples $x \sim \mathcal{N}(0, I_n)$ to detect barrier violations, the Hunter employs an optimization-based sampler that \textit{actively seeks to minimize} the barrier function $h(x)$ along the agent's planned trajectory. The key insight is that while random sampling asks ``Is this random point safe?'', the Hunter asks ``Can an intelligent adversary force the system into an unsafe state?''---the gold standard in robust control \cite{goodfellow2014, madry2017}.
+Instead of relying solely on random samples $x \sim \mathcal{N}(0, I_n)$ to detect barrier violations, the Hunter employs an optimization-based sampler that \textit{actively seeks to minimize} the barrier function $h(x)$ along the agent's planned trajectory. The key insight is that while random sampling asks ``Is this random point safe?'', the Hunter asks ``Can an intelligent adversary force the system into an unsafe state?''---the gold standard in robust control \cite{goodfellow2014, madry2018}.
 
 \textbf{Surrogate Gradient Availability.}
 In semantic embedding spaces ($n \gg 100$), the system dynamics $f(x)$ often involve computationally expensive Transformer transitions where exact backpropagation for every control step is prohibitive. To resolve this, the Hunter attacks a \textbf{Local Linearized Surrogate} (LLS), $\tilde{f}(x)$, approximating the dynamics around the current trajectory via the Jacobian $J_f(x)$. Critically, the surrogate introduces bounded error, which we account for explicitly:
@@ -334,7 +340,7 @@ This error bound is incorporated directly into the robust barrier condition (Equ
 \textbf{Practical Computation of $\epsilon_{\text{model}}$.} While computing the exact supremum over a continuous ball is intractable in general, a tight \textit{upper bound} is readily computable in $O(n)$ via the Taylor remainder: for a twice-differentiable $f(x)$, the linearization error over $\mathcal{B}(x_0, r)$ satisfies $\|f(x) - \tilde{f}(x)\| \leq \frac{1}{2} L_{\nabla f} r^2$, where $L_{\nabla f}$ is the local Lipschitz constant of the Jacobian (estimable via Hessian-vector products at $O(n)$ cost \cite{baydin2018}). For black-box systems without gradient access, $\epsilon_{\text{model}}$ may be calibrated empirically by evaluating $\|f(x) - \tilde{f}(x)\|$ at $m$ random points within $\mathcal{B}(x_0, r)$ and taking the maximum observed value plus a Hoeffding correction. The framework degrades gracefully: a larger $\epsilon_{\text{model}}$ shrinks the feasible operating region but the safety guarantee remains mathematically valid. In the limiting case where $\epsilon_{\text{model}}$ exceeds $\max_x h(x)$, the feasible set becomes empty and the agent halts---the correct safe default when the surrogate cannot be trusted.
 
 \textbf{Momentum PGD with Stochastic Restarts.}
-Standard gradient descent stalls in local minima of non-convex barrier landscapes, potentially missing deeper failure modes hidden behind shallow safe basins. We employ Momentum-Accelerated Projected Gradient Descent with Stochastic Restarts \cite{madry2017, nesterov2004}:
+Standard gradient descent stalls in local minima of non-convex barrier landscapes, potentially missing deeper failure modes hidden behind shallow safe basins. We employ Momentum-Accelerated Projected Gradient Descent with Stochastic Restarts \cite{madry2018, nesterov2004}:
 \begin{align}
     v_{t+1} &= \mu v_t - \alpha \nabla_x h(\tilde{x}_{\text{plan}} + \xi) \\
     x_{\text{adv}} &= \text{Proj}_{\mathcal{S}} \left( \tilde{x}_{\text{plan}} + v_{t+1} \right)
@@ -363,6 +369,12 @@ Each restart is an independent Bernoulli trial with success probability $\geq p_
 We emphasize that this is a \textit{probabilistic} bound enhanced by active search---we do not claim deterministic global convergence in non-convex spaces.
 
 \textbf{Operationalizing $p_{\text{hit}}$.} For a failure spike with angular half-width $\theta_w$ on $S^{n-1}$, the \textit{geometric} cap area ratio $\text{Cap}(\theta_w, n) / \text{Area}(S^{n-1})$ decreases exponentially with $n$ for fixed $\theta_w$ \cite{vershynin2018}---for $n = 128$ and $\theta_w = 0.05$ radians, this ratio is astronomically small ($\ll 10^{-100}$), rendering passive random detection effectively impossible. However, the gradient field of the Gaussian barrier well extends far beyond the spike's geometric footprint, creating an attraction funnel that guides momentum PGD toward the spike center from initial conditions well outside the cap. This gradient amplification enlarges the effective convergence basin by orders of magnitude compared to the passive geometric cap. In our $\mathbb{R}^{128}$ experiments, empirical measurement yields detection rates of $p_{\text{hit}} \geq 0.05$ per restart. With $k = 60$ restarts, this gives $P(\text{miss all spikes}) \leq (1 - 0.05)^{60} < 0.046$ per spike, or equivalently $> 95\%$ detection probability per failure mode.
+
+\textbf{Proposition ($p_{\text{hit}}$ Lower Bound for Gaussian Spikes).} For the barrier $h(x) = h_0(x) - D \exp\bigl(-(1 - \cos\angle(x, s))^2 / (2\theta_w^2)\bigr)$ with a single Gaussian spike of depth $D$ and half-width $\theta_w$ centered at direction $s \in S^{n-1}$, the gradient magnitude at angular distance $\phi$ from the spike center satisfies $\|\nabla_\phi h\| \geq D \cdot \phi \cdot \theta_w^{-2} \cdot \exp(-\phi^2/(2\theta_w^2))$, which exceeds the background gradient $\|\nabla h_0\|$ for all $\phi \leq \phi_{\max} \approx \theta_w \sqrt{2 \ln(D\theta_w^{-2} / \|\nabla h_0\|)}$. The effective convergence basin of momentum PGD (with coefficient $\mu$) is therefore a cap of angular radius $\phi_{\max}$, yielding:
+\begin{equation}
+    p_{\text{hit}} \geq \frac{\text{Cap}(\phi_{\max}, n)}{\text{Area}(S^{n-1})} \approx \frac{1}{\sqrt{2\pi n}} \left(\frac{\sin \phi_{\max}}{\phi_{\max}}\right)^{n-2}
+\end{equation}
+For the experimental parameters ($D = 2, \theta_w = 0.05, \|\nabla h_0\| \approx 1, n = 128$), this gives $\phi_{\max} \approx 0.14$ rad and $p_{\text{hit}} \approx 0.003$ per restart (geometric lower bound). The empirically observed $p_{\text{hit}} \geq 0.05$ exceeds this bound because momentum PGD trajectories curve toward the spike from initial conditions outside the static convergence cap, effectively enlarging the basin via inertial overshoot.
 
 \textbf{Caveat on $p_{\text{hit}}$ Generalization.} The empirical estimate $p_{\text{hit}} \geq 0.05$ is obtained from controlled experiments with analytically defined barrier landscapes where the gradient is computable exactly (Section~5). In real deployment scenarios where the barrier landscape is unknown or the gradient is obtained through a learned surrogate, $p_{\text{hit}}$ may be substantially lower due to gradient noise, surrogate error, and unforeseen barrier topology. Practitioners should therefore treat $p_{\text{hit}}$ as a system-specific parameter requiring empirical calibration on representative barrier instances, and should increase the restart count $k$ conservatively to compensate for uncertainty in the detection rate.
 
@@ -393,7 +405,7 @@ Critically, neither method requires explicit matrix construction when automatic 
 Power iteration for $\sigma_{\max}(J_f)$ requires only the iteration $w \leftarrow J_f^T J_f v / \|J_f^T J_f v\|$, each step involving one JVP and one VJP at cost $O(n)$. After $k \approx 10\text{--}20$ iterations (sufficient for convergence when the spectral gap $\sigma_1/\sigma_2$ is bounded away from 1), this yields a \textit{tight} estimate of $\sigma_{\max}$ at total cost $O(kn) = O(n)$.
 
 \textbf{Strategy B: Hutchinson Trace Estimator (Fallback).}
-When only forward-mode AD is available (precluding the VJP step), we employ \textbf{Hutchinson's Trace Estimator} \cite{hutchinson1990}, a matrix-free randomized method. The Frobenius norm of the Jacobian---which provides a conservative upper bound on the spectral norm, $\|J_f\|_F \geq \sigma_{\max}(J_f)$---is estimated using $m$ random Rademacher probe vectors $z_i \in \{-1, +1\}^n$:
+When only forward-mode AD is available (precluding the VJP step), we employ \textbf{Hutchinson's Trace Estimator} \cite{hutchinson1990, avron2011}, a matrix-free randomized method. The Frobenius norm of the Jacobian---which provides a conservative upper bound on the spectral norm, $\|J_f\|_F \geq \sigma_{\max}(J_f)$---is estimated using $m$ random Rademacher probe vectors $z_i \in \{-1, +1\}^n$:
 \begin{equation}
     \tilde{\sigma}_{\max}(J_f) \leq \|J_f\|_F \approx \sqrt{\frac{1}{m} \sum_{i=1}^{m} z_i^T J_f^T J_f z_i}
 \end{equation}
@@ -404,14 +416,14 @@ The inequality $\|J_f\|_F \geq \sigma_{\max}$ follows immediately from $\|J_f\|_
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{figure_5.png}
-    \caption{\texorpdfstring{\textbf{Hutchinson Trace Estimator Convergence ($n=128$).}}{Hutchinson Trace Estimator Convergence (n=128).} Left: The Hutchinson estimate of $\mathrm{tr}(J^T J)$ converges to the true value as the number of Rademacher probe vectors $m$ increases. Right: Relative estimation error decreases below 10\% at $m \approx 25$ and below 8\% at $m \approx 30$. Each probe requires only an $O(n)$ Jacobian-vector product, yielding total complexity $O(m \cdot n) = O(n)$. \textbf{Implementation note:} The figure-generation code uses explicit dense-matrix Jacobian-vector products ($J \cdot z$, which are $O(n^2)$ per multiply) rather than AD-based JVPs. The $O(n)$ designation refers to the AD-based pipeline described in Section~3.5.2; see Figure~\ref{fig:computational_scaling} for a detailed scaling comparison.}
+    \caption{\texorpdfstring{\textbf{Hutchinson Trace Estimator Convergence ($n=128$).}}{Hutchinson Trace Estimator Convergence (n=128).} Left: The Hutchinson estimate of $\mathrm{tr}(J^T J)$ converges to the true value (50.9) as the number of Rademacher probe vectors $m$ increases; shaded bands show 50\% and 80\% confidence intervals over 100 trials. Right: Median relative estimation error decreases below 10\% at $m \approx 30$ and below 8\% shortly thereafter. Each probe requires only an $O(n)$ Jacobian-vector product, yielding total complexity $O(m \cdot n) = O(n)$. \textbf{Implementation note:} The figure-generation code uses explicit dense-matrix Jacobian-vector products ($J \cdot z$, which are $O(n^2)$ per multiply) rather than AD-based JVPs. The $O(n)$ designation refers to the AD-based pipeline described in Section~3.5.2; see Figure~\ref{fig:computational_scaling} for a detailed scaling comparison.}
     \label{fig:hutchinson_convergence}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{figure_7.png}
-    \caption{\texorpdfstring{\textbf{Computational Scaling: SVD vs.\ Power Iteration vs.\ Hutchinson.}}{Computational Scaling: SVD vs. Power Iteration vs. Hutchinson.} Wall-clock time for spectral norm computation across dimensions $n = 16$ to $n = 2048$ (log-log scale). Full SVD scales as $O(n^3)$ and exceeds 5 seconds at $n = 2048$. Explicit-matrix Power Iteration scales as $O(n^2)$; note that matrix-free (AD-based) power iteration achieves $O(kn) = O(n)$ scaling comparable to Hutchinson (see text). \textbf{Implementation note:} The figure-generation code uses explicit dense-matrix Jacobian-vector products ($J \cdot z$, which are $O(n^2)$ per multiply) rather than AD-based JVPs. Consequently, the measured Hutchinson and Power Iteration timings include the $O(n^2)$ matrix-multiply cost and exceed the 10ms budget at $n > 1024$. The dashed $O(n)$ lines show the theoretical scaling achievable with AD-based JVPs (Section~3.5.2), which computes $Jz$ at true $O(n)$ cost via forward-mode automatic differentiation \cite{baydin2018}; practitioners implementing AASV at production scale should use this AD pathway to remain under the real-time constraint.}
+    \caption{\texorpdfstring{\textbf{Computational Scaling: SVD vs.\ Power Iteration vs.\ Hutchinson.}}{Computational Scaling: SVD vs. Power Iteration vs. Hutchinson.} Wall-clock time (median of 7 runs) for spectral norm computation across dimensions $n = 16$ to $n = 2048$ (log-log scale). Full SVD scales as $O(n^3)$ and approaches 10 seconds at $n = 2048$, yielding a $54\times$ gap over Hutchinson at that dimension. Explicit-matrix Power Iteration scales as $O(n^2)$; note that matrix-free (AD-based) power iteration achieves $O(kn) = O(n)$ scaling comparable to Hutchinson (see text). \textbf{Implementation note:} The figure-generation code uses explicit dense-matrix Jacobian-vector products ($J \cdot z$, which are $O(n^2)$ per multiply) rather than AD-based JVPs. Consequently, the measured Hutchinson and Power Iteration timings include the $O(n^2)$ matrix-multiply cost and exceed the 10ms budget at $n > 1024$. The dashed $O(n)$ lines show the theoretical scaling achievable with AD-based JVPs (Section~3.5.2), which computes $Jz$ at true $O(n)$ cost via forward-mode automatic differentiation \cite{baydin2018}; practitioners implementing AASV at production scale should use this AD pathway to remain under the real-time constraint.}
     \label{fig:computational_scaling}
 \end{figure}
 
@@ -425,13 +437,13 @@ The inequality $\|J_f\|_F \geq \sigma_{\max}$ follows immediately from $\|J_f\|_
 \subsubsection{The ``Anti-Memory'': Holographic Orthogonal Prototypes}
 To prevent the Hunter from cycling through known safe local minima---wasting computation rediscovering the same shallow basins---we maintain a \textbf{Forbidden Map} using the Vector Symbolic Architecture (VSA) substrate established in \cite{scrivens2026, kanerva2009}.
 
-\textbf{Why Not PCA?} Standard dimensionality reduction (e.g., PCA) averages failure modes. If two Black Swan spikes exist at orthogonal directions $v_1$ and $v_2$, their principal component $v_{\text{avg}}$ may point to a \textit{safe} region, effectively erasing the memory of both dangers. This is unacceptable for safety-critical applications.
+\textbf{Why Not PCA?} Standard dimensionality reduction (e.g., PCA) averages failure modes. If three Black Swan spikes exist at orthogonal directions $v_1$, $v_2$, and $v_3$, their principal component $v_{\text{avg}}$ may point to a \textit{safe} region, effectively erasing the memory of all three dangers (Figure~\ref{fig:anti_memory}, left). This is unacceptable for safety-critical applications.
 
 \textbf{Orthogonal Prototype Retention.} We enforce an orthogonality constraint on stored failure modes:
 \begin{equation}
     \text{Store } v_{\text{new}} \text{ as distinct prototype if: } |v_{\text{new}} \cdot v_{\text{centroid}}| < \theta
 \end{equation}
-where $\theta$ is a similarity threshold. If the new failure mode is collinear with an existing centroid, it is merged; if orthogonal, it is stored as a separate prototype. This leverages the quasi-orthogonality of random vectors in high dimensions \cite{vershynin2018}, enabling the storage of up to $O(n)$ independent failure prototypes without crosstalk.
+where $\theta$ is a similarity threshold (we use $\theta = 0.3$ throughout). If the new failure mode is collinear with an existing centroid, it is merged; if orthogonal, it is stored as a separate prototype. This leverages the quasi-orthogonality of random vectors in high dimensions \cite{vershynin2018}, enabling the storage of up to $O(n)$ independent failure prototypes without crosstalk.
 
 \textbf{Repulsion Augmentation.} The Hunter's cost function is augmented to repel from stored prototypes, forcing exploration of novel failure geometries. Since the Hunter \textit{minimizes} $J(x)$ to find barrier violations, adding a positive similarity penalty increases the cost near known prototypes, steering the search toward unexplored regions:
 \begin{equation}
@@ -447,7 +459,7 @@ where $\mathcal{M}_{\text{ban}}$ is the set of stored failure prototypes and $\t
 \end{figure}
 
 \subsubsection{Pipelined Real-Time Verification}
-A critical challenge is that iterative PGD attacks introduce computational latency, potentially violating the real-time control loop constraint ($< 10$ms). Naively running the Hunter asynchronously (``Dreaming'') creates a dangerous temporal gap: the agent might act on outdated verification data, breaking the Forward Invariance guarantee of Theorem 1.
+A critical challenge is that iterative PGD attacks introduce computational latency, potentially violating the real-time control loop constraint ($< 10$ms). Naively running the Hunter asynchronously (``Dreaming'') creates a dangerous temporal gap: the agent might act on outdated verification data, breaking the Forward Invariance guarantee of Theorem~\ref{thm:topological_safety}.
 
 We resolve this via \textbf{Tube-Based Pipelined Verification with Recursive Backup}:
 
@@ -562,10 +574,12 @@ Because this formulation involves a single affine inequality constraint, the KKT
 The interaction between the Lyapunov-like utility function and the Barrier function guarantees convergence.
 
 \begin{theorem}[Safe Asymptotic Convergence]
+\label{thm:safe_convergence}
 Consider the system $\dot{x} = f(x) + g(x)u$ subject to the control law $u^*(x)$ defined above. If the sets $\mathcal{S}$ (safety) and $\mathcal{L}_c = \{ x \mid U(x) \geq c \}$ (utility level sets) are compact, and if $\nabla U(x)$ and $\nabla h(x)$ are not opposing collinear vectors at the boundary (regularity condition), then:
 \begin{enumerate}
     \item \textbf{Forward Invariance:} For all $t \geq 0$, $h(x(t)) \geq 0$ (Safety is guaranteed).
-    \item \textbf{Convergence:} $\lim_{t \to \infty} x(t) = x^*_{\mathcal{S}}$, where $x^*_{\mathcal{S}}$ is a constrained local maximum of $U(x)$ within $\mathcal{S}$. If $U(x)$ is concave (or satisfies the Polyak-{\L}ojasiewicz condition on $\mathcal{S}$), $x^*_{\mathcal{S}}$ is the unique global maximum.
+    \item \textbf{Convergence to KKT Set:} The trajectory $x(t)$ converges to the set of constrained critical points $\Omega^* = \{x \in \mathcal{S} : \nabla U(x) + \lambda \nabla h(x) = 0, \lambda \geq 0, \lambda h(x) = 0\}$. If, additionally, $U(x)$ is concave (or satisfies the Polyak-{\L}ojasiewicz condition on $\mathcal{S}$), then $\Omega^*$ contains the unique global constrained maximum $x^*_{\mathcal{S}}$.
+    \item \textbf{Singleton Convergence (under analyticity):} If $U(x)$ is real-analytic on $\mathcal{S}$ and satisfies the {\L}ojasiewicz gradient inequality \cite{lojasiewicz1963}, then $x(t)$ converges to a single KKT point $x^*_\mathcal{S} \in \Omega^*$ (not merely to the set $\Omega^*$).
 \end{enumerate}
 \end{theorem}
 \begin{proof}[Proof Sketch]
@@ -573,9 +587,13 @@ We establish each claim separately.
 
 \textbf{Forward Invariance.} This follows directly from the CBF condition: the constraint $L_f h + L_g h\, u \geq -\gamma h$ in Equation~\ref{eq:cbfqp} is feasible (by the relative-degree-one assumption and compactness of $\mathcal{U}$), and any feasible $u^*$ satisfies $\dot{h} \geq -\gamma h$, which by the Comparison Lemma implies $h(x(t)) \geq h(x(0))\, e^{-\gamma t} \geq 0$ for all $t \geq 0$ \cite{ames2019}.
 
-\textbf{Convergence.} We analyze the single-integrator case $\dot{x} = u$ (used in our simulations, Section~5) and then state the general result. Define $V(x) = -U(x)$ (to be minimized). With $u_{\text{nom}} = \nabla U(x)$, when the CBF constraint is inactive, $\dot{V} = -\|\nabla U\|^2 \leq 0$. When the constraint is active, the KKT solution $u^* = u_{\text{nom}} + \lambda^* \nabla h$ with $\lambda^* \geq 0$ gives $\dot{V} = -\|\nabla U\|^2 - \lambda^* \nabla U \cdot \nabla h$. If $\nabla U \cdot \nabla h < 0$ (utility points toward the boundary), $\dot{V}$ may be temporarily positive, violating the monotonicity required by classical LaSalle.
+\textbf{Convergence to KKT Set.} We analyze the single-integrator case $\dot{x} = u$ (used in our simulations, Section~5) and then state the general result. Define $V(x) = -U(x)$ (to be minimized). With $u_{\text{nom}} = \nabla U(x)$, when the CBF constraint is inactive, $\dot{V} = -\|\nabla U\|^2 \leq 0$. When the constraint is active, the KKT solution $u^* = u_{\text{nom}} + \lambda^* \nabla h$ with $\lambda^* \geq 0$ gives $\dot{V} = -\|\nabla U\|^2 - \lambda^* \nabla U \cdot \nabla h$. If $\nabla U \cdot \nabla h < 0$ (utility points toward the boundary), $\dot{V}$ may be temporarily positive, violating the monotonicity required by classical LaSalle.
 
-We therefore use a \textbf{Barbalat-type argument} \cite{khalil2002} instead of LaSalle's invariance principle \cite{lasalle1960}. Since $V$ is bounded below on compact $\mathcal{S}$ and the trajectory $x(t)$ remains in $\mathcal{S}$ by forward invariance, $V(x(t))$ is a bounded function of time. The integral $\int_0^T \|\nabla U(x(t))\|^2\, dt$ is bounded for all $T$ (since $V$ cannot decrease below $\inf_\mathcal{S} V$ and cannot increase above $V(x(0))$ indefinitely---the time spent with $\dot{V} > 0$ is finite because boundary-sliding with opposing $\nabla U$ and $\nabla h$ can only persist while $\lambda^* > 0$ and $h(x) = 0$, a codimension-1 set from which trajectories generically exit in finite time by the regularity assumption). To apply Barbalat's Lemma, we verify that $\ddot{V}$ is bounded: since $\dot{V} = -\nabla U^T (f + gu^*)$ and both $U$, $h$ are $C^1$ (Assumptions A2, A6), and $u^*$ is a continuous function of $x$ (as the KKT solution of the convex QP), $\dot{V}$ is continuous in $x$. On the compact set $\mathcal{S}$, $\dot{V}$ is therefore Lipschitz in $x$, implying $|\ddot{V}| \leq L_{\dot{V}} \|\dot{x}\| \leq L_{\dot{V}} \cdot M$ where $M = \sup_{x \in \mathcal{S}, u \in \mathcal{U}} \|f(x) + g(x)u\|$ is finite by compactness (Assumption A4). With $\ddot{V}$ bounded, Barbalat's Lemma yields $\|\nabla U(x(t))\|^2 \to 0$. Since $\mathcal{S}$ is compact and forward-invariant, the trajectory $\{x(t)\}_{t \geq 0}$ is pre-compact, so its $\omega$-limit set $\Omega \subset \mathcal{S}$ is non-empty, compact, and connected \cite{khalil2002}. Because $\|\nabla U\| \to 0$ along the trajectory, every point of $\Omega$ satisfies $\nabla U(x) + \lambda \nabla h(x) = 0$ for some $\lambda \geq 0$---the KKT conditions of $\max_\mathcal{S} U$. If, additionally, $U$ is real-analytic and satisfies the {\L}ojasiewicz gradient inequality \cite{lojasiewicz1963} on $\mathcal{S}$, then $\Omega$ is a singleton and $x(t)$ converges to a single KKT point $x^*_\mathcal{S}$, rather than merely to the KKT set.
+We therefore use a \textbf{Barbalat-type argument} \cite{khalil2002} instead of LaSalle's invariance principle \cite{lasalle1960}. Since $V$ is bounded below on compact $\mathcal{S}$ and the trajectory $x(t)$ remains in $\mathcal{S}$ by forward invariance, $V(x(t))$ is a bounded function of time. We now establish that $\int_0^T \|\nabla U(x(t))\|^2\, dt$ is bounded for all $T$. Decompose the time axis into \textit{interior phases} (where $h(x(t)) > 0$ and the CBF constraint is inactive) and \textit{boundary phases} (where the constraint is active). During interior phases, $\dot{V} = -\|\nabla U\|^2 \leq 0$, so $V$ is non-increasing and $\int \|\nabla U\|^2\, dt \leq V(x(0)) - \inf_\mathcal{S} V < \infty$. During boundary phases, the trajectory evolves on the codimension-1 manifold $\partial\mathcal{S}$. The projected dynamics on $\partial\mathcal{S}$ satisfy $\dot{x} = u^* = \nabla U + \lambda^* \nabla h$, where $\lambda^*$ is determined by $\dot{h} = -\gamma h = 0$. We define the \textit{projected Lyapunov function} $W(x) = V(x)|_{\partial\mathcal{S}}$, whose time derivative along the boundary is $\dot{W} = -\|\nabla U\|^2 - \lambda^* \nabla U \cdot \nabla h = -\|\text{Proj}_{\text{Null}(\nabla h)} \nabla U\|^2 \leq 0$, where the last equality uses the geometric decomposition of the projected gradient (Section~4.2). Thus $V$ is non-increasing during boundary phases as well, provided we project onto the tangent space. The total integral $\int_0^\infty \|\text{Proj}_{\text{Null}(\nabla h)} \nabla U\|^2\, dt$ is bounded by $V(x(0)) - \inf_\mathcal{S} V$.
+
+To apply Barbalat's Lemma, we verify that $\ddot{V}$ is bounded: since $\dot{V} = -\nabla U^T (f + gu^*)$ and both $U$, $h$ are $C^1$ (Assumptions A2, A6), and $u^*$ is a continuous function of $x$ (as the KKT solution of the convex QP), $\dot{V}$ is continuous in $x$. On the compact set $\mathcal{S}$, $\dot{V}$ is therefore Lipschitz in $x$, implying $|\ddot{V}| \leq L_{\dot{V}} \|\dot{x}\| \leq L_{\dot{V}} \cdot M$ where $M = \sup_{x \in \mathcal{S}, u \in \mathcal{U}} \|f(x) + g(x)u\|$ is finite by compactness (Assumption A4). With $\ddot{V}$ bounded, Barbalat's Lemma yields $\|\text{Proj}_{\text{Null}(\nabla h)} \nabla U(x(t))\|^2 \to 0$. Since $\mathcal{S}$ is compact and forward-invariant, the trajectory $\{x(t)\}_{t \geq 0}$ is pre-compact, so its $\omega$-limit set $\Omega \subset \mathcal{S}$ is non-empty, compact, and connected \cite{khalil2002}. Because the projected gradient vanishes on $\Omega$, every point of $\Omega$ satisfies the KKT conditions $\nabla U(x) + \lambda \nabla h(x) = 0$ for some $\lambda \geq 0$, $\lambda h(x) = 0$---precisely the first-order optimality conditions of $\max_\mathcal{S} U$.
+
+\textbf{Singleton Convergence.} If, additionally, $U$ is real-analytic on $\mathcal{S}$, then the constrained Lagrangian $\mathcal{L}(x, \lambda) = -U(x) + \lambda h(x)$ satisfies the {\L}ojasiewicz gradient inequality \cite{lojasiewicz1963}: there exist $C > 0$ and $\theta \in [1/2, 1)$ such that $\|\nabla_x \mathcal{L}\| \geq C |V(x) - V(x^*)|^\theta$ near any critical point $x^*$. Combined with the bounded $\ddot{V}$ established above, this implies finite arc-length of the trajectory $\int_0^\infty \|\dot{x}\|\, dt < \infty$ \cite{absil2005}, and hence convergence to a \textit{single} KKT point $x^*_\mathcal{S} \in \Omega^*$, rather than oscillation within the KKT set. We note that the real-analyticity requirement (which strengthens Assumption A6) is satisfied by polynomial and rational utility functions but not by general $C^\infty$ functions; for merely smooth $U$, convergence to the KKT \textit{set} is guaranteed but convergence to a single point requires additional structural assumptions (e.g., isolation of critical points).
 
 \textbf{Remark (Regularity Condition).} The condition ``$\nabla U$ and $\nabla h$ are not opposing collinear'' excludes the case $\nabla U = -c\, \nabla h$ with $c > 0$ at an interior point of the boundary trajectory. Note that $\nabla U = -c\, \nabla h$ with $c > 0$ is precisely the KKT condition for a constrained maximum---so this condition is violated \textit{only at the desired convergence point} $x^*_\mathcal{S}$ itself (where it is benign) and at boundary saddle points (which are escaped by the Rotational Circulation mechanism of Section~4.4). The regularity condition is therefore generically satisfied along trajectories.
 
@@ -592,7 +610,7 @@ To mitigate this, we inject a Rotational Circulation term. When the angle betwee
 Here, $\xi \in \mathbb{R}^n$ is a noise vector such that $\xi \neq \nabla h$. This operation selects a valid sliding direction tangential to the obstacle. We note that high dimensionality actually \textit{aids} this escape mechanism: at a saddle point of an $n$-dimensional function, the Hessian generically has both positive and negative eigenvalues, and a random perturbation $\xi \in \mathbb{R}^n$ will almost surely have a nonzero component along at least one descent direction, with the probability of failure vanishing exponentially in $n$ \cite{vershynin2018}. While true local minima are notoriously difficult to escape, they are exponentially rare in high-dimensional landscapes \cite{dauphin2014, choromanska2015}; saddle points dominate, and random perturbation suffices to break their symmetry. Thus, while this mechanism may not invariably yield the \textit{optimal} escape trajectory, it is sufficient to destabilize deadlocks with high probability, allowing the gradient-based steering to resume progress toward the global optimum.
 
 \section{Simulation Results and Empirical Validation}
-In this section, we present a comprehensive evaluation of the Constrained High-Dimensional Barrier Optimization (CHDBO) framework. We position our approach relative to Model Predictive Control (MPC) \cite{camacho2013} and Deep Reinforcement Learning (DRL) \cite{schulman2017}, evaluating CHDBO's safety, utility, and scalability across eleven progressively challenging configurations.
+In this section, we present a comprehensive evaluation of the Constrained High-Dimensional Barrier Optimization (CHDBO) framework. We position our approach relative to Model Predictive Control (MPC) \cite{camacho2013} and Deep Reinforcement Learning (DRL) \cite{schulman2017}, evaluating CHDBO's safety, utility, and scalability across thirteen progressively challenging configurations.
 
 Our experiments were conducted using the Monte Carlo Barrier Certificate (MCBC) engine and our utility maximization algorithm engines described in Sections 3 and 4. The simulation environment models a high-dimensional single-integrator system $\dot{x} = u$ subject to non-convex spherical obstacles in $\mathbb{R}^n$, with dimensions ranging from $n=2$ to $n=128$.
 
@@ -602,9 +620,9 @@ Our experiments were conducted using the Monte Carlo Barrier Certificate (MCBC) 
 To validate the fundamental geometric principles of our safety verification, we simulated 50 adversarial trials in a 2D state space where an agent is biased to move toward a ``Forbidden Zone'' ($x > 0.8$). This experiment visualizes the ``Golden Manifold'', the geometric boundary where the agent is invariant to microscopic fluctuations.
 
 \begin{itemize}
-    \item \textbf{Setup:} The agent possesses a ``bias'' vector forcing it rightward ($+x$), simulating a corrupted internal goal or ``mutational meltdown''.
-    \item \textbf{Standard Agent (Red):} Lacking verification, the agent follows the noise and bias directly into the forbidden zone, breaching the safety constraint $x=0.8$.
-    \item \textbf{Verified Agent (Green):} The Orthogonal Verifier intercepts the velocity vector at every time step. As the agent approaches the theoretical bound, the verifier projects the velocity onto the tangent of the safety manifold.
+    \item \textbf{Setup:} The agent possesses a ``bias'' vector forcing it rightward ($+x$), simulating a corrupted internal goal or ``mutational meltdown'' (the irreversible accumulation of deleterious drift once error rate exceeds a critical threshold \cite{lynch1995}).
+    \item \textbf{Standard Agent (Unsafe, red):} Lacking verification, the agent follows the noise and bias directly into the forbidden zone, breaching the safety constraint $x=0.8$.
+    \item \textbf{Orthogonal Verifier (Safe, green):} The verifier intercepts the velocity vector at every time step. As the agent approaches the theoretical bound, it projects the velocity onto the tangent of the safety manifold.
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -617,29 +635,29 @@ To validate the fundamental geometric principles of our safety verification, we 
 \textbf{Result:} As illustrated in Figure~\ref{fig:golden_manifold}, the simulation confirms that the Orthogonal Verifier successfully enforces the invariant set. Unlike the standard agent, which breaches the constraint under adversarial bias, the verified agent maintains a strict upper bound at $x=0.8$. This behavior empirically validates the "sliding" mechanic of the projection operator, demonstrating that the agent can maximize utility along the tangent of the safety manifold without crossing into the forbidden region.
 
 \subsection{Experiment II: High-Dimensional Survival \texorpdfstring{($\mathbb{R}^{128}$)}{(R\textasciicircum 128)}}
-To prove the scalability of CHDBO, we extended the simulation to 128 dimensions, mimicking the embedding space of a VSA-based semantic agent. The agent was subjected to a ``Gradient Attack'' \cite{madry2017} where the goal vector was placed explicitly outside the safe hypersphere ($R > 1.0$).
+To prove the scalability of CHDBO, we extended the simulation to 128 dimensions, mimicking the embedding space of a VSA-based semantic agent. The agent was subjected to a ``Gradient Attack'' \cite{madry2018} where the goal vector was placed explicitly outside the safe hypersphere ($R > 1.0$).
 
 \begin{itemize}
-    \item \textbf{Method:} We utilized the Monte Carlo Barrier Certificate (MCBC) engine to generate 100-step random walks under intense gradient pressure ($\text{Attack Strength} = 0.05$).
+    \item \textbf{Method:} We utilized the Monte Carlo Barrier Certificate (MCBC) engine to generate 50 adversarial trials of 100-step random walks under intense gradient pressure ($\text{Attack Strength} = 0.05$).
     \item \textbf{Visualization:} The resulting 128-dimensional trajectories were projected down to 2D using Principal Component Analysis (PCA) for visualization \cite{jolliffe2002}.
 \end{itemize}
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.75\textwidth]{figure_2.png}
-    \caption{\texorpdfstring{\textbf{High-Dimensional Orthogonal Verification ($D=128$) Adversarial Gradient Attack Simulation.}}{High-Dimensional Orthogonal Verification (D=128) Adversarial Gradient Attack Simulation.} Standard agents (red) immediately breach the unit hypersphere, drifting into the unsafe region. Verified agents (green) cluster tightly on the surface of the hypersphere. The PCA projection illustrates that despite the high dimensionality, the projection logic maintains the agent on the ``skin'' of the safe manifold. (Note: the 2D PCA projection is a visualization aid that captures the two directions of greatest variance; the safety guarantee is established by the barrier condition $h(x) \geq 0$ in the full $\mathbb{R}^{128}$, not by the projection.)}
+    \caption{\texorpdfstring{\textbf{High-Dimensional Orthogonal Verification ($D=128$) Adversarial Gradient Attack Simulation.}}{High-Dimensional Orthogonal Verification (D=128) Adversarial Gradient Attack Simulation.} Standard agents (red) immediately breach the safe manifold boundary, drifting into the unsafe region. Verified agents (green) cluster tightly on the surface of the hypersphere. The PCA projection illustrates that despite the high dimensionality, the projection logic maintains the agent on the ``skin'' of the safe manifold. (Note: the 2D PCA projection is a visualization aid that captures the two directions of greatest variance; the safety guarantee is established by the barrier condition $h(x) \geq 0$ in the full $\mathbb{R}^{128}$, not by the projection.)}
     \label{fig:high_dim_survival}
 \end{figure}
 
 \textbf{Result:}
 \begin{itemize}
-    \item \textbf{Standard Agents:} Immediately breached the unit hypersphere, drifting into the unsafe region. This mirrors the ``Logic Regression'' observed in unverified LLM agents \cite{scrivens2026, wei2023}.
-    \item \textbf{Verified Agents:} Clustered tightly on the surface of the hypersphere. The PCA projection illustrates that despite the high dimensionality, the projection logic maintains the agent on the ``skin'' of the safe manifold without requiring a grid-based computation.
+    \item \textbf{Standard Agent (Breach, red):} Immediately breached the unit hypersphere, drifting into the unsafe region. This mirrors the ``Logic Regression'' observed in unverified LLM agents \cite{scrivens2026, wei2023}.
+    \item \textbf{Verified Agent (Safe, green):} Clustered tightly on the surface of the hypersphere. The PCA projection illustrates that despite the high dimensionality, the projection logic maintains the agent on the ``skin'' of the safe manifold without requiring a grid-based computation.
 \end{itemize}
 
 This result validates that the ``Curse of Dimensionality'' \cite{bellman1957} is effectively mitigated for safety verification; the sample complexity remained constant ($O(1)$) despite the exponential increase in state space volume, with per-sample computational cost scaling linearly ($O(n)$).
 
-\subsection{Experiment III: Proportional Utility Response}
+\subsection{Experiment III: Proportional Safety Response}
 A critical requirement for autonomous agents is that safety measures should not destroy utility unless absolutely necessary. We stress-tested the system by varying the ``Adversarial Intensity'' ($\alpha$) of the agent's intent from 0.0 (Pure Safe) to 1.0 (Pure Malicious).
 
 \begin{itemize}
@@ -656,11 +674,11 @@ A critical requirement for autonomous agents is that safety measures should not 
 \textbf{Observation:} As illustrated in Figure \ref{fig:proportional_response}, the system's response is non-linear and proportional:
 \begin{itemize}
     \item \textbf{Low Threat ($\alpha < 0.4$):} Similarity remains near 1.0. The verifier allows the agent to act freely when the intent aligns with safety.
-    \item \textbf{High Threat ($\alpha > 0.8$):} Similarity drops precipitously as the Verifier aggressively filters the vector to prevent a breach.
-    \item \textbf{Curve:} The simulation data strictly follows the theoretical geometric decay $\sqrt{1-\alpha^2}$ characteristic of orthogonal projections in high-dimensional Euclidean space \cite{vershynin2018, blum2020}.
+    \item \textbf{High Threat ($\alpha > 0.8$):} Similarity drops precipitously as the Verifier aggressively filters the vector to prevent a breach. The horizontal reference line at $\cos\theta = 0.7$ (``Acceptable Utility Threshold'') is crossed near $\alpha \approx 0.55$, indicating that beyond a 50/50 intent split the agent's original action is substantially reshaped.
+    \item \textbf{Curve:} The simulation data closely tracks the theoretical geometric decay $\sqrt{1-\alpha^2}$ characteristic of orthogonal projections in high-dimensional Euclidean space \cite{vershynin2018, blum2020}, with a systematic offset below the noiseless curve. This offset is expected: the simulation includes a 10\% isotropic noise component (modeling sensor or embedding noise), which perturbs the velocity away from the pure radial--tangential decomposition assumed by the $\sqrt{1-\alpha^2}$ derivation. Notably, at high adversarial intensity ($\alpha \to 1$), the empirical similarity floors near $0.1$--$0.2$ rather than reaching zero; this occurs because the noise's tangential components survive projection even when the intended radial signal is fully removed. This residual utility floor is a desirable property---the system gracefully degrades rather than collapsing to zero output under maximum adversarial pressure.
 \end{itemize}
 
-This confirms that the implementation matches the theoretical prediction of Section~4.2: the orthogonal projection yields the geometric decay $\sqrt{1-\alpha^2}$, validating that the CBF-QP filter preserves the maximum utility component orthogonal to the constraint gradient. The agent does not simply stop when near danger; it maximizes the component of the utility vector that is orthogonal to the danger vector. This ensures the agent ``rides the boundary,'' achieving the maximum possible utility permitted by the safety constraints.
+This confirms that the implementation matches the theoretical prediction of Section~4.2: the orthogonal projection yields the geometric decay $\sqrt{1-\alpha^2}$ as an upper bound on achievable semantic preservation, and the CBF-QP filter preserves the maximum utility component orthogonal to the constraint gradient. The agent does not simply stop when near danger; it maximizes the component of the utility vector that is orthogonal to the danger vector. This ensures the agent ``rides the boundary,'' achieving the maximum possible utility permitted by the safety constraints.
 
 \subsection{Experiment IV: AASV Black Swan Detection --- Comprehensive Robustness Evaluation}
 To validate the necessity and efficacy of the AASV module (Section 3.5), we construct a comprehensive suite of controlled Black Swan scenarios in $\mathbb{R}^{128}$. Adversarial ``spike'' singularities are injected into the barrier landscape as narrow Gaussian wells on $S^{127}$ with angular half-width $\theta_w = 0.05$ radians. Their volume fraction is negligibly small---exponentially suppressed by the dimension $n$---rendering them statistically invisible to any feasible uniform sampling regime. We evaluate the AASV pipeline across eight progressively challenging configurations to stress-test detection under varying geometric conditions.
@@ -791,7 +809,7 @@ where indices wrap around in a ring topology. This inter-triplet coupling create
     \label{fig:lorenz_drift}
 \end{figure}
 
-\textbf{Results:} Over 50 adversarial trials (500 steps each), the CBF-QP maintains \textbf{0/50 safety violations} despite mean drift magnitude $\|f(x)\| \approx 9.5$ and strongly negative $L_f h$ (mean $\approx -16.1$). The maximum observed norm is 0.97, demonstrating that the quadratic CBF-QP handles genuinely nonlinear cubic coupling terms \textit{and} inter-triplet diffusive coupling without modification. The nearest-neighbor coupling ensures that perturbations propagate across all 42 triplets, producing spatiotemporally chaotic dynamics rather than 42 independent 3D attractors. This experiment extends the linear-drift validation of Experiment~V to a coupled chaotic nonlinear regime, confirming that the continuous-relaxation safety theory (Theorem~1) holds in practice for the most challenging class of drift dynamics tested.
+\textbf{Results:} Over 50 adversarial trials (500 steps each), the CBF-QP maintains \textbf{0/50 safety violations} despite mean drift magnitude $\|f(x)\| \approx 9.5$ and strongly negative $L_f h$ (mean $\approx -16.1$). The maximum observed norm is 0.97, demonstrating that the quadratic CBF-QP handles genuinely nonlinear cubic coupling terms \textit{and} inter-triplet diffusive coupling without modification. The nearest-neighbor coupling ensures that perturbations propagate across all 42 triplets, producing spatiotemporally chaotic dynamics rather than 42 independent 3D attractors. This experiment extends the linear-drift validation of Experiment~V to a coupled chaotic nonlinear regime, confirming that the continuous-relaxation safety theory (Theorem~\ref{thm:topological_safety}) holds in practice for the most challenging class of drift dynamics tested.
 
 \subsection{Experiment IX: Scalability Beyond \texorpdfstring{$n = 128$}{n = 128}}
 All previous experiments operate at $n = 128$. To validate that CHDBO scales practically to higher dimensions, we run the full pipeline---linear drift ($\sigma_{\max}(A) \approx 1.04$), CBF-QP enforcement with integrated Hutchinson spectral estimation ($k = 5$ probes), and adaptive safety margin $\delta(x) = \hat{\sigma}_{\max} \cdot \Delta t$---at $n \in \{128, 512, 1024\}$ with 20 trials $\times$ 300 steps per dimension. Critically, the Hutchinson spectral estimate is \textit{actively fed into the CBF-QP constraint} at each step via Equation~\ref{eq:robust_barrier}, tightening the barrier condition by $\delta(x)$ to account for drift volatility. We deliberately use $k = 5$ probes (below the $m \geq 20$ recommendation of Section~3.5.2) to demonstrate that the Frobenius overestimate produced by a small probe budget yields a \textit{conservative} spectral margin: the CBF-QP compensates for the inflated $\hat{\sigma}_{\max}$ by widening the safety tube, preserving forward invariance at the cost of slightly reduced utility---an acceptable trade-off for safety-critical operation.
@@ -819,19 +837,51 @@ A key claim of this paper is that the single-constraint CBF-QP (Equation~\ref{eq
 
 \textbf{Results:} The closed-form QP achieves a \textbf{63$\times$ to 400$\times$ speedup} over OSQP across all tested dimensions. At $n = 2048$, the closed-form solution averages 3.1\,$\mu$s per solve versus 1{,}226\,$\mu$s for OSQP. The speedup grows with dimension because the closed-form cost is dominated by two $O(n)$ dot products (checking feasibility and computing the Lagrange multiplier), while OSQP's per-iteration cost includes matrix factorization and iterative convergence steps that scale superlinearly in practice. Both solvers produce identical safety decisions on all 6{,}000 test instances. This confirms that the $O(n)$ claim in Section~4.2 is not merely theoretical but yields orders-of-magnitude practical advantage over industry-standard QP solvers, validating the real-time feasibility of CHDBO even at $n > 1{,}000$.
 
-\subsection{Experiment XI: Empirical Validation of Theorem~2 (Safe Utility Convergence)}
-To validate the convergence claim of Theorem~2 directly, we run the complete CHDBO pipeline in $\mathbb{R}^{128}$ under linear drift and measure both safety and utility convergence over extended horizons.
+\subsection{Experiment XI: Empirical Validation of Theorem~\ref{thm:safe_convergence} (Safe Utility Convergence)}
+To validate the convergence claim of Theorem~\ref{thm:safe_convergence} directly, we run the complete CHDBO pipeline in $\mathbb{R}^{128}$ under linear drift and measure both safety and utility convergence over extended horizons.
 
 \textbf{Setup.} The system employs linear drift $\dot{x} = Ax + u$ with $\sigma_{\max}(A) = 1.044$, a quadratic barrier $h(x) = 1 - \|x\|^2$ defining the unit-ball safe set, and a utility function $U(x) = -\|x - x_{\text{goal}}\|$ with $\|x_{\text{goal}}\| = 1.5$ (outside the safe set, forcing barrier activation). We run 20 independent trials of 1{,}200 steps with $\Delta t = 0.01$, $\gamma = 2.0$, and the CBF-QP control law of Equation~\ref{eq:cbfqp}. The constrained optimum is $x^*_\mathcal{S} = x_{\text{goal}} / \|x_{\text{goal}}\|$ (the boundary point nearest the goal), with optimal utility $U^* = -0.50$.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{figure_16.png}
-    \caption{\texorpdfstring{\textbf{Experiment XI: Empirical Validation of Theorem~2 ($\mathbb{R}^{128}$, Linear Drift).}}{Experiment XI: Empirical Validation of Theorem 2 (R128, Linear Drift).} (a)~Mean utility $U(x(t))$ across 20 trials converges monotonically toward the constrained optimum $U^* = -0.50$ (dashed). (b)~Barrier values $h(x(t))$ remain strictly positive ($\geq 0$) for all trials and all steps: 0/24{,}000 safety violations. (c)~Norm trajectories $\|x(t)\|$ approach the boundary from below, consistent with the constrained optimum lying on $\partial\mathcal{S}$. (d)~Distance to constrained optimum $\|x(t) - x^*_\mathcal{S}\|$ decreases monotonically, confirming convergence to a single KKT point as predicted by the {\L}ojasiewicz argument.}
+    \caption{\texorpdfstring{\textbf{Experiment XI: Empirical Validation of Theorem~\ref{thm:safe_convergence} ($\mathbb{R}^{128}$, Linear Drift).}}{Experiment XI: Empirical Validation of Safe Convergence Theorem (R128, Linear Drift).} (a)~Mean utility $U(x(t))$ across 20 trials converges monotonically toward the constrained optimum $U^* = -0.50$ (dashed). (b)~Barrier values $h(x(t))$ remain strictly positive ($\geq 0$) for all trials and all steps: 0/24{,}000 safety violations. (c)~Norm trajectories $\|x(t)\|$ approach the boundary from below, consistent with the constrained optimum lying on $\partial\mathcal{S}$. (d)~Distance to constrained optimum $\|x(t) - x^*_\mathcal{S}\|$ decreases monotonically, confirming convergence to a single KKT point as predicted by the {\L}ojasiewicz argument.}
     \label{fig:utility_convergence}
 \end{figure}
 
-\textbf{Results:} Across 20 trials $\times$ 1{,}200 steps (24{,}000 total state evaluations), the system achieves \textbf{0 safety violations}. The mean utility converges to $U = -0.554$ (vs.\ optimal $U^* = -0.50$), with the gap attributable to the linear drift consuming control authority that would otherwise drive the agent toward the optimum. The mean distance to $x^*_\mathcal{S}$ decreases monotonically to 0.194 at termination, confirming that the trajectory approaches the KKT set predicted by Theorem~2. These results empirically validate the key claims of Theorem~2: (1)~forward invariance is maintained throughout ($h(x(t)) \geq 0$), (2)~the utility function is non-decreasing in expectation, and (3)~the trajectory converges toward the constrained optimum rather than oscillating or diverging. The residual gap between achieved and optimal utility quantifies the cost of safety enforcement under adverse drift---precisely the trade-off formalized in Theorem~2's Remark on General Control-Affine Dynamics.
+\textbf{Results:} Across 20 trials $\times$ 1{,}200 steps (24{,}000 total state evaluations), the system achieves \textbf{0 safety violations}. The mean utility converges to $U = -0.554$ (vs.\ optimal $U^* = -0.50$), with the gap attributable to the linear drift consuming control authority that would otherwise drive the agent toward the optimum. The mean distance to $x^*_\mathcal{S}$ decreases monotonically to 0.194 at termination, confirming that the trajectory approaches the KKT set predicted by Theorem~\ref{thm:safe_convergence}. These results empirically validate the key claims of Theorem~\ref{thm:safe_convergence}: (1)~forward invariance is maintained throughout ($h(x(t)) \geq 0$), (2)~the utility function is non-decreasing in expectation, and (3)~the trajectory converges toward the constrained optimum rather than oscillating or diverging. The residual gap between achieved and optimal utility quantifies the cost of safety enforcement under adverse drift---precisely the trade-off formalized in Theorem~\ref{thm:safe_convergence}'s Remark on General Control-Affine Dynamics.
+
+\subsection{Experiment XII: MCBC vs.\ Scenario Approach --- Sample Complexity Comparison}
+\label{sec:exp_scenario}
+
+To benchmark our Monte Carlo Barrier Certificate against the classical Scenario Approach \cite{campi2008, calafiore2006}, we compare the sample complexity required for equivalent statistical guarantees across dimensions $n = 2$ to $n = 1024$.
+
+\textbf{Setup.} The scenario approach requires $N_{\text{scenario}} \geq \frac{2}{\epsilon}(\ln\frac{1}{\beta} + n)$ samples for a convex program with $n$ decision variables, violation probability $\epsilon$, and confidence $\beta$ \cite{campi2008}. The MCBC requires $N_{\text{MCBC}} = \frac{1}{2\epsilon^2}\ln\frac{2}{\delta}$ samples for verification of a fixed barrier with failure fraction tolerance $\epsilon$ and confidence $\delta$ (Theorem~\ref{thm:topological_safety}). We set $\epsilon = 0.01$ and $\delta = \beta = 10^{-6}$ for fair comparison, and evaluate both the sample count and total computational cost (samples $\times$ per-sample cost) across all dimensions.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figure_17.png}
+    \caption{\texorpdfstring{\textbf{Experiment XII: MCBC vs.\ Scenario Approach Sample Complexity.}}{Experiment XII: MCBC vs. Scenario Approach Sample Complexity.} (a)~Required samples: MCBC maintains a constant $N \approx 72{,}500$ regardless of dimension, while the scenario approach starts lower ($N \approx 3{,}200$ at $n=2$) but grows linearly as $O(n)$, crossing the MCBC line near $n \approx 350$ and reaching $\sim$208{,}000 at $n = 1024$ ($\approx 2.9\times$ more). (b)~Total computational cost: accounting for the $O(n)$ per-sample cost of barrier evaluation versus the $O(n^2)$ solver cost of the scenario approach, the total gap exceeds three orders of magnitude at $n = 1024$.}
+    \label{fig:scenario_comparison}
+\end{figure}
+
+\textbf{Results:} The MCBC sample count is $N_{\text{MCBC}} \approx 72{,}500$ for all dimensions tested, confirming the dimension-independent scaling of the Hoeffding bound (Equation~5). The scenario approach requires only $N_{\text{scenario}} \approx 3{,}200$ at $n = 2$---far fewer than MCBC---but grows linearly, crossing the MCBC line near $n \approx 350$ and reaching $N_{\text{scenario}} \approx 208{,}000$ at $n = 1024$ ($2.9\times$ more than MCBC). The critical distinction is that these approaches solve \textit{different problems}: the scenario approach simultaneously \textit{designs} a feasible controller while providing PAC guarantees, whereas the MCBC \textit{verifies} a pre-specified barrier. At low dimensions ($n < 350$), the scenario approach is the more sample-efficient choice; the MCBC advantage emerges precisely in the high-dimensional regime ($n > 350$) most relevant to semantic agent verification. When the barrier is given (as in our framework), the MCBC's $O(1)$ sample complexity delivers substantial computational savings at scale. When the barrier must be learned, the scenario approach's $O(n)$ cost is unavoidable---but this cost is incurred during \textit{design}, not during real-time operation.
+
+\subsection{Experiment XIII: Union Bound Horizon Analysis}
+\label{sec:exp_union_bound}
+
+To empirically validate the trajectory-level safety bridge (Lemma~\ref{lem:trajectory_bridge}) and demonstrate the limitations of the union bound at long horizons, we conduct a systematic analysis of safety probability degradation and the re-certification mitigation strategy.
+
+\textbf{Setup.} We model per-step failures as independent Bernoulli events with probability $\epsilon$, consistent with Lemma~\ref{lem:trajectory_bridge}'s union bound $P_{\text{safe}}(T) \geq 1 - T\epsilon$. For each trajectory length $T \in \{10, 50, \ldots, 50{,}000\}$, we run 500 Monte Carlo trials and compare the empirical safety rate against (1)~the union bound, (2)~the exact probability $(1-\epsilon)^T$ (valid under independence), and (3)~re-certification strategies that reset the union bound every $T_w$ steps.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figure_18.png}
+    \caption{\texorpdfstring{\textbf{Experiment XIII: Union Bound Horizon Analysis.}}{Experiment XIII: Union Bound Horizon Analysis.} (a)~Union bound degradation for various $\epsilon$: the bound $P_{\text{safe}} \geq 1 - T\epsilon$ becomes vacuous at $T = 1/\epsilon$. (b)~Re-certification strategy: resetting the union bound every $T_w$ steps yields $P_{\text{safe}} = (1 - T_w\epsilon)^{T/T_w}$, significantly extending the useful horizon. (c)~Empirical validation: the exact calculation $(1-\epsilon)^T$ (blue) tightly matches Monte Carlo results (black dots), while the union bound (red dashed) is conservative but safe. The gap quantifies the conservatism of Lemma~\ref{lem:trajectory_bridge}.}
+    \label{fig:union_bound_horizon}
+\end{figure}
+
+\textbf{Results:} The union bound is confirmed to be conservative but dimension-free: at $\epsilon = 10^{-4}$ and $T = 5{,}000$, the union bound gives $P_{\text{safe}} \geq 0.50$ while the empirical rate is $P_{\text{safe}} \approx 0.607$, matching the exact calculation $(1 - 10^{-4})^{5000} = 0.607$ to within sampling noise. The naive union bound becomes vacuous ($P_{\text{safe}} = 0$) at $T = 1/\epsilon = 10{,}000$. Re-certification mitigates this: resetting the bound every $T_w$ steps yields a non-vacuous guarantee beyond $T = 1/\epsilon$, with $P_{\text{safe}} \approx 0.37$ at $T = 10{,}000$ for $T_w = 100$ (compared to the naive bound's zero). However, the re-certification bound itself degrades exponentially as $(1 - T_w\epsilon)^{T/T_w}$, so long-horizon deployments ($T \gg 1/\epsilon$) require either very small $\epsilon$ or frequent re-certification with correspondingly small $T_w$. These results confirm that the AASV module's per-step adversarial verification complements the MCBC's trajectory-level guarantee: the union bound degrades at long horizons, but AASV provides a separate, horizon-independent safety layer.
 
 \subsection{Summary of Results}
 
@@ -860,12 +910,16 @@ IX (Scale, $n{\leq}1024$) & Safety Rate & 0/60 violations & $\dot{x}=Ax+u$ & $n{
  & Time ($n{=}1024$) & 1.5\,s/trial & & Hutch.\ $k{=}5$ in QP \\
 X (QP Benchmark) & Speedup vs.\ OSQP & 63--400$\times$ & $\dot{x}=u$ & $n{=}64$--$2048$ \\
  & Closed-form time & 1.5--3.8\,$\mu$s/solve & & 1000 solves/dim \\
-XI (Thm.~2 Valid.) & Safety Rate & 0/24{,}000 evals & $\dot{x}=Ax+u$ & CBF-QP, Thm.~2 \\
+XI (Thm.~\ref{thm:safe_convergence} Valid.) & Safety Rate & 0/24{,}000 evals & $\dot{x}=Ax+u$ & CBF-QP, Thm.~\ref{thm:safe_convergence} \\
  & Utility Convergence & $U \to -0.554$ & & 20 trials, 1200 steps \\
+XII (Scenario Comp.) & MCBC Samples & 72{,}543 ($\forall n$) & --- & Hoeffding bound \\
+ & Scenario Samples & 208{,}000 ($n{=}1024$) & --- & Campi--Garatti \\
+XIII (Union Bound) & P\textsubscript{safe} at $T{=}5$k & 0.607 (empirical) & i.i.d. & Monte Carlo \\
+ & Re-cert ($T_w{=}100$) & $\approx 0.37$ at $T{=}10$k & & Union bound reset \\
 \bottomrule
 \end{tabular}
 \begin{flushleft}
-\small \textit{Notes:} Experiments I--IV and VI--VII use single-integrator dynamics ($f(x)=0$); Experiment V introduces linear/bilinear drift; Experiment VIII introduces nonlinear chaotic drift (coupled Lorenz-type with nearest-neighbor diffusion); Experiment IX tests scalability up to $n=1024$ with integrated Hutchinson spectral margins; Experiment X benchmarks the closed-form QP against OSQP; Experiment XI validates Theorem~2's convergence guarantee. ``WTA'' = Winner-Take-All gradient decomposition. ``ECBF'' = Exponential CBF for relative degree 2. Computation times measured on a single CPU thread.
+\small \textit{Notes:} Experiments I--IV and VI--VII use single-integrator dynamics ($f(x)=0$); Experiment V introduces linear/bilinear drift; Experiment VIII introduces nonlinear chaotic drift (coupled Lorenz-type with nearest-neighbor diffusion); Experiment IX tests scalability up to $n=1024$ with integrated Hutchinson spectral margins; Experiment X benchmarks the closed-form QP against OSQP; Experiment XI validates Theorem~\ref{thm:safe_convergence}'s convergence guarantee; Experiment XII compares MCBC sample complexity against the scenario approach; Experiment XIII validates the union bound of Lemma~2 and demonstrates re-certification. ``WTA'' = Winner-Take-All gradient decomposition. ``ECBF'' = Exponential CBF for relative degree 2. Computation times measured on a single CPU thread.
 \end{flushleft}
 \label{tab:results}
 \end{table}
@@ -896,9 +950,9 @@ MPC with constraints \cite{camacho2013} & $O(n^3)$ per step & Deterministic & $n
 \subsection{Limitations}
 
 \subsubsection{Experimental Dynamics}
-We explicitly acknowledge that Experiments I--IV employ single-integrator dynamics ($\dot{x} = u$, i.e., $f(x) = 0$, $g(x) = I$). This design choice isolates the geometric mechanisms---orthogonal projection, Monte Carlo barrier certification, and AASV adversarial detection---from the confounding effects of drift dynamics, enabling clean validation of each component independently. Experiment~V introduces linear and double-integrator drift in $\mathbb{R}^{128}$; Experiment~VIII extends to a strongly nonlinear chaotic regime (coupled Lorenz-type attractor with cubic coupling terms and inter-triplet diffusive coupling in a ring topology); Experiment~IX validates scalability to $n = 1024$ with integrated Hutchinson spectral margins; and Experiment~XI empirically validates the convergence claim of Theorem~2 under linear drift. Together, these experiments confirm that the CBF-QP safety filter maintains forward invariance across linear, bilinear, and nonlinear dynamics. Remaining limitations include learned neural ODE dynamics \cite{chen2018} and systems with state-dependent control matrices $g(x) \neq I$.
+We explicitly acknowledge that Experiments I--IV employ single-integrator dynamics ($\dot{x} = u$, i.e., $f(x) = 0$, $g(x) = I$). This design choice isolates the geometric mechanisms---orthogonal projection, Monte Carlo barrier certification, and AASV adversarial detection---from the confounding effects of drift dynamics, enabling clean validation of each component independently. Experiment~V introduces linear and double-integrator drift in $\mathbb{R}^{128}$; Experiment~VIII extends to a strongly nonlinear chaotic regime (coupled Lorenz-type attractor with cubic coupling terms and inter-triplet diffusive coupling in a ring topology); Experiment~IX validates scalability to $n = 1024$ with integrated Hutchinson spectral margins; Experiment~XI empirically validates the convergence claim of Theorem~\ref{thm:safe_convergence} under linear drift; Experiment~XII benchmarks sample complexity against the scenario approach; and Experiment~XIII quantifies union bound degradation at long horizons. Together, these experiments confirm that the CBF-QP safety filter maintains forward invariance across linear, bilinear, and nonlinear dynamics. Remaining limitations include learned neural ODE dynamics \cite{chen2018} and systems with state-dependent control matrices $g(x) \neq I$.
 
-This limitation does not invalidate the theoretical results: Theorems~1 and~2 are stated and proved for the general control-affine system $\dot{x} = f(x) + g(x)u$, and the AASV module's spectral margin (Equation~\ref{eq:robust_barrier}) explicitly accounts for drift volatility via $\delta(x) = \tilde{\sigma}_{\max}(J_f) \cdot d_{\text{step}}$.
+This limitation does not invalidate the theoretical results: Theorems~\ref{thm:topological_safety} and~\ref{thm:safe_convergence} are stated and proved for the general control-affine system $\dot{x} = f(x) + g(x)u$, and the AASV module's spectral margin (Equation~\ref{eq:robust_barrier}) explicitly accounts for drift volatility via $\delta(x) = \tilde{\sigma}_{\max}(J_f) \cdot d_{\text{step}}$.
 
 \subsubsection{WTA Gradient Oracle Requirement}
 \label{sec:wta_limitation}
@@ -920,10 +974,10 @@ This paper has introduced Constrained High-Dimensional Barrier Optimization (CHD
 Our empirical results confirm five critical advancements:
 \begin{enumerate}
     \item \textbf{Safety is Probabilistically Scalable:} Through Monte Carlo barrier certificates bounded by Lipschitz continuity, we can verify the boundary consistency of $\mathbb{R}^{128}$ manifolds with high statistical confidence ($1-\delta$), bounding the volume fraction of failure modes. Lemma~\ref{lem:trajectory_bridge} formally connects this boundary-level certificate to trajectory-level safety via a union bound.
-    \item \textbf{Utility is Asymptotic:} By projecting utility gradients onto the tangent cone of the safe set, we ensure that agents do not merely survive, but thrive, converging to global optima without violating invariant constraints. Experiment~XI provides direct empirical validation of Theorem~2's convergence guarantee under linear drift in $\mathbb{R}^{128}$.
+    \item \textbf{Utility is Asymptotic:} By projecting utility gradients onto the tangent cone of the safe set, we ensure that agents do not merely survive, but thrive, converging to global optima without violating invariant constraints. Experiment~XI provides direct empirical validation of Theorem~\ref{thm:safe_convergence}'s convergence guarantee under linear drift in $\mathbb{R}^{128}$.
     \item \textbf{The Trade-off is False:} We have demonstrated that aggressive performance and rigorous safety are not mutually exclusive. An agent can operate at the very edge of the safe set $\mathcal{S}$ without ever crossing the line into failure.
     \item \textbf{Black Swans are Huntable:} The AASV module transitions safety assurance from passive statistical estimation to active, optimization-based threat hunting, with the formal detection bound of Theorem~\ref{thm:aasv_detection}. Across eight configurations in $\mathbb{R}^{128}$---including orthogonal, antipodal, clustered, and random spike geometries---standard Monte Carlo sampling detected zero injected singularities, while AASV's WTA-accelerated PGD located all spikes (up to 20/20 with $k=60$ restarts) with perfect reproducibility across 10 independent seeds (Experiment~VII). The WTA gradient decomposition is demonstrated to be essential for multi-modal landscapes (Experiment~VI), while the framework generalizes to non-trivial drift dynamics including double-integrator systems (Experiment~V), coupled chaotic nonlinear dynamics (Lorenz-type attractor with inter-triplet diffusive coupling in $\mathbb{R}^{128}$, Experiment~VIII), and scales practically to $n = 1024$ with integrated Hutchinson spectral margins (Experiment~IX). Furthermore, a head-to-head benchmark against the OSQP solver confirms that the closed-form CBF-QP achieves 63--400$\times$ speedups across $n = 64$ to $2048$ (Experiment~X), validating the $O(n)$ real-time feasibility claim.
-    \item \textbf{Convergence is Empirically Validated:} Experiment~XI demonstrates that the CBF-QP control law drives the system toward the constrained optimum under adverse linear drift, with 0/24{,}000 safety violations across 20 trials, confirming the joint safety-utility guarantee of Theorem~2.
+    \item \textbf{Convergence is Empirically Validated:} Experiment~XI demonstrates that the CBF-QP control law drives the system toward the constrained optimum under adverse linear drift, with 0/24{,}000 safety violations across 20 trials, confirming the joint safety-utility guarantee of Theorem~\ref{thm:safe_convergence}.
 \end{enumerate}
 
 We conclude that the future of robust autonomy lies in the synthesis of semantic and kinematic stability. While Holographic Invariant Storage (HIS) provides the ``invariant core'' of the agent, preserving its goals and personality against context drift, CHDBO provides the ``geometric constraint,'' ensuring its actions remain within the bounds of safety. The AASV module bridges the gap between statistical certification and adversarial robustness, providing bounded-risk guarantees even against failure modes that are invisible to passive sampling. Together, these technologies offer a framework for persistent safe operation at scale, enabling the deployment of autonomous agents capable of operating reliably over extended time horizons without regression.
@@ -1115,7 +1169,7 @@ Schulman, J., et al. (2017).
 ``Proximal Policy Optimization Algorithms.''
 \textit{arXiv preprint arXiv:1707.06347}.
 
-\bibitem{madry2017}
+\bibitem{madry2018}
 Madry, A., Makelov, A., Schmidt, L., Tsipras, D., \& Vladu, A. (2018).
 ``Towards Deep Learning Models Resistant to Adversarial Attacks.''
 \textit{International Conference on Learning Representations (ICLR)}.
@@ -1290,6 +1344,91 @@ Avron, H., \& Toledo, S. (2011).
 ``Randomized Algorithms for Estimating the Trace of an Implicit Symmetric Positive Semi-definite Matrix.''
 \textit{Journal of the ACM}, 58(2), 1--34.
 
+\bibitem{lynch1995}
+Lynch, M., \& Gabriel, W. (1995).
+``Mutation Load and the Survival of Small Populations.''
+\textit{Evolution}, 49(6), 1067--1080.
+
+\bibitem{nagumo1942}
+Nagumo, M. (1942).
+``{\"U}ber die Lage der Integralkurven gew{\"o}hnlicher Differentialgleichungen.''
+\textit{Proceedings of the Physico-Mathematical Society of Japan}, 24, 551--559.
+
+\bibitem{virmaux2018}
+Virmaux, A., \& Scaman, K. (2018).
+``Lipschitz Regularity of Deep Neural Networks: Analysis and Efficient Estimation.''
+\textit{Advances in Neural Information Processing Systems}, 31.
+
+\bibitem{kim2021}
+Kim, H., Papamakarios, G., \& Mnih, A. (2021).
+``The Lipschitz Constant of Self-Attention.''
+\textit{International Conference on Machine Learning (ICML)}, 5562--5571.
+
+\bibitem{berkenkamp2017}
+Berkenkamp, F., Turchetta, M., Schoellig, A. P., \& Krause, A. (2017).
+``Safe Model-Based Reinforcement Learning with Stability Guarantees.''
+\textit{Advances in Neural Information Processing Systems}, 30.
+
+\bibitem{clark2021}
+Clark, A. (2021).
+``Control Barrier Functions for Stochastic Systems.''
+\textit{Automatica}, 130, 109688.
+
+\bibitem{santoyo2021}
+Santoyo, C., Dutreix, M., \& Coogan, S. (2021).
+``A Barrier Function Approach to Finite-Time Stochastic System Verification and Control.''
+\textit{Automatica}, 125, 109439.
+
+\bibitem{absil2005}
+Absil, P.-A., Mahony, R., \& Andrews, B. (2005).
+``Convergence of the Iterates of Descent Methods for Analytic Cost Functions.''
+\textit{SIAM Journal on Optimization}, 16(2), 531--547.
+
 \end{thebibliography}
+
+\appendix
+
+\section{Deployment Guide: Parameter Recommendations}
+\label{app:deployment}
+
+This appendix provides practical parameter recommendations for deploying the CHDBO framework across two primary application domains: \textbf{kinematic systems} (robotic state spaces, physical actuators) and \textbf{semantic systems} (LLM embedding spaces, representation manifolds).
+
+\subsection{MCBC Verification Parameters}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Parameter} & \textbf{Kinematic} & \textbf{Semantic} \\ \midrule
+Confidence $\delta$ & $10^{-6}$ & $10^{-4}$ to $10^{-6}$ \\
+Failure tolerance $\epsilon$ & $10^{-3}$ & $10^{-2}$ to $10^{-3}$ \\
+Sample count $N$ & $\frac{1}{2\epsilon^2}\ln\frac{2}{\delta} \approx 7 \times 10^6$ & $\approx 7 \times 10^4$ \\
+Re-certification interval $T_w$ & $10^3$ steps & $10^2$ to $10^3$ steps \\
+\bottomrule
+\end{tabular}
+\caption{Recommended MCBC parameters.}
+\end{table}
+
+\textbf{Kinematic recommendation.} For safety-critical physical systems ($n \leq 128$), use strict tolerances ($\epsilon = 10^{-3}$, $\delta = 10^{-6}$) and re-certify every $10^3$ control steps to keep the trajectory-level failure probability below $10^{-2}$ per re-certification window (Experiment~XIII).
+
+\textbf{Semantic recommendation.} For LLM embedding spaces ($n = 768$ to $4096$), the barrier function $h(x)$ typically has lower Lipschitz constant (embeddings vary smoothly under small perturbations), permitting looser tolerances. However, validate Assumption A7 (continuous relaxation validity) empirically for the specific embedding architecture before deployment.
+
+\subsection{CBF-QP Parameters}
+
+\begin{itemize}
+    \item \textbf{Class-$\mathcal{K}$ gain $\gamma$:} Start with $\gamma = 1.0$ for conservative behavior; increase to $\gamma \in [2, 5]$ for more aggressive boundary tracking. Higher $\gamma$ permits operation closer to $\partial\mathcal{S}$ at the cost of increased control effort (see Experiment~III for the proportional response characterization).
+    \item \textbf{Robust margin $\delta(x)$:} For kinematic systems with known dynamics, use exact $\sigma_{\max}(J_f)$ if available; otherwise, use the Hutchinson estimate with $m = 30$ probes (Experiment~IX confirms $<8\%$ error at $m = 30$). For semantic systems, set $\delta(x) = \hat{\sigma}_H(x) \cdot d_{\text{step}}$ and multiply by a safety factor $\kappa \geq 1.5$ to account for Frobenius-to-spectral-norm gap.
+    \item \textbf{Discretization step $\Delta t$:} Ensure $\Delta t < \varepsilon_s / (M \cdot L_h)$ where $M = \sup \|f(x) + g(x)u\|$ is the maximum velocity and $L_h$ is the barrier Lipschitz constant. This guarantees the Euler discretization error remains within the safety margin.
+\end{itemize}
+
+\subsection{AASV Parameters}
+
+\begin{itemize}
+    \item \textbf{Restart count $k$:} Use $k \geq \lceil \ln(1/\delta_{\text{adv}}) / \ln(1/(1-p_{\text{hit}})) \rceil$ where $\delta_{\text{adv}}$ is the desired adversarial miss probability (Theorem~\ref{thm:aasv_detection}). For exploratory surveys, $k = 20$--$60$ suffices (Experiment~IV); for high-assurance applications, $k \geq 100$.
+    \item \textbf{PGD step size $\eta$:} Set $\eta = 0.05 / L_h$ for initial exploration; decay by $0.99\times$ per step for convergence to sharp features. Momentum coefficient $\beta = 0.9$ is robust across all tested configurations.
+    \item \textbf{Detection threshold $\tau_h$:} Calibrate to the barrier resolution; $\tau_h = -0.3$ captures significant violations without triggering on numerical noise. For high-precision applications, tighten to $\tau_h = -0.1$.
+    \item \textbf{Orthogonal prototype threshold $\theta_{\text{sim}}$:} Use $\theta_{\text{sim}} = 0.3$ (signed cosine similarity) for adequate angular resolution; tighten to $0.15$ if angular separation between failure modes is small ($< 15^\circ$).
+\end{itemize}
 
 \end{document}

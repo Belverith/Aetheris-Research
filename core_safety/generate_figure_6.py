@@ -91,8 +91,9 @@ for point in all_failures:
         prototypes.append(p_hat.copy())
         continue
     
-    # Check similarity against all existing prototypes
-    max_sim = max(np.abs(np.dot(p_hat, proto)) for proto in prototypes)
+    # Check similarity against all existing prototypes (SIGNED — matching generate_figure_4.py)
+    # Signed similarity means d and -d are treated as distinct directions on S^{n-1}
+    max_sim = max(np.dot(p_hat, proto) for proto in prototypes)
     
     if max_sim < SIMILARITY_THRESHOLD:
         prototypes.append(p_hat.copy())

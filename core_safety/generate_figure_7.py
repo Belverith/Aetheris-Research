@@ -158,7 +158,7 @@ ax.loglog(dims_svd, svd_times, 'o-', color='#e74c3c', lw=2.5, markersize=8,
 ax.loglog(dims_power, power_times, 's-', color='#e67e22', lw=2.5, markersize=8,
           label=f'Power Iteration — $O(n^2)$', zorder=5)
 ax.loglog(dims_hutch, hutch_times, 'D-', color='#2ecc71', lw=2.5, markersize=8,
-          label=f'Hutchinson ($m={HUTCHINSON_M}$) — $O(n)$', zorder=5)
+          label=f'Hutchinson ($m={HUTCHINSON_M}$) — $O(n)$ with AD$^\\dagger$', zorder=5)
 
 # Mark the real-time constraint
 ax.axhline(y=0.010, color='#3498db', linestyle=':', lw=2, alpha=0.8,
@@ -191,12 +191,12 @@ ax.grid(True, which='both', alpha=0.15)
 
 # Key result annotation - left aligned just under the legend
 textstr = ('Key Result:\n'
-           '• Hutchinson maintains $O(n)$ scaling\n'
+           '• Hutchinson maintains $O(n)$ scaling with AD\n'
            '• Stays under 10ms real-time budget\n'
            '  even at $n = 2048$ (with AD-based JVPs)\n'
            '• SVD becomes intractable at $n > 512$\n'
-           '• Plot shows explicit-matrix timings;\n'
-           '  AD reduces Hutchinson/Power by $O(n)$')
+           '$\\dagger$ Plot shows explicit-matrix timings;\n'
+           '  AD-based JVPs reduce cost by factor $n$')
 props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.95, edgecolor='#2ecc71', lw=1.5)
 ax.text(0.02, 0.72, textstr, transform=ax.transAxes, fontsize=9,
         verticalalignment='top', ha='left', bbox=props, zorder=10)

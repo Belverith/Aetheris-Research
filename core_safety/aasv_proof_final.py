@@ -117,10 +117,14 @@ def barrier_gradient(x: np.ndarray, use_surrogate: bool = False) -> np.ndarray:
 # HUTCHINSON'S TRACE ESTIMATOR (O(n) Spectral Norm)
 # ============================================================================
 
-def hutchinson_spectral_norm(jacobian_mv_product, n: int, m: int = HUTCHINSON_SAMPLES,
+def hutchinson_frobenius_norm(jacobian_mv_product, n: int, m: int = HUTCHINSON_SAMPLES,
                               jacobian_tmv_product=None) -> float:
     """
-    Estimate spectral norm of Jacobian using Hutchinson's trace estimator.
+    Estimate Frobenius norm of Jacobian using Hutchinson's trace estimator.
+    
+    Computes √(tr(J^T J)) = ||J||_F, which is a conservative upper bound
+    on the spectral norm: ||J||_F >= σ_max(J). This is the appropriate
+    quantity for safety certification (see paper Section 3.5.2, Strategy B).
     
     Args:
         jacobian_mv_product: Function that computes J @ v (forward JVP)
@@ -130,7 +134,7 @@ def hutchinson_spectral_norm(jacobian_mv_product, n: int, m: int = HUTCHINSON_SA
             If None, assumes J is symmetric and reuses jacobian_mv_product.
         
     Returns:
-        Estimated spectral norm σ_max(J)
+        Estimated ||J||_F (upper bound on σ_max(J))
         
     Complexity: O(m * n) - truly linear in dimension!
     """
@@ -155,16 +159,16 @@ def hutchinson_spectral_norm(jacobian_mv_product, n: int, m: int = HUTCHINSON_SA
     mean_estimate = np.mean(estimates)
     return np.sqrt(max(0, mean_estimate))
 
+# Precompute the demo singular values once (avoids reseeding the global RNG on every call)
+_DEMO_SINGULAR_VALUES = np.exp(-np.arange(DIMENSIONS) / 20.0) * 2.0
+
 def dummy_jacobian_mv(v: np.ndarray) -> np.ndarray:
     """
     Simulated Jacobian-vector product for demonstration.
     In practice, this comes from autodiff of f(x).
     """
-    # Simulate a dynamics Jacobian with moderate spectral norm
-    np.random.seed(123)
-    # Create a matrix implicitly
-    singular_values = np.exp(-np.arange(DIMENSIONS) / 20.0) * 2.0  # Decaying spectrum
-    return singular_values * v  # Diagonal approximation for demo
+    # Diagonal approximation with decaying spectrum
+    return _DEMO_SINGULAR_VALUES[:len(v)] * v
 
 # ============================================================================
 # ORTHOGONAL PROTOTYPE MEMORY (Anti-Memory)
@@ -340,7 +344,7 @@ def demonstrate_complexity():
         
         start = time.time()
         for _ in range(10):  # Average over 10 runs
-            hutchinson_spectral_norm(jacobian_mv, n, m=20)
+            hutchinson_frobenius_norm(jacobian_mv, n, m=20)
         elapsed = (time.time() - start) / 10
         hutchinson_times.append(elapsed)
         print(f"    n={n:4d}: Hutchinson time = {elapsed*1000:.2f} ms")

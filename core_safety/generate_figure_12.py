@@ -164,7 +164,7 @@ all_norms = []
 all_h_vals = []
 all_Lfh = []
 all_drift_mags = []
-n_violations = 0
+n_violations = 0  # per-trial violation count
 
 for trial in range(N_TRIALS):
     # Start inside safe set
@@ -175,6 +175,7 @@ for trial in range(N_TRIALS):
     h_vals = [barrier(x)]
     lfh_vals = []
     drift_mags = []
+    trial_violated = False
     
     for step in range(N_STEPS):
         # Compute drift
@@ -201,8 +202,10 @@ for trial in range(N_TRIALS):
         h_vals.append(h_val)
         
         if h_val < -1e-6:
-            n_violations += 1
+            trial_violated = True
     
+    if trial_violated:
+        n_violations += 1
     all_norms.append(norms)
     all_h_vals.append(h_vals)
     all_Lfh.extend(lfh_vals)
