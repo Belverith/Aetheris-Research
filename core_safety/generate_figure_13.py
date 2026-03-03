@@ -60,9 +60,9 @@ def barrier_grad(x):
 
 def hutchinson_spectral_estimate(A, x, k, rng):
     """
-    Estimate ||J||_F via Hutchinson trace estimator on J^T J,
-    then return ||J||_F as upper bound on σ_max.
-    Here J = A (constant), so we compute trace(A^T A).
+    Estimate ||A||_F via Hutchinson trace estimator on A^T A,
+    then return sqrt(trace(A^T A)) = ||A||_F.
+    This is an upper bound on σ_max(A) since ||A||_F >= σ_max(A).
     """
     traces = []
     for _ in range(k):
@@ -212,12 +212,12 @@ for patch, color in zip(bp_sigma['boxes'], colors_sigma):
 for i, n in enumerate(DIMS):
     st = results[n]['sigma_true']
     ax.hlines(st, i + 0.6, i + 1.4, colors='red', linestyles='--', lw=2,
-              label='$\\sigma_{true}$' if i == 0 else '_nolegend_')
-    ax.text(i + 1.0, st + 0.3, f'$\\sigma_{{true}}$={st:.2f}',
+              label='$\\sigma_{\\max}(A)$' if i == 0 else '_nolegend_')
+    ax.text(i + 1.0, st + 0.3, f'$\\sigma_{{\\max}}$={st:.2f}',
             fontsize=10, color='red', ha='center', fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='red', alpha=0.8))
 ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel('Hutchinson $\\hat{\\sigma}$ (mean over trial)', fontsize=12)
+ax.set_ylabel(r'Hutchinson $\|A\|_F$ ($\geq \sigma_{\max}$)', fontsize=12)
 ax.set_title('(b) Spectral Estimates vs Dimension', fontsize=13, fontweight='bold')
 ax.legend(fontsize=10)
 ax.grid(True, alpha=0.2)
@@ -256,7 +256,7 @@ fig.suptitle(
 )
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_13.png', dpi=300, bbox_inches='tight',
+plt.savefig('figure_13.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print(f"\n[OK] Saved figure_13.png — Total violations: {n_total_violations}")

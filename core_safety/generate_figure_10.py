@@ -424,10 +424,10 @@ ax.text(0.03, 0.03,
         bbox=dict(boxstyle='round,pad=0.3', fc='#fff3e0', alpha=0.95))
 
 fig.suptitle('Experiment VI: Gradient Structure & Multi-Modal Discovery '
-             '($\\mathbb{R}^{128}$, $\\theta_w = 0.05$ rad)',
+             f'($\\mathbb{{R}}^{{128}}$, $\\theta_w = 0.05$ rad, PGD noise $= {NOISE_SCALE}$)',
              fontsize=14, fontweight='bold', y=1.01)
 plt.tight_layout()
-plt.savefig('core_safety/figure_10.png', dpi=300, bbox_inches='tight',
+plt.savefig('figure_10.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("[OK] Saved figure_10.png")

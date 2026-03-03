@@ -375,8 +375,8 @@ def draw_spikes(ax, dirs, b1, b2, label=True):
 def finish_ax(ax):
     ax.set_xlim(-1.4, 1.4); ax.set_ylim(-1.4, 1.4)
     ax.set_aspect('equal'); ax.grid(True, alpha=0.15)
-    ax.set_xlabel('Projection $u_1$', fontsize=10)
-    ax.set_ylabel('Projection $u_2$', fontsize=10)
+    ax.set_xlabel('PC 1', fontsize=10)
+    ax.set_ylabel('PC 2', fontsize=10)
 
 def plot_mc(ax, pts, viol, dirs, b1, b2):
     ax.set_facecolor(BG_COL); draw_bnd(ax)
@@ -593,7 +593,7 @@ save_pair(
     plot_hunter, (trajs_a, dets_a, spike_a, mem_a, b1_a, b2_a, 20),
     '(b) AASV Hunter \u2014 3 Orthogonal Spikes\n$k{=}20$ restarts',
     'Experiment IV: MC Baseline vs AASV ($\\mathbb{R}^{128}$)',
-    'core_safety/figure_4_ab.png')
+    'figure_4_ab.png')
 
 # --- Part 2: Panels (c) + (d) ---
 save_pair(
@@ -602,7 +602,7 @@ save_pair(
     plot_hunter, (trajs_c, dets_c, spike_c, mem_c, b1_c, b2_c, 40),
     '(d) 10 Orthogonal Spikes (Stress Test)\n$k{=}40$ restarts',
     'Experiment IV: Antipodal + High-Density Stress Test ($\\mathbb{R}^{128}$)',
-    'core_safety/figure_4_cd.png')
+    'figure_4_cd.png')
 
 # --- Part 3: Panels (e) + (f) ---
 save_pair(
@@ -611,7 +611,7 @@ save_pair(
     plot_hunter, (trajs_e, dets_e, spike_e, mem_e, b1_e, b2_e, 20),
     '(f) $15\u00b0$ Angular Cluster + 1 Isolated\n$k{=}20$ restarts',
     'Experiment IV: Angular Proximity Tests ($\\mathbb{R}^{128}$)',
-    'core_safety/figure_4_ef.png')
+    'figure_4_ef.png')
 
 # --- Part 4: Panels (g) + (h) ---
 save_pair(
@@ -620,6 +620,6 @@ save_pair(
     plot_hunter, (trajs_h, dets_h, spike_h, mem_h, b1_h, b2_h, 60),
     '(h) 20 Random Directions on $S^{127}$\n$k{=}60$ restarts',
     'Experiment IV: Resolution Limit + Full-Scale ($\\mathbb{R}^{128}$)',
-    'core_safety/figure_4_gh.png')
+    'figure_4_gh.png')
 
 print("\n\u2713 Saved all 4 figure_4 parts")

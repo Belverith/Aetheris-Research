@@ -158,7 +158,7 @@ ax.loglog(dims_svd, svd_times, 'o-', color='#e74c3c', lw=2.5, markersize=8,
 ax.loglog(dims_power, power_times, 's-', color='#e67e22', lw=2.5, markersize=8,
           label=f'Power Iteration — $O(n^2)$', zorder=5)
 ax.loglog(dims_hutch, hutch_times, 'D-', color='#2ecc71', lw=2.5, markersize=8,
-          label=f'Hutchinson ($m={HUTCHINSON_M}$) — $O(n)$ with AD$^\\dagger$', zorder=5)
+          label=rf'Hutchinson ($m={HUTCHINSON_M}$) — $O(n^2)$ explicit$^\dagger$, $O(n)$ with AD', zorder=5)
 
 # Mark the real-time constraint
 ax.axhline(y=0.010, color='#3498db', linestyle=':', lw=2, alpha=0.8,
@@ -202,7 +202,7 @@ ax.text(0.02, 0.72, textstr, transform=ax.transAxes, fontsize=9,
         verticalalignment='top', ha='left', bbox=props, zorder=10)
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_7.png', dpi=300, bbox_inches='tight',
+plt.savefig('figure_7.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("\n[OK] Saved figure_7.png")
