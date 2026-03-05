@@ -1,18 +1,43 @@
 """
-Figure 17: Scenario Approach vs. MCBC — Sample Complexity Comparison (Experiment XII)
+Figure 17: Scenario Approach vs. MCBC — Sample Complexity Comparison (Experiment IX)
 =====================================================================================
 Compares the sample count required by:
-  (a) Scenario approach (Campi & Garatti 2008): N = O(n/ε) for convex design
-  (b) MCBC (this paper): N = O(1/(ε² ln(1/δ))) for fixed L_h, ε_s verification
+  (a) Scenario approach (Campi & Garatti 2008): N = O(n/ε) for convex DESIGN
+  (b) MCBC (this paper): N = O(1/(ε² ln(1/δ))) for fixed-barrier VERIFICATION
 
-Shows log-log scaling plots demonstrating that MCBC sample count is independent
-of dimension n (for fixed barrier geometry), while scenario approach grows linearly.
+IMPORTANT DISTINCTION (explicitly stated):
+  - Scenario approach DESIGNS + VERIFIES a safe controller simultaneously.
+    Its sample complexity depends on the number of decision variables (n).
+  - MCBC only VERIFIES a GIVEN barrier h(x). It does not design h(x).
+    Its sample complexity does not include the cost of barrier design.
 
-Output: figure_17.png
+This comparison is valid when the barrier is given (e.g., hand-designed or
+pre-trained). For fair comparison, both are shown at the VERIFICATION task.
+
+Output: figure_17a–b.png (individual panels) + figure_17.png (combined legacy)
+  (a) Sample complexity vs dimension
+  (b) Total computational cost scaling
+
+This is Experiment IX in the paper.
+
+Usage:
+  python generate_figure_17.py              # all panels + combined
+  python generate_figure_17.py -a           # panel (a) only
+  python generate_figure_17.py -b           # panel (b) only
 """
 
+import argparse
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+
+parser = argparse.ArgumentParser(description='Generate Experiment IX MCBC vs Scenario figures.')
+parser.add_argument('-a', action='store_true', help='Generate panel (a): Sample complexity')
+parser.add_argument('-b', action='store_true', help='Generate panel (b): Total cost scaling')
+args = parser.parse_args()
+_any = args.a or args.b
+_gen_a = args.a or not _any
+_gen_b = args.b or not _any
 
 np.random.seed(42)
 
@@ -111,98 +136,121 @@ for n in DIMENSIONS:
     print(f"    n={n:>5}: safety_rate={safety_rate:.6f}, violations={violations}/{N_samples}")
 
 # ============================================================================
-# PLOTTING
+# PLOTTING — HELPERS
 # ============================================================================
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-
 BG_COLOR = '#f8f9fa'
-
-# --- Panel 1: Sample count vs. dimension ---
-ax1.set_facecolor(BG_COLOR)
-
-ax1.loglog(n_arr, N_scenario, 'o-', color='#e74c3c', lw=2.5, markersize=8,
-           label='Scenario Approach\n$N = \\frac{2}{\\epsilon}(\\ln\\frac{1}{\\beta} + n)$',
-           zorder=5)
-ax1.loglog(n_arr, N_mcbc, 's-', color='#2ecc71', lw=2.5, markersize=8,
-           label='MCBC (this paper)\n$N = \\frac{1}{2\\epsilon^2}\\ln\\frac{2}{\\delta}$',
-           zorder=5)
-
-# Theoretical reference lines
+script_dir = os.path.dirname(os.path.abspath(__file__))
 n_theory = np.logspace(np.log10(2), np.log10(1024), 200)
-ax1.loglog(n_theory, 
-           (2.0 / EPSILON_SCENARIO) * (np.log(1.0 / BETA_SCENARIO) + n_theory),
-           '--', color='#e74c3c', alpha=0.3, lw=1.5, label='_nolegend_')
 
-ax1.axhline(y=N_mcbc_base, color='#2ecc71', linestyle='--', alpha=0.4, lw=1.5)
 
-# Annotations — show the advantage at n=1024 where MCBC genuinely wins
-idx_1024 = DIMENSIONS.index(1024)
-ratio_1024 = N_scenario[idx_1024] / N_mcbc_base
-ax1.annotate(f'{ratio_1024:.1f}× fewer\nsamples (MCBC)',
-             xy=(1024, N_mcbc_base), xytext=(100, N_mcbc_base * 0.12),
-             fontsize=10, fontweight='bold', color='#27ae60',
-             arrowprops=dict(arrowstyle='->', color='#27ae60', lw=1.5))
+def _setup_ax(ax):
+    ax.set_facecolor(BG_COLOR)
+    return ax
 
-# Mark the crossover point
-ax1.axvline(x=349, color='gray', linestyle=':', alpha=0.5, lw=1.5)
-ax1.text(349, N_mcbc_base * 3.5, 'Crossover\n$n \\approx 350$',
-         fontsize=9, ha='center', color='gray')
 
-ax1.set_xlabel('State Space Dimension ($n$)', fontsize=12)
-ax1.set_ylabel('Required Samples ($N$)', fontsize=12)
-ax1.set_title('Sample Complexity: Scenario Approach vs. MCBC\n'
-              f'($\\epsilon = {EPSILON_SCENARIO}$, '
-              f'$\\delta = \\beta = 10^{{-6}}$)',
-              fontsize=13, fontweight='bold')
-ax1.legend(fontsize=10, loc='upper left', framealpha=0.9)
-ax1.grid(True, which='both', alpha=0.15)
+def _plot_a(ax):
+    """(a) Sample count vs. dimension."""
+    ax.loglog(n_arr, N_scenario, 'o-', color='#e74c3c', lw=2.5, markersize=8,
+              label='Scenario Approach\n$N = \\frac{2}{\\epsilon}(\\ln\\frac{1}{\\beta} + n)$',
+              zorder=5)
+    ax.loglog(n_arr, N_mcbc, 's-', color='#2ecc71', lw=2.5, markersize=8,
+              label='MCBC (this paper)\n$N = \\frac{1}{2\\epsilon^2}\\ln\\frac{2}{\\delta}$',
+              zorder=5)
+    ax.loglog(n_theory,
+              (2.0 / EPSILON_SCENARIO) * (np.log(1.0 / BETA_SCENARIO) + n_theory),
+              '--', color='#e74c3c', alpha=0.3, lw=1.5, label='_nolegend_')
+    ax.axhline(y=N_mcbc_base, color='#2ecc71', linestyle='--', alpha=0.4, lw=1.5)
+    idx_1024 = DIMENSIONS.index(1024)
+    ratio_1024 = N_scenario[idx_1024] / N_mcbc_base
+    ax.annotate(f'{ratio_1024:.1f}× fewer\nsamples (MCBC)',
+                xy=(1024, N_mcbc_base), xytext=(100, N_mcbc_base * 0.12),
+                fontsize=10, fontweight='bold', color='#27ae60',
+                arrowprops=dict(arrowstyle='->', color='#27ae60', lw=1.5))
+    ax.axvline(x=349, color='gray', linestyle=':', alpha=0.5, lw=1.5)
+    ax.text(349, ax.get_ylim()[0] * 2.0, 'Crossover\n$n \\approx 350$',
+            fontsize=9, ha='center', va='bottom', color='gray')
+    ax.set_xlabel('State Space Dimension ($n$)', fontsize=12)
+    ax.set_ylabel('Required Samples ($N$)', fontsize=12)
+    ax.set_title('Sample Complexity: Verification Comparison\n'
+                 f'($\\epsilon = {EPSILON_SCENARIO}$, '
+                 f'$\\delta = \\beta = 10^{{-6}}$)\n'
+                 'Scenario → design; MCBC → verify given barrier',
+                 fontsize=12, fontweight='bold')
+    ax.legend(fontsize=10, loc='upper left', framealpha=0.9)
+    ax.grid(True, which='both', alpha=0.15)
 
-# --- Panel 2: Total computational cost ---
-ax2.set_facecolor(BG_COLOR)
 
-ax2.loglog(n_arr, cost_scenario, 'o-', color='#e74c3c', lw=2.5, markersize=8,
-           label='Scenario: $N \\times O(n^2)$', zorder=5)
-ax2.loglog(n_arr, cost_mcbc, 's-', color='#2ecc71', lw=2.5, markersize=8,
-           label='MCBC: $N \\times O(n)$', zorder=5)
+def _plot_b(ax):
+    """(b) Total computational cost."""
+    ax.loglog(n_arr, cost_scenario, 'o-', color='#e74c3c', lw=2.5, markersize=8,
+              label='Scenario: $N \\times O(n^2)$', zorder=5)
+    ax.loglog(n_arr, cost_mcbc, 's-', color='#2ecc71', lw=2.5, markersize=8,
+              label='MCBC: $N \\times O(n)$', zorder=5)
+    ax.loglog(n_theory, cost_scenario[0] * (n_theory / n_arr[0])**3,
+              '--', color='#e74c3c', alpha=0.2, lw=1.5, label='$O(n^3)$ ref')
+    ax.loglog(n_theory, cost_mcbc[0] * (n_theory / n_arr[0])**1,
+              '--', color='#2ecc71', alpha=0.2, lw=1.5, label='$O(n)$ ref')
+    ax.axhline(y=1e8, color='#3498db', linestyle=':', lw=2, alpha=0.6,
+               label='Approx. 1-second budget')
+    ax.set_xlabel('State Space Dimension ($n$)', fontsize=12)
+    ax.set_ylabel('Total Computational Cost (FLOPs proxy)', fontsize=12)
+    ax.set_title('Total Verification Cost Scaling\n(samples × per-sample cost)',
+                 fontsize=13, fontweight='bold')
+    ax.legend(fontsize=9, loc='upper left', framealpha=0.9)
+    ax.grid(True, which='both', alpha=0.15)
+    textstr = ('VERIFICATION-ONLY comparison:\n'
+               '• MCBC sample count is $O(1)$ in $n$\n'
+               '  (for fixed $L_h$ and $\\varepsilon_s$)\n'
+               '• Scenario approach is $O(n)$ in $n$\n'
+               '• Total cost: MCBC $O(n)$ vs. Scenario $O(n^3)$\n'
+               '\n'
+               'Important caveat:\n'
+               '• MCBC verifies a GIVEN $h(x)$\n'
+               '• Scenario designs $h(x)$ simultaneously\n'
+               '• Barrier design cost not included in MCBC')
+    props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.95,
+                 edgecolor='#2ecc71', lw=1.5)
+    ax.text(0.02, 0.75, textstr, transform=ax.transAxes, fontsize=9,
+            verticalalignment='top', ha='left', bbox=props, zorder=10)
 
-# Reference slopes
-ax2.loglog(n_theory, cost_scenario[0] * (n_theory / n_arr[0])**3,
-           '--', color='#e74c3c', alpha=0.2, lw=1.5, label='$O(n^3)$ ref')
-ax2.loglog(n_theory, cost_mcbc[0] * (n_theory / n_arr[0])**1,
-           '--', color='#2ecc71', alpha=0.2, lw=1.5, label='$O(n)$ ref')
 
-# Mark the real-time feasibility boundary
-ax2.axhline(y=1e8, color='#3498db', linestyle=':', lw=2, alpha=0.6,
-            label='Approx. 1-second budget')
+# ============================================================================
+# INDIVIDUAL PANEL FIGURES (figure_17a–b.png)
+# ============================================================================
+panel_map = {'a': _plot_a, 'b': _plot_b}
+panel_flags = {'a': _gen_a, 'b': _gen_b}
 
-ax2.set_xlabel('State Space Dimension ($n$)', fontsize=12)
-ax2.set_ylabel('Total Computational Cost (FLOPs proxy)', fontsize=12)
-ax2.set_title('Total Verification Cost Scaling\n(samples × per-sample cost)',
-              fontsize=13, fontweight='bold')
-ax2.legend(fontsize=9, loc='upper left', framealpha=0.9)
-ax2.grid(True, which='both', alpha=0.15)
+for key in 'ab':
+    if not panel_flags[key]:
+        continue
+    fig_i, ax_i = plt.subplots(figsize=(8, 6))
+    _setup_ax(ax_i)
+    panel_map[key](ax_i)
+    fig_i.tight_layout()
+    fname = os.path.join(script_dir, f'figure_17{key}.png')
+    fig_i.savefig(fname, dpi=300, bbox_inches='tight',
+                  facecolor='white', edgecolor='none')
+    plt.close(fig_i)
+    print(f'[OK] Saved figure_17{key}.png')
 
-# Key result box
-textstr = ('Key Advantage:\n'
-           '• MCBC sample count is $O(1)$ in $n$\n'
-           '  (for fixed $L_h$ and $\\varepsilon_s$)\n'
-           '• Scenario approach is $O(n)$ in $n$\n'
-           '• Total cost: MCBC $O(n)$ vs. Scenario $O(n^3)$\n'
-           '• Trade-off: MCBC verifies a fixed $h(x)$;\n'
-           '  Scenario designs $h(x)$ simultaneously')
-props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.95,
-             edgecolor='#2ecc71', lw=1.5)
-ax2.text(0.53, 0.27, textstr, transform=ax2.transAxes, fontsize=9,
-         verticalalignment='top', ha='left', bbox=props, zorder=10)
+# ============================================================================
+# COMBINED LEGACY FIGURE (only when no flags specified)
+# ============================================================================
+if not _any:
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    _setup_ax(ax1)
+    _setup_ax(ax2)
+    _plot_a(ax1)
+    _plot_b(ax2)
+    fig.suptitle('Experiment IX: MCBC (Verification) vs. Scenario Approach (Design+Verify)\n'
+                 'Note: Different tasks — MCBC verifies a given barrier; Scenario designs one',
+                 fontsize=14, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    fig.savefig(os.path.join(script_dir, 'figure_17.png'), dpi=300, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    plt.close(fig)
+    print('[OK] Saved figure_17.png (combined)')
 
-fig.suptitle('Experiment XII: MCBC vs. Scenario Approach — Verification Complexity',
-             fontsize=14, fontweight='bold', y=1.02)
-
-plt.tight_layout()
-plt.savefig('core_safety/figure_17.png', dpi=300, bbox_inches='tight',
-            facecolor='white', edgecolor='none')
-plt.close()
-print("\n[OK] Saved figure_17.png")
 print(f"\nConclusion: MCBC requires {N_mcbc_base:.0f} samples regardless of dimension,")
 print(f"while scenario approach requires {N_scenario[-1]:,.0f} samples at n={DIMENSIONS[-1]}.")
 print(f"MCBC advantage: {N_scenario[-1] / N_mcbc_base:.0f}× fewer samples at n={DIMENSIONS[-1]}.")

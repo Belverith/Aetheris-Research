@@ -14,6 +14,7 @@ import matplotlib.gridspec as gridspec
 from matplotlib.patches import FancyArrowPatch
 from matplotlib.collections import LineCollection
 from matplotlib.colors import Normalize
+import os
 
 np.random.seed(42)
 
@@ -198,7 +199,7 @@ sm.set_array([])
 cbar = plt.colorbar(sm, ax=ax2, shrink=0.6, pad=0.02)
 cbar.set_label('Local Curvature $\\tilde{\\sigma}_{\\max}(J_f)$', fontsize=10)
 
-ax2.set_title('Adaptive Tube-Based Margin (AASV Buffer)\n($\\delta(x) = \\tilde{\\sigma}_{\\max}(J_f) \\cdot d_{step} + \\epsilon_{model} + \\Delta_{noise}$)',
+ax2.set_title('Adaptive Tube-Based Margin (AASV Buffer)\n($\\rho(x) = \\tilde{\\sigma}_{\\max}(J_f) \\cdot d_{step} + \\epsilon_{model} + \\Delta_{noise}$)',
               fontsize=12, fontweight='bold', pad=10, color='#27ae60')
 ax2.set_xlabel('$x_1$', fontsize=12)
 ax2.set_ylabel('$x_2$', fontsize=12)
@@ -213,14 +214,14 @@ fig.suptitle('Tube-Based Adaptive Safety Margins: Avoiding the Frozen Robot Prob
 
 # Formula as compact caption below the figure (keeps plot area clean)
 fig.text(0.5, -0.02,
-         r'Robust Barrier Condition: $h(x) \geq \delta(x) + \epsilon_{model} + \Delta_{noise}$'
+         r'Robust Barrier Condition: $h(x) \geq \rho(x) + \epsilon_{model} + \Delta_{noise}$'
          '   •   Thick where dynamics are volatile   •   Thin where dynamics are smooth'
          '   •   Agent retains mobility everywhere',
          ha='center', fontsize=11.5, style='italic',
          bbox=dict(boxstyle='round,pad=0.4', facecolor='#eaf6ff', alpha=0.8, edgecolor=ADAPTIVE_COLOR, lw=1))
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_8.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_8.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("\n[OK] Saved figure_8.png")

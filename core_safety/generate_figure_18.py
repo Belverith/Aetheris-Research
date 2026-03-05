@@ -12,6 +12,7 @@ Shows:
 Output: figure_18.png
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -179,7 +180,7 @@ fig.suptitle('Experiment XIII: Union Bound Horizon Analysis '
              fontsize=14, fontweight='bold', y=1.02)
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_18.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_18.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("\n[OK] Saved figure_18.png")

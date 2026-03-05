@@ -29,7 +29,7 @@ $$\epsilon_{model} \ge \sup_{x \in \mathcal{B}(x_0, r)} \|f(x) - \tilde{f}(x)\|$
 
 **The Robust Barrier Condition:** Instead of checking $h(x) \ge 0$, we enforce:
 
-$$h(x) \ge \delta(x) + \epsilon_{model} + \Delta_{noise}$$
+$$h(x) \ge \rho(x) + \epsilon_{model} + \Delta_{noise}$$
 
 This ensures that even if the surrogate underestimates danger, the buffer absorbs the discrepancy.
 
@@ -81,10 +81,10 @@ This requires only **matrix-vector products** $J_f \cdot z$, computable in $O(n)
 
 #### Formulation: Tube-Based Safety
 
-$$h(x) \ge \delta(x) + \epsilon_{model} + \Delta_{noise}$$
+$$h(x) \ge \rho(x) + \epsilon_{model} + \Delta_{noise}$$
 
 Where:
-- $\delta(x) = \tilde{\sigma}_{max}(J_f(x)) \cdot d_{step}$ — local volatility margin
+- $\rho(x) = \tilde{\sigma}_{max}(J_f(x)) \cdot d_{step}$ — local volatility margin
 - $\epsilon_{model}$ — surrogate divergence bound (Section 1.A)
 - $\Delta_{noise}$ — physical disturbance bound (known from hardware specs)
 

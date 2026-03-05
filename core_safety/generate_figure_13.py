@@ -13,18 +13,36 @@ Setup:
   - 20 trials × 300 steps per dimension
   - Hutchinson probes: k = 5 (fixed across dimensions)
 
-Output: figure_13.png — 2×2 panel:
+Output: figure_13a–d.png (individual panels) + figure_13.png (combined legacy)
   (a) Wall-clock time vs dimension
   (b) Hutchinson σ̂_max estimates vs dimension
   (c) Min barrier h(x) vs dimension (safety check)
   (d) Number of CBF interventions vs dimension
 
-This is Experiment IX in the paper.
+This is Experiment VI in the paper.
+
+Usage:
+  python generate_figure_13.py              # all panels + combined
+  python generate_figure_13.py -a           # panel (a) only
+  python generate_figure_13.py -b -d        # panels (b) and (d) only
 """
 
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+
+parser = argparse.ArgumentParser(description='Generate Experiment VI scalability figures.')
+parser.add_argument('-a', action='store_true', help='Generate panel (a): Wall-clock time')
+parser.add_argument('-b', action='store_true', help='Generate panel (b): Spectral estimates')
+parser.add_argument('-c', action='store_true', help='Generate panel (c): Safety margin')
+parser.add_argument('-d', action='store_true', help='Generate panel (d): CBF activation')
+args = parser.parse_args()
+_any = args.a or args.b or args.c or args.d
+_gen_a = args.a or not _any
+_gen_b = args.b or not _any
+_gen_c = args.c or not _any
+_gen_d = args.d or not _any
 
 np.random.seed(42)
 
@@ -87,7 +105,7 @@ def cbf_qp_step(x, u_nom, A, gamma=GAMMA, spectral_margin=0.0):
     Lg_h = grad_h
 
     lhs_nom = np.dot(Lg_h, u_nom)
-    # Tighten RHS by the spectral safety tube δ(x) = σ̂_max · d_step
+    # Tighten RHS by the spectral safety tube ρ(x) = σ̂_max · d_step
     rhs = -gamma * (h_val - spectral_margin) - Lf_h
 
     if lhs_nom >= rhs:
@@ -104,7 +122,7 @@ def cbf_qp_step(x, u_nom, A, gamma=GAMMA, spectral_margin=0.0):
 # ============================================================================
 # RUN SCALABILITY EXPERIMENT
 # ============================================================================
-print("[*] Running Experiment IX: Scalability at n=128, 512, 1024...")
+print("[*] Running Experiment VI: Scalability at n=128, 512, 1024...")
 
 results = {}
 
@@ -134,7 +152,7 @@ for n in DIMS:
             sig_hat = hutchinson_spectral_estimate(A, x, K_PROBES, rng)
             sigma_hats.append(sig_hat)
 
-            # Compute adaptive spectral margin: δ(x) = σ̂_max · d_step
+            # Compute adaptive spectral margin: ρ(x) = σ̂_max · d_step
             spectral_margin = sig_hat * DT
 
             # Nominal control toward goal outside safe set
@@ -175,88 +193,123 @@ for n in DIMS:
     print(f"    Mean CBF active: {np.mean(trial_interventions):.0f}/{N_STEPS}")
 
 # ============================================================================
-# PLOTTING
+# PLOTTING — HELPERS
 # ============================================================================
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 BG = '#f8f9fa'
-for ax in axes.flat:
-    ax.set_facecolor(BG)
-
 dim_labels = [str(n) for n in DIMS]
-
-# (a) Wall-clock time vs dimension
-ax = axes[0, 0]
-means = [np.mean(results[n]['times']) for n in DIMS]
-stds = [np.std(results[n]['times']) for n in DIMS]
-ax.bar(dim_labels, means, yerr=stds, capsize=5, color='#3498db',
-       edgecolor='white', alpha=0.8)
-# Reference O(n) scaling from n=128
-ref = means[0]
-ax.plot(range(len(DIMS)), [ref * (n / 128) for n in DIMS],
-        'r--', lw=2, marker='o', label='$O(n)$ reference')
-ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel('Wall-clock Time (s)', fontsize=12)
-ax.set_title('(a) Computation Time vs Dimension', fontsize=13, fontweight='bold')
-ax.legend(fontsize=10)
-ax.grid(True, alpha=0.2, axis='y')
-
-# (b) Hutchinson estimates - box plots
-ax = axes[0, 1]
-data_sigma = [results[n]['sigma_hat'] for n in DIMS]
-colors_sigma = ['#3498db', '#e67e22', '#2ecc71']
-bp_sigma = ax.boxplot(data_sigma, tick_labels=dim_labels, patch_artist=True,
-                      boxprops=dict(alpha=0.6))
-for patch, color in zip(bp_sigma['boxes'], colors_sigma):
-    patch.set_facecolor(color)
-# Add per-dimension true sigma reference lines with clear labels
-for i, n in enumerate(DIMS):
-    st = results[n]['sigma_true']
-    ax.hlines(st, i + 0.6, i + 1.4, colors='red', linestyles='--', lw=2,
-              label='$\\sigma_{\\max}(A)$' if i == 0 else '_nolegend_')
-    ax.text(i + 1.0, st + 0.3, f'$\\sigma_{{\\max}}$={st:.2f}',
-            fontsize=10, color='red', ha='center', fontweight='bold',
-            bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='red', alpha=0.8))
-ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel(r'Hutchinson $\|A\|_F$ ($\geq \sigma_{\max}$)', fontsize=12)
-ax.set_title('(b) Spectral Estimates vs Dimension', fontsize=13, fontweight='bold')
-ax.legend(fontsize=10)
-ax.grid(True, alpha=0.2)
-
-# (c) Min barrier value
-ax = axes[1, 0]
-data_h = [results[n]['min_h'] for n in DIMS]
-bp = ax.boxplot(data_h, tick_labels=dim_labels, patch_artist=True,
-                boxprops=dict(facecolor='#2ecc71', alpha=0.6))
-ax.axhline(0.0, color='red', ls='--', lw=2, label='$h=0$ (unsafe)')
-ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel('Min $h(x)$ across trial', fontsize=12) 
-ax.set_title('(c) Safety Margin vs Dimension', fontsize=13, fontweight='bold')
-ax.legend(fontsize=10)
-ax.grid(True, alpha=0.2, axis='y')
-
-# (d) CBF interventions
-ax = axes[1, 1]
-data_int = [results[n]['interventions'] for n in DIMS]
-bp2 = ax.boxplot(data_int, tick_labels=dim_labels, patch_artist=True,
-                 boxprops=dict(facecolor='#e67e22', alpha=0.6))
-ax.set_xlabel('Dimension $n$', fontsize=12)
-ax.set_ylabel(f'CBF Interventions (of {N_STEPS})', fontsize=12)
-ax.set_title('(d) CBF Activation Frequency', fontsize=13, fontweight='bold')
-ax.grid(True, alpha=0.2, axis='y')
 
 n_total_violations = sum(
     sum(1 for h in results[n]['min_h'] if h < -1e-6) for n in DIMS
 )
 
-fig.suptitle(
-    'Experiment IX: CHDBO Scalability at $n = 128, 512, 1024$\n'
-    f'{N_TRIALS} trials × {N_STEPS} steps per dim — '
-    f'Total violations: {n_total_violations}/{N_TRIALS * len(DIMS)}',
-    fontsize=15, fontweight='bold', y=1.02
-)
 
-plt.tight_layout()
-plt.savefig('figure_13.png', dpi=300, bbox_inches='tight',
-            facecolor='white', edgecolor='none')
-plt.close()
-print(f"\n[OK] Saved figure_13.png — Total violations: {n_total_violations}")
+def _setup_ax(ax):
+    ax.set_facecolor(BG)
+    return ax
+
+
+def _plot_a(ax):
+    """(a) Wall-clock time vs dimension."""
+    means = [np.mean(results[n]['times']) for n in DIMS]
+    stds = [np.std(results[n]['times']) for n in DIMS]
+    ax.bar(dim_labels, means, yerr=stds, capsize=5, color='#3498db',
+           edgecolor='white', alpha=0.8)
+    ref = means[0]
+    ax.plot(range(len(DIMS)), [ref * (n / 128) for n in DIMS],
+            'r--', lw=2, marker='o', label='$O(n)$ reference')
+    ax.set_xlabel('Dimension $n$', fontsize=12)
+    ax.set_ylabel('Wall-clock Time (s)', fontsize=12)
+    ax.set_title('(a) Computation Time vs Dimension', fontsize=13, fontweight='bold')
+    ax.legend(fontsize=10)
+    ax.grid(True, alpha=0.2, axis='y')
+
+
+def _plot_b(ax):
+    """(b) Hutchinson spectral estimates."""
+    data_sigma = [results[n]['sigma_hat'] for n in DIMS]
+    colors_sigma = ['#3498db', '#e67e22', '#2ecc71']
+    bp_sigma = ax.boxplot(data_sigma, tick_labels=dim_labels, patch_artist=True,
+                          boxprops=dict(alpha=0.6))
+    for patch, color in zip(bp_sigma['boxes'], colors_sigma):
+        patch.set_facecolor(color)
+    for i, n in enumerate(DIMS):
+        st = results[n]['sigma_true']
+        ax.hlines(st, i + 0.6, i + 1.4, colors='red', linestyles='--', lw=2,
+                  label='$\\sigma_{\\max}(A)$' if i == 0 else '_nolegend_')
+        ax.text(i + 1.0, st + 0.3, f'$\\sigma_{{\\max}}$={st:.2f}',
+                fontsize=10, color='red', ha='center', fontweight='bold',
+                bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='red', alpha=0.8))
+    ax.set_xlabel('Dimension $n$', fontsize=12)
+    ax.set_ylabel(r'Hutchinson $\|A\|_F$ ($\geq \sigma_{\max}$)', fontsize=12)
+    ax.set_title('(b) Spectral Estimates vs Dimension', fontsize=13, fontweight='bold')
+    ax.legend(fontsize=10)
+    ax.grid(True, alpha=0.2)
+
+
+def _plot_c(ax):
+    """(c) Min barrier value (safety margin)."""
+    data_h = [results[n]['min_h'] for n in DIMS]
+    ax.boxplot(data_h, tick_labels=dim_labels, patch_artist=True,
+               boxprops=dict(facecolor='#2ecc71', alpha=0.6))
+    ax.axhline(0.0, color='red', ls='--', lw=2, label='$h=0$ (unsafe)')
+    ax.set_xlabel('Dimension $n$', fontsize=12)
+    ax.set_ylabel('Min $h(x)$ across trial', fontsize=12)
+    ax.set_title('(c) Safety Margin vs Dimension', fontsize=13, fontweight='bold')
+    ax.legend(fontsize=10)
+    ax.grid(True, alpha=0.2, axis='y')
+
+
+def _plot_d(ax):
+    """(d) CBF activation frequency."""
+    data_int = [results[n]['interventions'] for n in DIMS]
+    ax.boxplot(data_int, tick_labels=dim_labels, patch_artist=True,
+               boxprops=dict(facecolor='#e67e22', alpha=0.6))
+    ax.set_xlabel('Dimension $n$', fontsize=12)
+    ax.set_ylabel(f'CBF Interventions (of {N_STEPS})', fontsize=12)
+    ax.set_title('(d) CBF Activation Frequency', fontsize=13, fontweight='bold')
+    ax.grid(True, alpha=0.2, axis='y')
+
+
+# ============================================================================
+# INDIVIDUAL PANEL FIGURES (figure_13a–d.png)
+# ============================================================================
+panel_map = {'a': _plot_a, 'b': _plot_b, 'c': _plot_c, 'd': _plot_d}
+panel_flags = {'a': _gen_a, 'b': _gen_b, 'c': _gen_c, 'd': _gen_d}
+
+for key in 'abcd':
+    if not panel_flags[key]:
+        continue
+    fig_i, ax_i = plt.subplots(figsize=(7, 5))
+    _setup_ax(ax_i)
+    panel_map[key](ax_i)
+    fig_i.tight_layout()
+    fname = f'figure_13{key}.png'
+    fig_i.savefig(fname, dpi=300, bbox_inches='tight',
+                  facecolor='white', edgecolor='none')
+    plt.close(fig_i)
+    print(f'[OK] Saved {fname}')
+
+# ============================================================================
+# COMBINED LEGACY FIGURE (only when no flags specified)
+# ============================================================================
+if not _any:
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    for ax in axes.flat:
+        _setup_ax(ax)
+    _plot_a(axes[0, 0])
+    _plot_b(axes[0, 1])
+    _plot_c(axes[1, 0])
+    _plot_d(axes[1, 1])
+    fig.suptitle(
+        'Experiment VI: CHDBO Scalability at $n = 128, 512, 1024$\n'
+        f'{N_TRIALS} trials × {N_STEPS} steps per dim — '
+        f'Total violations: {n_total_violations}/{N_TRIALS * len(DIMS)}',
+        fontsize=15, fontweight='bold', y=1.02
+    )
+    plt.tight_layout()
+    fig.savefig('figure_13.png', dpi=300, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    plt.close(fig)
+    print(f'[OK] Saved figure_13.png (combined)')
+
+print(f'\n[OK] Total violations: {n_total_violations}/{N_TRIALS * len(DIMS)}')

@@ -22,6 +22,7 @@ Output: figure_16.png — 2×2 panel:
 This validates Theorem 2 (Safe Asymptotic Convergence) from Section 4.3.
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -238,7 +239,7 @@ fig.suptitle(
 )
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_16.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_16.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print(f"\n[OK] Saved figure_16.png")

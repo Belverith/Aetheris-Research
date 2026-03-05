@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import FancyArrowPatch, Circle, Arc
 from matplotlib.colors import LinearSegmentedColormap
+import os
 
 np.random.seed(42)
 
@@ -55,7 +56,7 @@ cluster_3 = gen_cluster(spike_dir_3, N_FAILURE_POINTS // 2)
 all_failures = np.vstack([cluster_1, cluster_2, cluster_3])
 
 # ============================================================================
-# PCA ANALYSIS — averages directions, loses information
+# CENTROID AVERAGING — averages directions, loses information
 # ============================================================================
 from numpy.linalg import svd
 
@@ -64,21 +65,21 @@ mean_failure = all_failures.mean(axis=0)
 centered = all_failures - mean_failure
 
 U, S, Vt = svd(centered, full_matrices=False)
-pc1 = Vt[0]  # First principal component
-pc2 = Vt[1]  # Second principal component
+pc1 = Vt[0]  # First principal component (kept for reference)
+pc2 = Vt[1]  # Second principal component (kept for reference)
 
-# The PCA "summary" direction
-pca_average = mean_failure / np.linalg.norm(mean_failure)
+# The centroid "summary" direction (note: this is centroid averaging, NOT PCA)
+centroid_average = mean_failure / np.linalg.norm(mean_failure)
 
-# Check: does PCA average align with any actual spike?
-cos_pca_1 = np.abs(np.dot(pca_average, spike_dir_1))
-cos_pca_2 = np.abs(np.dot(pca_average, spike_dir_2))
-cos_pca_3 = np.abs(np.dot(pca_average, spike_dir_3))
-print(f"\nPCA centroid alignment:")
-print(f"  cos(pca, spike1) = {cos_pca_1:.4f}")
-print(f"  cos(pca, spike2) = {cos_pca_2:.4f}")
-print(f"  cos(pca, spike3) = {cos_pca_3:.4f}")
-print(f"  --> PCA points to a SAFE region (low alignment with all spikes)")
+# Check: does centroid average align with any actual spike?
+cos_centroid_1 = np.abs(np.dot(centroid_average, spike_dir_1))
+cos_centroid_2 = np.abs(np.dot(centroid_average, spike_dir_2))
+cos_centroid_3 = np.abs(np.dot(centroid_average, spike_dir_3))
+print(f"\nCentroid alignment:")
+print(f"  cos(centroid, spike1) = {cos_centroid_1:.4f}")
+print(f"  cos(centroid, spike2) = {cos_centroid_2:.4f}")
+print(f"  cos(centroid, spike3) = {cos_centroid_3:.4f}")
+print(f"  --> Centroid points to a SAFE region (low alignment with all spikes)")
 
 # ============================================================================
 # ORTHOGONAL PROTOTYPE STORAGE — preserves all directions
@@ -115,7 +116,7 @@ def project_2d(x):
 cluster_1_2d = np.array([project_2d(p) for p in cluster_1])
 cluster_2_2d = np.array([project_2d(p) for p in cluster_2])
 cluster_3_2d = np.array([project_2d(p) for p in cluster_3])
-pca_avg_2d = project_2d(pca_average)
+pca_avg_2d = project_2d(centroid_average)
 proto_2d = [project_2d(p) for p in prototypes]
 spike_1_2d = project_2d(spike_dir_1)
 spike_2_2d = project_2d(spike_dir_2)
@@ -132,7 +133,7 @@ CLUSTER_COLORS = ['#e74c3c', '#3498db', '#2ecc71']
 PCA_COLOR = '#8e44ad'
 PROTO_COLOR = '#e67e22'
 
-# --- Panel 1: PCA Averaging (BAD) ---
+# --- Panel 1: Centroid Averaging (BAD) ---
 ax1 = fig.add_subplot(gs[0])
 ax1.set_facecolor(BG_COLOR)
 
@@ -158,31 +159,31 @@ ax1.annotate('', xy=pca_avg_2d*1.1, xytext=(0, 0),
             arrowprops=dict(arrowstyle='->', color=PCA_COLOR, lw=3))
 ax1.plot(*pca_avg_2d*1.1, 's', color=PCA_COLOR, markersize=12, zorder=10)
 
-# Label PCA
-ax1.annotate('PCA Centroid\n(SAFE REGION!)', xy=pca_avg_2d*1.1, fontsize=13,
+# Label centroid
+ax1.annotate('Centroid Average\n(SAFE REGION!)', xy=pca_avg_2d*1.1, fontsize=13,
             fontweight='bold', color=PCA_COLOR, ha='center',
             xytext=(pca_avg_2d[0]*1.1 + 0.15, pca_avg_2d[1]*1.1 + 0.2))
 
-# Danger zone marker at PCA location — show it's actually safe
+# Danger zone marker at centroid location — show it's actually safe
 safe_circle = plt.Circle(pca_avg_2d*0.95, 0.08, fill=True, 
                          facecolor='#2ecc71', edgecolor='#2ecc71',
                          alpha=0.3, linestyle='-', lw=2)
 ax1.add_patch(safe_circle)
 
-# Big X over PCA
+# Big X over centroid
 ax1.plot(pca_avg_2d[0]*1.1, pca_avg_2d[1]*1.1, 'X', color='red', 
          markersize=20, markeredgewidth=3, zorder=11)
 
-ax1.set_title('PCA Dimensionality Reduction\n(Averages orthogonal failures → points to SAFE zone)',
+ax1.set_title('Centroid Averaging\n(Averages orthogonal failures \u2192 points to SAFE zone)',
               fontsize=14, fontweight='bold', pad=10, color='#c0392b')
 ax1.set_xlabel('$e_1$ (spike 1 direction)', fontsize=13)
 ax1.set_ylabel('$e_2$ (spike 2 direction)', fontsize=13)
 
 # Failure box
-textstr = ('PCA Failure Mode:\n'
-           f'cos(centroid, spike1) = {cos_pca_1:.3f}\n'
-           f'cos(centroid, spike2) = {cos_pca_2:.3f}\n'
-           f'cos(centroid, spike3) = {cos_pca_3:.3f}\n'
+textstr = ('Centroid Averaging Failure Mode:\n'
+           f'cos(centroid, spike1) = {cos_centroid_1:.3f}\n'
+           f'cos(centroid, spike2) = {cos_centroid_2:.3f}\n'
+           f'cos(centroid, spike3) = {cos_centroid_3:.3f}\n'
            '\u2192 Memory of ALL spikes erased!')
 props = dict(boxstyle='round,pad=0.4', facecolor='#e74c3c', alpha=0.2)
 ax1.text(0.02, 0.02, textstr, transform=ax1.transAxes, fontsize=10.5,
@@ -257,11 +258,11 @@ ax2.set_aspect('equal')
 ax2.legend(loc='upper right', fontsize=10, framealpha=0.9)
 ax2.grid(True, alpha=0.2)
 
-fig.suptitle('Anti-Memory: Why PCA Fails for Safety-Critical Failure Storage ($\\mathbb{R}^{128}$)',
+fig.suptitle('Anti-Memory: Why Centroid Averaging Fails for Safety-Critical Failure Storage ($\\mathbb{R}^{128}$)',
              fontsize=16, fontweight='bold', y=1.02)
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_6.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_6.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("\n[OK] Saved figure_6.png")

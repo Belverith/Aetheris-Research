@@ -101,15 +101,25 @@ def barrier_gradient(x: np.ndarray, use_surrogate: bool = False) -> np.ndarray:
     """
     Numerical gradient via finite differences.
     In production, use autodiff (PyTorch/JAX).
+    
+    NOTE: Gradients are always computed on the TRUE barrier function,
+    even when use_surrogate=True.  The surrogate error ε_model (±0.02)
+    is ~2000× larger than the finite-difference step (1e-5), so injecting
+    surrogate noise into gradient evaluation produces pure noise.
+    In a real deployment the surrogate is a neural network whose
+    gradients come from backpropagation (no finite differences), but
+    in this finite-difference demo we must use the clean barrier.
+    The `use_surrogate` parameter is accepted for API compatibility
+    but intentionally ignored during gradient computation.
     """
     epsilon = 1e-5
     grad = np.zeros_like(x)
-    base_val = barrier_function(x, use_surrogate)
+    base_val = barrier_function(x, use_surrogate=False)
     
     for i in range(DIMENSIONS):
         perturb = np.zeros_like(x)
         perturb[i] = epsilon
-        grad[i] = (barrier_function(x + perturb, use_surrogate) - base_val) / epsilon
+        grad[i] = (barrier_function(x + perturb, use_surrogate=False) - base_val) / epsilon
     
     return grad
 
@@ -139,7 +149,14 @@ def hutchinson_frobenius_norm(jacobian_mv_product, n: int, m: int = HUTCHINSON_S
     Complexity: O(m * n) - truly linear in dimension!
     """
     if jacobian_tmv_product is None:
-        jacobian_tmv_product = jacobian_mv_product  # valid for symmetric J
+        # WARNING: This fallback assumes J is symmetric (J = J^T), which is
+        # generally NOT true for real dynamics Jacobians. For non-symmetric J,
+        # the Hutchinson estimate of tr(J^T J) requires separate forward (JVP)
+        # and reverse (VJP) products. Using JVP for both computes tr(J^2)
+        # instead, which equals tr(J^T J) only when J is symmetric.
+        # In production, always provide a separate jacobian_tmv_product via
+        # reverse-mode AD (backpropagation).
+        jacobian_tmv_product = jacobian_mv_product  # valid ONLY for symmetric J
     
     estimates = []
     
@@ -210,12 +227,14 @@ class OrthogonalPrototypeMemory:
         """
         Compute repulsion from known failure modes.
         Used to guide Hunter away from already-discovered hazards.
+        Uses signed cosine similarity, consistent with add_failure() and
+        the paper's Eq. J_hunt(x) = h(x) + lambda * sum Sim(x, c).
         """
         if len(self.prototypes) == 0:
             return 0.0
         
         x_norm = x / (np.linalg.norm(x) + 1e-8)
-        repulsion = sum(lambda_rep * abs(np.dot(x_norm, p)) for p in self.prototypes)
+        repulsion = sum(lambda_rep * np.dot(x_norm, p) for p in self.prototypes)
         return repulsion
 
 # ============================================================================

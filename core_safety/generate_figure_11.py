@@ -8,6 +8,7 @@ replacing the single-seed result with a statistical claim.
 Output: figure_11.png
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -336,7 +337,7 @@ fig.suptitle('Experiment VII: Seed Sensitivity — 20 Spikes on $S^{127}$ '
              f'({N_SEEDS} Seeds, $k={HUNTER_RESTARTS}$ Restarts)',
              fontsize=14, fontweight='bold', y=1.01)
 plt.tight_layout()
-plt.savefig('core_safety/figure_11.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_11.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("[OK] Saved figure_11.png")

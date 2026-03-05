@@ -12,6 +12,7 @@ This corresponds to Algorithm 2 in the paper.
 Output: figure_14.png
 """
 
+import os
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
@@ -107,7 +108,7 @@ draw_box(ax, 9.0, 1.0, 3.5, 1.5,
 
 # Spectral Margin
 draw_box(ax, 8.5, 7.5, 4.0, 2.0,
-         'Spectral Margin $\\delta(x)$', 'Hutchinson / Power Iteration\n$\\delta = \\tilde{\\sigma}_{\\max}(J_f) \\cdot d_{\\mathrm{step}}$',
+         'Spectral Margin $\\rho(x)$', 'Hutchinson / Power Iteration\n$\\rho = \\tilde{\\sigma}_{\\max}(J_f) \\cdot d_{\\mathrm{step}}$',
          '#8e44ad')
 
 # Output / Certificate
@@ -166,7 +167,7 @@ ax.text(2.3, 2.9, '$x(t)$', fontsize=11, ha='center', color=COL_AGENT, fontweigh
 ax.annotate('', xy=(10.5, 5.7), xytext=(10.5, 7.5),
             arrowprops=dict(arrowstyle='->', color='#8e44ad', lw=1.5,
                             mutation_scale=15))
-ax.text(11, 6.9, '$\\delta(x)$', fontsize=12, ha='center',
+ax.text(11, 6.9, '$\\rho(x)$', fontsize=12, ha='center',
         color='#8e44ad', fontweight='bold')
 
 # MCBC → Certificate
@@ -209,7 +210,7 @@ ax.set_title(
 )
 
 plt.tight_layout()
-plt.savefig('core_safety/figure_14.png', dpi=300, bbox_inches='tight',
+plt.savefig(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'figure_14.png'), dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
 print("[OK] Saved figure_14.png — System architecture diagram")
