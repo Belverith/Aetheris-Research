@@ -162,7 +162,7 @@ def _plot_b(ax):
     ax.set_facecolor(BG)
     textstr = (f'Safe inputs ($\\alpha < 0.2$): sim = {mean_sim_safe:.3f}\n'
                f'Dangerous ($\\alpha > 0.8$): sim = {mean_sim_danger:.3f}\n'
-               f'Method: CBF-QP closed-form (Eq. 3)')
+               f'Method: CBF-QP closed-form')
     ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=10,
             verticalalignment='top',
             bbox=dict(boxstyle='round,pad=0.5', facecolor='honeydew', alpha=0.9))
