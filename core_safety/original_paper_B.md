@@ -586,3 +586,90 @@ Defining the barrier function $h(x)$ for semantic agents---determining which sca
 
 % CHDBO + AASV row from comparison table:
 % \textbf{CHDBO + AASV} & $O(kTn)$ per step & Adversarially bounded & Yes & + WTA gradient access \\
+
+
+% ============================================================================
+% TODO: NEW EXPERIMENT — Empirical Lipschitz Characterization of Transformer
+% Dynamics (Closing the Continuous Relaxation Gap)
+% ============================================================================
+%
+% MOTIVATION:
+% Paper A's Assumption A7 asserts that discrete transformer dynamics can be
+% modeled as continuous ODEs. Experiment XIV sidesteps this by using a
+% discrete-time CBF constraint directly, but neither paper empirically
+% measures the dynamics Lipschitz constant L_f = Lip(Block_l) for any real
+% transformer. This is the single most likely reviewer objection: "You claim
+% Lipschitz continuity holds, but you never measure it."
+%
+% LLM embedding spaces are known to be jagged — local Lipschitz continuity
+% may not hold as smoothly as in physical robotic systems. If L_f is locally
+% very large (e.g., near attention saturation or adversarial inputs), the
+% continuous relaxation breaks down and the epsilon_model absorption becomes
+% vacuously conservative (feasible region collapses to empty set).
+%
+% PROPOSED EXPERIMENT (Experiment XVI or similar):
+%
+% 1. EMPIRICAL L_f MEASUREMENT:
+%    - For GPT-2 (and ideally a larger model, e.g., GPT-2-medium n=1024),
+%      compute L_f at each layer transition l -> l+1 via two methods:
+%      (a) Power iteration on J_{Block_l}(x) at representative hidden states
+%          (O(kn) per point via JVP/VJP, reusing the Strategy A machinery
+%          from AASV's spectral estimation).
+%      (b) Empirical max-ratio: max_{i != j} ||f(x_i) - f(x_j)|| / ||x_i - x_j||
+%          over all pairs of observed layer-l hidden states from the Civil
+%          Comments dataset.
+%    - Report L_f as a function of layer depth l. Hypothesis: L_f peaks at
+%      middle layers (where attention patterns are sharpest) and is smaller
+%      at early/late layers.
+%
+% 2. JAGGEDNESS CHARACTERIZATION:
+%    - Sample random directions in R^768 and measure h(x + eps*d) for small
+%      eps to estimate directional Lipschitz constants. Plot the distribution
+%      of directional derivatives — if it's heavy-tailed, the "jagged
+%      landscape" concern is empirically validated.
+%    - Compare against a synthetic smooth system (e.g., the Lorenz dynamics
+%      from Experiment V) to quantify how much worse transformer dynamics are.
+%    - Measure L_f conditioned on input type (benign vs. adversarial/toxic)
+%      to test whether adversarial inputs produce locally larger L_f (and
+%      thus narrower safety tubes).
+%
+% 3. CONTINUOUS RELAXATION VALIDITY TEST:
+%    - For each layer transition, compute the Euler discretization error:
+%      ||x_{l+1}^{true} - x_{l+1}^{Euler}|| where the Euler step uses the
+%      Jacobian at x_l. Compare against epsilon_model from the KNN surrogate.
+%    - If the Euler error exceeds epsilon_model at some points, those are
+%      the regime where A7 genuinely fails — report the fraction of inputs
+%      where this occurs. This is the honest characterization that reviewers
+%      want: "A7 holds for X% of benign inputs and Y% of adversarial inputs."
+%
+% 4. DISCRETE VS. CONTINUOUS COMPARISON:
+%    - Run the CBF-QP under both the continuous-time constraint
+%      (L_f h + L_g h u >= -gamma h) and the discrete-time constraint
+%      (h(x_{l+1}) >= (1-gamma)h(x_l)) on the same GPT-2 inputs.
+%    - Measure: (a) how often the two disagree, (b) whether the continuous
+%      version is systematically more/less conservative, (c) whether safety
+%      outcomes differ.
+%    - This directly answers: "Does the continuous relaxation actually matter,
+%      or is discrete-time sufficient and the ODE framing is just for
+%      theoretical elegance?"
+%
+% 5. SOFTMAX ATTENTION SATURATION ANALYSIS:
+%    - Paper B already notes that "the softmax attention mechanism's gradient
+%      can exhibit sharp transitions near attention saturation." Quantify
+%      this: measure sigma_max(J_{attn}) as a function of attention entropy
+%      (low entropy = peaked attention = near-saturation = large Jacobian).
+%    - This connects L_f to an interpretable quantity that practitioners can
+%      monitor at runtime.
+%
+% EXPECTED OUTCOME:
+% The experiment will likely show that L_f is moderately large (10-100x
+% bigger than smooth physical systems) but finite, and that the discrete-time
+% CBF is both simpler and safer than the continuous relaxation for
+% transformer dynamics. This would let Paper B make the stronger claim:
+% "For transformer systems, the continuous relaxation (A7) is unnecessary —
+% use discrete-time CBF directly, with the continuous framework reserved for
+% genuinely continuous dynamics."
+%
+% This closes the gap cleanly: instead of defending A7, we show when it
+% holds, when it doesn't, and that the framework works either way.
+% ============================================================================

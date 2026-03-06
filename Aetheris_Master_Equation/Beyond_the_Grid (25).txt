@@ -1,0 +1,200 @@
+Mitigating Large Language Model Context Drift via
+
+Holographic Invariant Storage
+
+Arsenios Scrivens
+
+February 5, 2026
+
+Abstract
+
+Scaling towards autonomous deployment has been a key goal of Large Language Mod-
+els. However, “Agent Drift” has caused critical issues and reliability failure. Adherence to
+
+constraints within LLM context windows over extended interaction sequences causes initial
+instructions, objective functions, and safety constraints to significantly diverge from their
+original state. In this report, we introduce Vector Symbolic Architectures (VSA) and a
+
+neuro-symbolic memory system, dubbed Holographic Invariant Storage (HIS), which en-
+codes the existing safety mechanisms and rules into high-dimensional vectors of dimension
+
+D = 10, 000, called hypervectors. Due to the nature of high-dimensionality, the encoded
+
+rules are now mathematically orthogonal to the noise of the context window. Modern prob-
+abilistic attention mechanisms do not utilize systems like this because of fundamentally
+
+different mathematical principles, with VSAs using algebraic operations on vectors and
+
+probability-driven machines using softmax-based weighting. To prove that safety can in-
+deed be enforced as a deterministic structural constant, we established a fidelity aligning to
+
+the (theoretical) geometric bound: 1/
+√
+2. Through Monte Carlo simulations (of n = 1000),
+even under direct adversarial attacks on those safety constraints, we have proven that we
+can recover the original safety rules and core objectives of the system with a mean fidelity
+of 0.7074 (σ = 0.0039), which aligns with the geometric bound.
+
+1 Introduction
+
+One of Generative AI’s structural bottlenecks is the inability to keep goal and objective coher-
+ence over long-horizon tasks. Transformers accomplish great feats when faced with in-context
+
+learning, but they suffer from degradation with longer context windows. Referred to as “struc-
+tural entropy”, or drift, it is the probability of adherence to the original system prompt degrading
+
+as the context window fills with interaction history [3].
+Autonomous agents face the worst consequences of this problem. Behavioral drift can lead
+
+to logic regression, which in turn increases susceptibility to “jailbreak” attacks. The atten-
+tion mechanism itself causes this fundamental limitation. The agent probabilistically weighs
+
+safety constraints against immediate context, comparing its core rules like any standard token
+sequence. This means that the safety constraints are being treated just like incoming text,
+
+whether that text contradicts the safety constraints or not. This phenomenon is only exacer-
+bated by the “Lost in the Middle” effect [4], where LLMs retrieve information more effectively
+
+if found at the beginning or end of their input context, but struggle to retrieve content found
+in the middle, resulting in degraded retrieval accuracy.
+To properly address this issue, we propose that the agent’s core identity should no longer
+
+be attached to its active context window. We accomplish this by using Holographic Invari-
+ant Storage (HIS). Drawing on the properties of Hyperdimensional Computing (HDC), HIS
+
+1
+
+creates immutable memory substrates that are resilient to noise, corruption, and degradation
+by utilizing distributed representations [1].
+2 Methodology
+2.1 Vector Symbolic Architecture (VSA)
+We use 10,000-dimensional bipolar hypervectors (v ∈ {−1, 1}
+
+10,000) to represent semantic con-
+cepts. VSA’s innate algebraic properties allow us to manipulate these concepts [1, 2]:
+
+• Binding (⊗): This special operator allows us to combine two vectors, such as a Key and a
+Value, into a single, new vector that retains both vectors’ information while simultaneously
+being distinct from them. This allows for efficient representation of composite information.
+• Bundling/Superposition (+): This simple summation operator enables us to create
+one vector from several. Doing this preserves the underlying signal of multiple context
+states, even in the presence of noise.
+• Unbinding (⊗−1
+
+): This is simply the inverse of binding. This operator allows us to
+recover one of the original two bound vectors that formed the binding vector, as long as
+we know the other original bound vector. Unbinding extracts the original value from a
+corrupted, noisy, or bundled state.
+2.2 The Restoration Protocol
+To create the agent’s encoded safety constraint, dubbed the ”System Invariant” (Hinv), we bind
+the semantic idea of constraints (Goal Key: Kgoal), or other goals, with the actual constraint
+itself (Safe Value: Vsafe).
+
+Hinv = Kgoal ⊗ Vsafe (1)
+Drift states result from the invariant being subjected to additive noise from user interactions
+(Ncontext) over time during the operation and lifetime of the agent. In order to address this
+properly, we unbind the drifted state with the original key (Kgoal) through the restoration
+protocol.
+A critical prerequisite to ensuring geometric bounding is that the system ensures the
+context noise is normalized before it handles superposition. This is established as ∥Ncontext∥ ≈
+∥Hinv∥. Without any active normalization, the fidelity of recovery would degrade as the context
+noise accumulates (i.e. context drift).
+
+Vrecovered ≈ sign(Hinv + Ncontext) ⊗ Kgoal (2)
+High-dimensional noise vectors are intrinsically statistically orthogonal to the key. Because
+
+of this, the unbinding operation does not remove the interference directly, but instead dis-
+tributes it across the hyperspace. In addition to that, the orthogonalization process allows
+
+the original safety vector to be recovered via a simple similarity search. This effectively filters
+out the noise, producing a near-zero dot product with the signal.
+3 Empirical Results
+3.1 Monte Carlo Simulation
+We conducted a Monte Carlo simulation (n = 1, 000) in order to validate the robustness of this
+protocol. We utilized a semantic encoder and in each trial, we corrupted the invariant anchor
+
+2
+
+with variable amounts of noise. The unique, adversarial noise strings are comprised of prompt
+injection attacks, random data flooding, and vast blocks of neutral text.
+Statistical Results:
+• Mean Recovery Fidelity: 0.7074
+• Standard Deviation (σ): 0.0039
+
+Figure 1: Distribution of Holographic Recovery Fidelity (n = 1, 000). The line of normal
+fit (μ = 0.7074) and the theoretical geometric bound (1/
+√
+2 ≈ 0.7071) are represented in the
+graph above by a black curve and a straight, red-dashed line, respectively. The graph indicates
+a precise alignment of the experimental data to the geometric bound. This suggests that the
+underlying mechanism is successfully functioning as a deterministic, geometric filter.
+
+The low standard deviation indicates that the mechanism’s performance is stable and inde-
+pendent of the specific semantic content of the attack.
+
+3.2 The Geometric Bound
+
+We were able to establish a very close alignment of our empirical mean of 0.7074 to the theoret-
+ical expectation of recovering a signal from a superposition of two orthogonal vectors of equal
+
+magnitude (Signal + Noise). We can define this theoretical expectation as the expected cosine
+similarity of 1/
+√
+N, where N = 2.
+
+Similarity ≈
+1
+√
+2
+≈ 0.7071 (3)
+The HIS mechanism is successfully able to isolate the safety signal from the noise floor, with
+predictable precision. This means HIS serves as a geometric filter due to the two values being
+closely aligned.
+3.3 Adversarial Resistance
+In order to test the system properly, we experimented with three distinct attack vectors:
+
+1. Information Flooding: We used large amounts of html code taken from random web-
+sites.
+
+3
+
+2. Direct Jailbreak: We gave simple 1-sentence instructions that would violate safety rules.
+3. Neutral Noise: We provided large amounts of text from the book, ”Moby Dick” via the
+Gutenberg Project.
+
+(a) Information Flooding (b) Direct Jailbreak (c) Neutral Noise
+Figure 2: Aetheris // Anti-Drift Kernel Interface. The red (or lack thereof) in the first
+bar represents the Drifted States. The green bar below it represents the Restored States. Even
+though we had notable variance within each Drifted State (ranging from -0.02 to 0.16), the
+Holographic Restored State consistently converged to the theoretical geometric bound (≈ 0.71).
+This effectively prevents the attack’s semantic content from influencing the agent.
+In every single case, fidelity of > .70 was restored for the safety vector.
+4 Conclusion
+Holographic Invariant Storage demonstrably mitigates the Context Drift of LLMs, managing
+to achieve a mean signal restoration of ≈ 0.71 against all adversarial attacks experimented
+with. Successful encoding of safety constraints as geometric invariants makes this possible.
+As documented in recent industry analyses, modern architecture goal coherence degradation
+has caused an immediate safety crisis, presenting as severe architectural drift and vulnerable,
+autonomous coding task generation [5]. Our findings suggest that future AI safety architectures
+should consider integrating VSA-based memory kernels to maintain goal coherence indefinitely.
+References
+
+[1] Kanerva, P. (2009). “Hyperdimensional Computing: An Introduction to Computing in Dis-
+tributed Representation with High-Dimensional Random Vectors.” Cognitive Computation,
+
+1(2), 139-159.
+[2] Gayler, R. W. (2003). “Vector Symbolic Architectures Answer Jackendoff’s Challenges for
+Cognitive Neuroscience.” ICCS/ASCS International Conference on Cognitive Science, 133-
+138.
+
+[3] LeCun, Y. (2022). “A Path Towards Autonomous Machine Intelligence.” OpenReview, Ver-
+sion 0.9.2.
+
+[4] Liu, N. F., et al. (2024). “Lost in the Middle: How Language Models Use Long Contexts.”
+Transactions of the Association for Computational Linguistics, 12, 157-173.
+
+4
+
+[5] OX Security. (2025). “Army of Juniors: The AI Code Security Crisis.” OX Security
+Whitepaper, October 2025. https://www.ox.security/wp-content/uploads/2025/10/
+Army-of-Juniors-The-AI-Code-Security-Crisis.pdf
