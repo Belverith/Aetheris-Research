@@ -1,0 +1,1272 @@
+Review article
+Hyper-dimensional computing architectures for AI applications: A
+comprehensive survey of principles, performance, and future prospects
+Adnan Yaqoob Salik a
+, Muhammad Shafay b
+, Muhammad Owais c,∗
+,
+Sajid Gul Khawaja d
+, Shehzad Khalid e
+, Irfan Hussain c
+, Taimur Hassan d,∗
+a Department of Electrical Engineering, Bahria University, Islamabad, Pakistan
+b Department of Computer Science, Khalifa University, Abu Dhabi, United Arab Emirates
+c Khalifa University Center for Autonomous Robotic Systems (KUCARS), Khalifa University, Abu Dhabi, United Arab Emirates
+d Department of Electrical, Computer and Biomedical Engineering, Abu Dhabi University, Abu Dhabi, United Arab Emirates
+e Department of Computer Engineering, Bahria University, Islamabad, Pakistan
+a r t i c l e i n f o
+Keywords:
+Hyper-dimensional computing
+Artificial intelligence
+HDC architectures
+Encoding schemes
+a b s t r a c t
+This paper discusses different Hyper-Dimensional Computing (HDC) architectures and their utilization in solving
+various artificial intelligence (AI) applications. HDC is based on the principles of high-dimensional vector spaces
+and presents a distinct way of representing and processing information. The paper first presents an outline of the
+fundamental principles, mathematical underpinnings, and essential operations of HDC, thereby establishing the
+necessary basis for subsequent discussions. Afterward, the paper explores prominent conventional and modern
+HDC architectures, clarifying their operational principles and practical uses. In addition, the paper also discusses
+the performance evaluation of different HDC architectures, in terms of accuracy, efficiency, and scalability, in
+solving real-world tasks. The limitations of existing HDC architectures were also examined in this paper, and
+their plausible remedies are proposed. Lastly, the paper provides an analysis of future prospects, encompassing research trends to fully utilize HDC as an alternative to deep learning to solve different classification and
+recognition tasks. Offering a bird’s-eye perspective of HDC architectures and their changing place in AI, this
+paper presents a comprehensive survey for academics, industry professionals, and interested parties working on
+AI-based applications.
+1. Introduction
+Artificial intelligence (AI) has experienced substantial growth recently,
+fueled by the persistent exploration of innovative computing models that
+can mimic and improve cognitive abilities. Hyper-Dimensional Computing (HDC), also known as Vector Symbolic Architecture (VSA), is
+a computational framework that draws inspiration from the characteristics of high-dimensional (HD) spaces. Unlike conventional computing
+techniques that rely on discrete, low-dimensional representations, HDC
+operates within a HD, continuous domain. In this domain, information is
+encoded in vectors with extremely high dimensionality, typically spanning hundreds to thousands of dimensions. This approach leverages the
+mathematical properties of HD space to efficiently and reliably perform
+complex computations [1–4].
+The drive to investigate HDC arises from the need to surpass the constraints of traditional AI architectures, specifically in managing sophisticated and complex data representations inherent in real-world applications. Conventional models often struggle with handling noise, scaling
+∗ Corresponding authors at: Khalifa University, and Abu Dhabi University, Abu Dhabi, UAE.
+E-mail addresses: muhammad.owais@ku.ac.ae (M. Owais), taimur.hassan@adu.ac.ae (T. Hassan).
+up, and interpretability. HDC addresses these challenges by leveraging
+the capabilities of HD vector spaces and introducing a novel approach
+to computational processes for AI tasks (see Fig. 1).
+The basic principle of HDC is that HD vectors are capable of representing
+complex data structures. These HD vectors can also perform binding and
+superposition operations, which are similar to the addition and multiplication of vectors in conventional mathematics. These HDC operations
+help to create the synthesized representations. The relationship between
+different data elements is also encoded by using these HDC operations.
+Due to this, HDC is the best suitable option for tasks that involve symbolic reasoning, pattern recognition, and associative memory [1,5].
+1.1. Historical context and evolution of hyper-dimensional computing
+In 1980s and early 1990s, Tony Plate and Pentti Kanerva laid down the
+theoretical foundations of HDC by introducing Holographic Reduced
+Representations (HRR) and Binary Spatter Codes [3,6]. These models
+demonstrate the usefulness of HD vectors in encoding and converting
+https://doi.org/10.1016/j.rineng.2026.109589
+Received 25 August 2025; Received in revised form 11 February 2026; Accepted 12 February 2026
+Results in Engineering 29 (2026) 109589
+Available online 15 February 2026
+2590-1230/© 2026 The Author(s). Published by Elsevier B.V. This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+A.Y. Salik et al.
+symbolic information. Afterward, Eliasmith et al. [7] introduced Semantic Pointer Architecture (SPA), which is considered an important
+development in HDC evolution.
+1.2. Motivation of using hyper-dimensional computing for AI applications
+There are multiple factors that motivate the investigation of HDC in AI
+applications:
+1. The methods for processing and representing large data using HD
+vectors are well organized and extensive. In contrast to traditional
+techniques, the challenge of handling the dimensionality of complex
+data is efficiently managed by HDC by using the attributes of HD
+spaces while ensuring computational efficiency. Adapt HDCs for applications consisting of large data and require real-time processing
+[8].
+2. Because of high-dimensionality, a huge advantage of HDC is its robustness to noise and errors. This HD representation can bear a notable amount of noise, while maintaining the integrity of encoded
+information. For cases of real-world environments where data is incomplete or altered by noise, these characteristics of HDC become
+more pivotal and decisive [9].
+3. Human cognition, where information is saved and processed in HD
+space, is the inspiration principle behind HDC. As AI systems are also
+based on human-like reasoning and learning, HDC is a suitable and
+potential candidate to develop these AI systems. If cognitive methods and computational methods are synchronized, HDC is capable of
+more insightful and explicable AI systems [1,7,10].
+4. The feature of adaptability and resourcefulness makes HDC applications diversified in many fields. Comprehensive and contextconscious AI systems are possible as a result of this property to encode different types of data into HD space. This multidisciplinary
+usefulness highlights the applicability of HDC to diverse fields [11].
+1.3. Current trends and research focus
+The effectiveness and accuracy of HD representations is pivotal in HDC.
+Research is being conducted for producing efficient encoding schemes.
+An example of this can be hybrid encoding schemes, where binary,
+ternary and continuous values are integrated to better capture different variations of sophisticated data structures. These studies are focused
+on improving HDC HD representational abilities while maintaining the
+computational performance.
+Researchers are exploring the concept of fusion of neural networks with
+HDC in order to achieve the advantages of both frameworks. The main
+advantage of HDC over neural networks lies in its ability to generate effective symbolic representations. On the other hand, neural networks excel at learning from massive datasets using gradient-based optimization.
+The complex AI applications that require both of these strengths can be
+developed by hybrid modeling of HDC and neural networks [7,10]. Another active research area in HDC is to design models as an alternative to
+deep learning and natural language processing systems forspecific applications. For instance, researchers are developing HDC methods that can
+encode and exploit linguistic structures. This is crucial for natural language processing tasks like machine translation, sentiment analysis, and
+text classification [12]. On the other hand, for genetic diseases classification in bio-informatics, HDC models are being developed to examine
+gene-related data and to detect patterns [13,14]
+Apart from this, HDC is also used in conjunction with different hardware
+acceleration methods. This is essential to meet the computational requirements of HDC. Specialized hardware, such as Field-Programmable
+Gate Arrays (FPGAs) and neuromorphic chips, is used to implement HDC
+algorithms. The primary objective of utilizing these hardware solutions
+is to enhance HDC performance by enabling real-time processing and reducing energy consumption. These two parameters are critical in edge
+devices and embedded systems [8,15,16].
+HDC is revolutionary in the field of AI. For information processing and
+representation, and by using the properties of HD spaces, HDC presents
+a robust, flexible and expandable solution. The current research in
+the field of encoding schemes, neural network fusion, application-wise
+model adjustment, and hardware acceleration techniques is the driving
+force behind designing innovative AI applications.
+1.4. Scope and objectives
+The objective of this survey paper is to provide a detailed overview
+of major HDC architectures and their applications in AI. The foundational concepts, mathematical fundamentals, operators, and major encoding schemes are discussed thoroughly. Both traditional and modern
+HDC architectures, along with their distinct features, are analyzed here.
+Moreover, detailed benchmarking results, along with insights into the
+datasets, are also presented in this paper. These benchmarks provide
+significant insight into the performance and efficiency of the HDC approaches. Although Kleyko et al. [4] recently presented an overview
+of the traditional HDC architectures, along with a discussion on different data transformation techniques [2,4]. In another work, they highlighted different applications of HDC and their associated challenges [2].
+In contrast to these studies, our work focuses on consolidating current
+knowledge, identifying trends, and providing valuable insights into the
+potential impact of HDC on the future of AI. To the best of our knowledge, there is a scarcity of papers that present a systematic overview of
+HDC and its integration with AI to solve open-ended problems in different fields of engineering [17], healthcare [18], and business [19].
+Similarly, this paper provides a detailed literature review spanning the
+last forty years and presents advances in HDC and its integration with AI
+to solve various applications. Additionally, this paper presents the fundamental principles of HDC architectures and how HDC architectures
+can complement the conventional supervised deep learning models. In
+addition, a detailed benchmark of HDC and AI models across various engineering fields using standardized evaluation metrics is also presented
+in this paper.
+1.5. Research questions and contributions
+Through an extensive investigation of different HDC architectures, including a thorough examination of their advantages and the identification of research deficiencies as presented in Table 1, we have acquired
+valuable knowledge about the current state of the field. This analysis has identified both the advantages and constraints of current HDC
+approaches. As a result, we have formulated several relevant research
+questions, which are listed below:
+– What core principles define HDC, and how do they fundamentally
+differ from conventional AI paradigms?
+– What major HDC architectures have emerged and how have they
+evolved over time?
+– In which AI domains has HDC achieved significant impact, and what
+are the notable applications within each?
+– Where do HDC architectures surpass traditional models, and which
+evaluation metrics best capture their performance?
+1.6. Organization of the survey
+This survey is organized into the following sections. Section 2 provides
+the basics of HDC. Section 3 presents a detailed overview of the HDC
+architectures proposed in the last decade. Section 4 presents the utilization of HDC in AI applications. Section 5 presents the benchmarking of
+different HDC architectures in the context of AI applications using different metrics. Section 6 highlights the limitations of the current HDC
+architectures along with their remedies. Section 7 presents a discussion
+on the future directions of the HDC, and Section 8 concludes the paper.
+Results in Engineering 29 (2026) 109589
+2
+A.Y. Salik et al.
+Fig. 1. Chronological overview of HDC research and applications, illustrating the evolution from foundational HD representation frameworks (1980s-1990s), through
+the formal introduction of HDC terminology and random indexing, to recent advances in supervised, unsupervised, and semi-supervised learning applications across
+diverse domains.
+2. Hyper-dimensional computing basics
+2.1. Overview of hyper-dimensional computing
+HDC is a novel approach specifically for AI applications that differs
+from traditional methods by utilizing the inherent characteristics of HD
+spaces. HDC primarily uses HD vectors and the information is encoded
+in binary or ternary formats. Data representation, data transformation,
+and data recovery are crucial components of any computing system.
+Classical computing specifically involves the manipulation of bits. Each
+bit has a binary value of either 0 or 1. This can be made possible through
+the absence or presence of electric charge. Data transformation is an essential aspect of computation. The ALU performs logical operations and
+the four basic arithmetic operations: addition, subtraction, multiplication, and division to compute new data [2]. This data is read/written
+by main memory. HD computing utilizes hyper-vectors as its data type,
+which typically have a high dimensionality in the thousands, in contrast to classical computing. These broad words are resistant to noise
+interference, making them inherently strong and reliable. The primary
+source of inspiration for HDC is derived from Pentti Kanerva’s research
+in [1], representing entities using HD vectors and manipulating them
+using conventional computing methods. This section offers a detailed
+introduction to the fundamental principles and essential features that
+define HDC.
+2.2. HDC notions
+2.2.1. Hyper-vectors
+In HDC, the hyper-vector serves as the basic building block with three
+significant properties. First, hyper-vectors or HD numerical vectors, typically consist of more than 10,000 dimensions, with each dimension
+representing a numerical value. This offers a vast expanse for hypervectors to represent information [20]. Secondly, hyper-vectors are typically initialized in a random manner, and the generated numbers adhere to independent and identically distributed (i.i.d.) randomness. It
+is likely that two randomly initialized hyper-vectors will be nearly orthogonal to each other due to this high dimensionality. Third, hypervectors possess a holographic nature in which all dimensions within an
+hyper-vector are acknowledged and valued equally, without any dimension being deemed more significant than others. Put simply, the hypervector should be regarded as a cohesive entity rather than being broken
+down into micro-code. An hyper-vector with 𝐷 dimension is shown as:
+𝑉
+∗ = (𝑣1
+, 𝑣2
+, 𝑣3
+, …𝑣𝐷), here 𝑣𝐷 is the number at 𝐷𝑡ℎ dimension.
+2.2.2. HDC Operations:
+HD computing commonly consists of three basic operations, i.e., addition, permutation, and multiplication. There also exists a reverse of
+the multiplication operation known as release [21]. Similarly, the release operation also represents the inverse of addition. Every operation
+performs computations and produces hyper-vectors with 𝑑 dimensions.
+Essentially, the process of transforming data in binary or non-binary
+hyper-vectors is identical. The sole distinction lies in the hardware aspect. In the case of binary hyper-vectors, point-wise multiplication can
+be achieved through the utilization of an Exclusive OR (XOR) gate.
+– Additions: The addition operation requires two hyper-vectors as input and performs element-wise addition on the numbers at the corresponding dimensions [20]. The addition is commonly employed to
+combine the information of two hyper-vectors from the same modality and generate their superposition sum. The addition operation is
+also known as bundling, shown in equation as: 𝐴∗ = (𝑉
+∗
+1
++ 𝑉
+∗
+2
++ 𝑉
+∗
+3
++
+… + 𝑉
+∗
+𝑛
+). When there are an odd number of vectors in a set of 𝑛, the
+resultant HD vector is binarized, resulting in 0 when half of the bits
+are zero and 1 otherwise. An extra random vector is added to reduce
+bias, which can occur in the case of an even number of vectors in a
+set of 𝑛 [29–31].
+– Multiplication: Point-wise multiplication, also known as binding,
+seeks to establish connections between two correlated hyper-vectors.
+The binding operation can be represented as shown: 𝑍∗ = 𝑋∗ ⊕ 𝑌 ∗
+.
+Here, ⊕ represents the operation 𝑋𝑂𝑅, and 𝑍∗
+is dissimilar (orthogonal) to the input hyper-vectors.
+– Permutation: This operation requires only one hyper-vector as an
+operand and performs a cyclic rotation (shift) on the hyper-vector
+Results in Engineering 29 (2026) 109589
+3
+A.Y. Salik et al.
+Table 1
+Research Questions and Gaps.
+Ref. Method Description Positive Aspects Research Gaps
+[22] Hyperspec HyperSpec is a fast spectral clustering tool
+that utilizes HDC to greatly enhance the
+speed of spectral clustering without compromising the quality of clustering.
+Speedup, Runtime Performance Efficiency,
+Better clustering quality
+By parallelizing hyper-vector distance
+computations and clustering steps over
+multiple GPU cards, faster processing
+speeds can be achieved. Also, an optimal
+distance function can be developed for
+comparing spectrum hyper-vectors and
+enhancing the quality of clustering.
+[23] C-FSCIL C-FSCIL is a method for few-shot classincremental learning that tackles the problem of learning new classes without forgetting previous knowledge. It achieves this
+by employing a trainable, fully connected
+layer, a frozen feature extractor, and a dynamically growing memory.
+>16.99% Accuracy, Computational Memory Efficiency, Scalability, and 423 novel
+classes learning (with <1.6% accuracy
+loss)
+Enhancing accuracy through prototypes
+and fully connected layer optimization, examining the robustness of class prototypes
+against adversarial perturbations, and deploying prototypes on emerging hardware
+technologies to enable in-memory computation.
+[24] EMG-based Gesture Recognition A comprehensive system for recognizing
+gesture based on EMG signals that addresses the challenges posed by signal and
+electrode variability through the use of
+huge-area, dependable classification algorithm, and a high-density sensor array
+An average classification accuracy of
+96.64%.
+To improve accuracy that has been degraded, a straightforward remapping of the
+input features can be implemented.
+[25] HDC-EEG-ERP This study demonstrates the use of HD
+computing to classify EEG error-related potentials in brain-computer interfaces by
+creating an encoding algorithm and a classifier, using a dataset that is accessible to
+the public, and describing a basic approach
+for analyzing EEG potentials.
+5% higher single-trial classification accuracy (74.5%), Fast Learning with less training trials, Less domain expert knowledge
+required
+To further improve the HD computing algorithm by examining its scalability to
+larger datasets or different types of brain
+signals, as well as exploring the possibility of integrating HD computing with other
+machine learning techniques to enhance
+classification performance. Further investigation could focus on the practical application of the HD computing algorithm in
+real-time brain-computer interface systems
+and evaluate its effectiveness in challenging and sophisticated environments.
+[26] MHD MHD, a multi-encoder hierarchical classifier, which enables HDC to take full advantages of multiple encoders without increasing the cost of classification (record-based
+or N-gram based)
+Decreasing classification cost, 6.6× Energy
+Efficiency, 6.3× Speedup
+The accuracy and efficiency of hierarchical HDC can be enhanced. Different combinations of encoders and classifiers can be
+investigated to achieve better performance
+in a wide range of cognitive tasks and realworld applications
+[13] GenieHD Efficient DNA pattern matching accelerator using HDC. By parallelizing the operations, especially for ultra-long hypervectors.
+Unique work as vector size is 𝐷 =
+100,000, 44.4× speedup, 54.1× energy efficiency on FPGA
+Priority can be given to enhance the DNA
+pattern matching algorithm’s efficiency on
+parallel computing platforms. This can be
+achieved by exploring novel algorithm designs that are compatible with hardware
+and by investigating power optimization
+strategies that may result in varying levels
+of accuracy loss.
+[27] VoiceHD VoiceHD is a speech recognition technique
+that is both energy-efficient and fast. It utilizes HDC for on-device learning on IoT devices. This technique can also include NN
+calling VoiceHD+NN.
+VoiceHD (93.8% accuracy), VoiceHD+NN
+(95.3% accuracy), 4.6× and 2.9× training
+speedup, 5.3× and 4.0× testing speedup,
+and energy efficiency of 11.9× and 8.6×
+Scalability can be enhanced by utilizing
+different dataset and speech signals of
+other languages.
+[28] SecureHD The SecureHD framework is designed for
+secure learning using HDC. It offers improved accuracy and speed in encoding
+and decoding tasks compared to traditional
+methods.
+145.6× and 6.8× faster Encoding and Decoding, High Accuracy of 95%.
+More work is required in privacypreserving deep learning, improvements in
+secure frameworks such as SecureML and
+Chameleon, optimization of collaborative
+learning in resource-limited environments,
+and investigation of new applications of
+HDC.
+. The shift amount can be customized according to a specific application. Permutation is commonly used to represent spatial or temporal patterns of information. Permutation is used as an alternative
+method to bind hyper-vectors to a specific type of matrix known as
+a permutation matrix [1].
+2.2.3. HDC memories
+Memories in HDC refer to a distinct collection of hyper-vectors that have
+various roles in the process of constructing an HDC model [20]. There
+are two distinct types of memory in HDC: item memory and associative
+memory.
+– Item Memory (IM): This memory is directly linked to the input data
+and stores the item hyper-vectors created from the input features. Let
+us assume that the input sample consists of 𝑀 modalities of features,
+with each feature having 𝑁 number of possible values, so the IM for
+each modality of feature can be produced according to the following
+equation: 𝐼𝑀𝑚 = {𝐼
+∗
+1
+, 𝐼∗
+2
+, 𝐼∗
+3
+, …, 𝐼∗
+𝑁
+}.
+Results in Engineering 29 (2026) 109589
+4
+A.Y. Salik et al.
+– Associative Memory (AM): This memory is associated with the output of the model, specifically making predictions. If the classification task involves 𝐶 classes, the AM can be represented according
+to the following equation: 𝐴𝑀 = {𝐴
+∗
+1
+, 𝐴∗
+2
+, 𝐴∗
+3
+, …, 𝐴∗
+𝑐
+}, where each
+hyper-vector 𝐴∗
+𝑐 within the memory represents a class. AM is typically initialized with a set of zero values.
+2.2.4. Similarity measurement:
+As each hyper-vector corresponds to a distinct piece of information, it
+is necessary to have metrics that can accurately measure the similarity between the information contained in two hyper-vectors [20]. The
+existing HD algorithms commonly utilize two similarity measurements,
+i.e., Hamming distance and cosine similarity. Additional similarity measures are dot product and overlap [30]. As an example, cosine similarity
+is calculated as: 𝑐𝑜𝑠(𝑃
+∗
+, 𝑄∗
+) = 𝑃
+∗
+.𝑄∗
+|𝑃 ∗||𝑄∗|
+. When the cosine similarity between the 𝑃
+∗ and 𝑄∗ hyper-vectors is close to 1, it indicates a very high
+degree of similarity. For example, if 𝑐𝑜𝑠(𝑃
+∗
+, 𝑄∗
+) = 1, it means that two
+hyper-vectors 𝑃
+∗ and 𝑄∗ are exactly the same. When two vectors are
+at a right angle, their cosine similarity is equal to 0, indicating that the
+vectors are dissimilar [30].
+2.3. HDC steps for model development:
+The development of an HDC model usually involves four main stages
+[20], as shown below.
+– Encoding: Encoding is the fundamental stage in the development of
+the HDC model. During the encoding process, the input samples are
+transformed into their corresponding hyper-vectors using a specific
+set of application-dependent HD operations and the item memories.
+Detailed information on the main HDC encoding schemes is discussed in Section 2.4. Following the encoding process, the realistic
+features are transformed into HD representations known as hypervectors. These hyper-vectors are subsequently utilized in the remaining phases of the development of the HDC model.
+– Training: During the training phase, associative memory is trained
+using encoding hyper-vectors derived from training samples. The AM
+combines all sample hyper-vectors with the same label 𝑐 and adds
+them to the respective class hyper-vector 𝑋∗
+𝑐
+. The purpose of this
+task is to gather and combine information in order to construct a
+representative hyper-vector for each class.
+– Inference: Inference is the stage in which AM is used to guess the
+class of unrevealed test samples. During the process of inference, the
+unrevealed samples are also encoded using item memory. These encoded hyper-vectors are normally called query hyper-vectors. Using
+a similarity metric, the similarity between each class hyper-vector
+in the AM and the query hyper-vector is computed. For this unseen
+sample, the class with the highest resemblance is determined as the
+predicted class.
+– Retraining: Retraining is an elective step in refining the already
+trained AM to obtain greater performance of the model. During the
+retraining process, the HDC model iterates over the already encoded
+or trained samples and uses the trained AM to obtain prediction
+labels in inference. Next, the predicted label is compared to the
+ground-truth label to determine if there is a difference. In the event
+of any discrepancy, the AM is updated.
+2.4. Encoding schemes
+Binary encoding is a crucial component of HDC, in which binary digits are used for information representation, specifically 0s and 1s. This
+encoding system is straight-forward and effective, which has led to its
+widespread adoption in several HDC architectures. These binary representations support bit-wise OR and AND, which are efficient vector
+operations for better information handling.
+Ternary encoding, unlike binary encoding, incorporates an extra state,
+usually represented as -1, in addition to states 0 and 1. The use of ternary
+representations enables more complex encoding and improves the expressiveness of hyper-dimensional vectors. Ternary encoding is especially beneficial in applications that require a more precise and detailed
+representation. The most commonly used data mapping techniques for
+hyper-dimensional space [31] are listed below.
+– Binary: Here HD elements contains values of 0,1.
+– Ternary: Here HD elements contains values of 0,1,-1.
+– Non-binary HD vector: The elements in these vectors are normally
+indicated by using a floating-point, fixed-point, or complex number.
+– Dense HD vector: The probability distribution of each HD element
+is uniform in the dense HD vector.
+– Sparse HD vector: With few instances of 1 or -1, the HD vector is
+dominated by the value 0 in the sparse model.
+Siamese [32] is a unique non-linear encoding scheme that uses Siamese
+Neural Network (SNN) [33] to transfer scalar characteristics into binary
+hyper-vectors. This mapping is based on user-specified cosine similarity drop-offs. The SNN receives a pair of scalar features as input and
+produces a pair of bipolar hyper-vectors, having the values from the set
+-1, +1. To generate these encoding representations, the SNN is trained
+using a mean squared error (MSE) loss function, which measures the
+similarity between the input and output pairs.
+In addition to this, the other two widely used methods are record-based
+and N-gram-based encoding schemes [11,26,30,34]. Each input feature
+𝑗 in the record-based method utilizes position hyper-vectors, designated
+as 𝑄𝑗
+, which are orthogonal to each other, and level hyper-vectors, indicated as 𝑀𝑗
+, which show correlation for nearby pairs. The individual
+hyper-vector of a particular class is computed by adding the elementwise multiplication (*: logical XOR) of the level and position hypervectors for each feature. The single resulting hyper-vector for the entire
+number of features (𝑇 ) is denoted as 𝐻𝑣 and is formulated:
+𝐻𝑣 =
+∑𝑇
+𝑗=1
+(𝑀𝑗 ∗ 𝑄𝑗
+) (1)
+The N-gram-based encoding scheme utilizes the permutation operation
+(𝜋) for each level of hyper-vector (𝑀𝑗
+). In this way, element-wise multiplication (XOR) is used to generate the resultant class hyper-vector
+of the permuted-level hyper-vectors. The ultimate hyper-vector (𝐻𝑣
+) in
+this particular instance is depicted as follows:
+𝐻𝑣 = 𝑀1 ∗ 𝜋𝑀2 ∗ … ∗ 𝜋
+𝑇−1𝑀𝑇
+(2)
+Salamat et al. [35] introduced a new approach to generate hypervectors for each feature vector 𝐵𝑖
+, which consists of elements 𝑇 of the
+form 𝐵𝑖 = {𝑏1
+, 𝑏2
+, …, 𝑏𝑇
+}. Each 𝑏𝑖
+represents a feature value 𝐹𝑖
+that has 𝐿
+levels, where 𝑏𝑖
+is an element of the set (𝐹1
+, 𝐹2
+,… , 𝐹𝐿). In this scenario,
+the feature with the lowest value (𝐹1
+) is assigned a randomly generated
+hyper-vector named 𝐻1
+, with a size of 𝐷. Similarly, the feature with
+the highest value (𝐹𝐿) is assigned another randomly generated hypervector named 𝐻𝐿, by randomly flipping half of its bits 𝐷. The subsequent hyper-vectors are produced by toggling 𝐷∕2
+𝐿−1 bits at each iteration,
+beginning with the initial hyper-vector . Following that, every feature
+value 𝐹𝑖
+is linked to its corresponding hyper-vector as 𝐻𝑖
+. The temporal
+position of each input feature is obtained by performing the permutation
+operation (𝜋). The ultimate hyper-vector indicated as 𝐻𝑐
+is produced by
+consolidating (bundling) the permuted hyper-vectors together, as shown
+in the following equation:
+𝐻𝑐 =
+∑𝐷
+𝑛=1
+𝜋
+(𝑛)𝐻𝑛
+(3)
+With a focus on 8-bit images, Miranda et al. [32] presented a new
+way to encode spatial relationships using binary position hyper-vectors.
+Initially, the authors create 𝑀 position hyper-vectors for the x-axis of
+Results in Engineering 29 (2026) 109589
+5
+A.Y. Salik et al.
+a 𝑀 × 𝑁 image using the linear encoding technique of the level hypervectors. Similarly, the authors used the identical linear encoding technique to produce position hyper-vectors 𝑁 for the y-axis. Subsequently,
+the separate position hyper-vectors on each axis are bound together
+to form a final position hyper-vector at the pixel location (𝑥, 𝑦). Using this method, the authors were able to generate and save hypervectors of position 𝑀 × 𝑁 in the item memory. Each hyper-vector corresponds to a pixel location and represents spatial connections within an
+image.
+Symbolic representations, like the letter processing example, necessitate the use of orthogonal vectors, which means that they must be distinct. However, if the application incorporates numerical data, then it is
+necessary to have similarity or correlation between certain data points.
+To achieve dissimilarity, orthogonal random dense vectors are used,
+where 50% of the binary values are set to 1. A vector is considered
+dense if its elements "1" and "0" have about equal probabilities. When
+dealing with numerical data, it is advantageous to use sparse vectors
+since they may effectively represent comparable values that are close
+to each other. If each hyper-vector varies from the others by only a
+few bits, then sparsity may be achieved in the vector representation
+[36–38].
+Schmuck et al. [29] propose a module for manipulating hyper-vector
+that eliminates the need for expensive memory storage. Instead, it uses
+more affordable logical operations to recreate seed hyper-vectors, making it easier to create composite hyper-vectors without requiring extra memory. The authors propose a novel method for implementing the
+majority-gate application. They use an hyper-vector manipulator module to execute approximate majority gating in a step-by-step manner.
+This allows continuous operation in the binary space, which is beneficial for efficient on-chip learning.
+Hersche et al. [39] and Cannings et al. [40] introduced random projection techniques that utilize dense bipolar vectors (consisting of +1s
+and -1s) to encode hyper-vector . The usage of this encoding method
+in hardware implementations may be wasteful due to the extensive use
+of addition and multiplication operators. Instead of employing dense
+hyper-vectors [41], implementing a sparse random projection with a
+sparsity factor of 𝑠% would improve efficiency by randomly generating hyper-vector elements. Selecting the appropriate sparsity factor can
+greatly decrease the number of arithmetic operations.
+The random indexing approach was suggested as a means of projecting data items onto the hyper-vector space for the purpose of analyzing
+text contexts [42,43]. This approach randomly generates each hypervector by distributing a tiny percentage of +1𝑠 and −1𝑠, while the rest
+of the components are zeros. This results in a sparse hyper-vector for
+each piece of data. Moreover, Kleyko et al. [4] discuss the use of fractional power encoding as a method to encode images 2𝐷. This method
+entails the generation of two randomly allocated base hyper-vectors, labeled 𝑃 and 𝑄, for the 𝑥 and 𝑦 axes, respectively. For every place (𝑖, 𝑗)
+in the picture, the corresponding hyper-vector , denoted as 𝑍, is calculated by increasing the base hyper-vector with the combined coordinate
+values (𝑖 and 𝑗). Hence, the formula for the resultant hyper-vector at
+coordinates (𝑖, 𝑗) may be stated as: 𝑍 = 𝑃
+𝑖 ∗ 𝑄𝑗
+.
+A brief detail on these encoding schemes is shown in Table 2. This
+section presents the fundamentals of HDC, encompassing its core
+principles, mathematical underpinnings, essential operations, and encoding schemes. In the following sections, we will explore distinct
+HDC architectures and their applications in different domains of
+AI.
+3. Major hyper-dimensional computing architectures
+The evolution of HDC has been influenced by both traditional and modern architectures (see Fig. 2). This section offers a brief overview of
+prominent HDC architectures, emphasizing their significant contributions.
+3.1. Tensor product representations (TPR)
+One of the pioneering models in HDC is the Tensor Product Representations, also known as the TPR model. Smolensky et al. [44] in 1990,
+initially introduced the TPR model. Eduardo Mizraji [45,46] also proposed similar ideas during the same era; however, they did not attract
+significant interest from the scientific community. Smolensky et al. [44]
+employs the tensor product, which is the outer product of specified vectors, to generate a representation that integrates all the information from
+the inputs. A normalized inner product (tensor product) is needed to be
+computed of matrix and vector in order to extract the input information
+from the generated matrix. This approach results in appropriate and accurate binding and unbinding. However, the utilization of the tensor
+product leads to an issue: the result of combining two vectors through
+the tensor product is a matrix, and the dimensions of this matrix increase
+with each successive computation. When using HDC/VSA models, it is
+expected that the dimensionality of the result hyper-vectors be identical
+to the argument hyper-vectors in order to ensure engineering practicality and facilitate mathematical computations. Therefore, the classification of the TPR model as an HDC model depends on whether the fixed
+dimensionality of representations is regarded as a mandatory characteristic of an HDC model or not. TPR can be viewed as HDC forerunner.
+3.2. Holographic reduced representations (HRR)
+In the early 1990s, Plate et al. [47] introduced the Holographic Reduced
+Representations (HRR) models [3,47,48]. HRR was derived from the
+Smolensky et al. TPR model [44] and other similar models [49–53]. In
+the context of HRR, the atomic hyper-vectors used to represent different
+objects are expressed as real numbers. Each component of these hypervectors is created individually from a normal distribution with a mean
+of 0 and a variance of 1 divided by 𝐷 (dimensions). When the value of
+𝐷 is large, the Euclidean norm approaches a value of 1. The binding
+process is defined on two hyper-vectors (𝑝 and 𝑔) and is accomplished
+by circular convolution, which maps the outer product back onto a 𝐷-
+dimensional space.
+𝑝 𝑜 𝑔 = 𝑡
+𝑗 =
+𝐷∑−1
+𝑘=0
+𝑔𝑘
+𝑝𝑗−𝑘 𝑚𝑜𝑑(𝐷), (4)
+Here 𝑡
+𝑗
+represents the element 𝑗
+𝑡ℎ of the resulting hyper-vector . The circular convolution operation computes the product of norms and approximately maintains the unit norms of the input hyper-vectors. The bound
+hyper-vector is dissimilar to the input hyper-vector . However, bounded
+hyper-vectors with identical inputs exhibit similar bound hyper-vectors.
+The unbinding process is achieved through the circular correlation between the bound hyper-vector and one of the input hyper-vectors. A
+cleaning technique is necessary due to the presence of excessive noise
+in the result.
+Plate [3] also provided two basic mechanisms that function on HRR’s.
+The first machine is the Role/Filler selector. In order to manipulate
+frames with roles and fillers, it is necessary to first choose the suitable
+roles and fillers before convolving them. The plate machine can extract
+the optimal role from an uninstantiated frame for a specific filler. The
+most suitable role would be either the "first" role in the frame or the role
+that synergies most effectively with the specified filler. A single method
+can be formed by integrating both of these selection criteria. A frame
+that has not been created is saved as the combination of its roles and a
+frame label. Every role and filler must be kept individually in item memory. This machine exemplifies a method by which high-level decisions
+can be made simultaneously in systems utilizing HRR’s. The role/filler
+selector machine is shown in Fig. 3.
+Fig. 4 shows the second machine called the Chunked Sequence Readout Machine. This machine is capable of reading fragmented chunks
+and is constructed using a stack, two buffers, a correlator, a classifier,
+a clean up memory, and three gating routes. The classifier identifies
+if the primary item in the trace is a terminal, a non-terminal (chunk),
+Results in Engineering 29 (2026) 109589
+6
+A.Y. Salik et al.
+Table 2
+Major Encoding Schemes for Hyper-Dimensional Computing.
+Ref. Name Description
+[32] Siamese
+Encoder
+The encoder takes scalar features and converts them into binary hyper-vectors after a user-defined drop-off
+for cosine similarity. The authors trained a Siamese Neural Network [33].
+[11], [26], [34], [30] Record Based,
+N-gram Based
+The N-gram method uses permutation (𝜋) for each level of hyper-vector . The produced class hyper-vectors
+of the permuted level hyper-vectors’ are developed by element-wise multiplication (𝑋𝑂𝑅). Whereas the
+Record-based method uses orthogonal position hyper-vectors and level hyper-vectors for each input feature,
+indicating correlation for close pairings. Individual hyper-vectors for a class are calculated by adding the
+element-wise multiplication (logical 𝑋𝑂𝑅) of level and position hyper-vectors for each feature.
+[35] F5-hd Here, the lowest value feature (𝐹1
+) is assigned a randomly generated hyper-vector (𝐻1
+) with a size of 𝐷. The
+feature with the highest value (𝐹𝐿
+) is assigned a randomly generated hyper-vector , (𝐻𝐿
+), by flipping half
+of its 𝐷 bits. The next hyper-vectors are generated by toggling 𝐷∕2
+𝐿−1
+bits in each iteration. Here, permutation
+and bundling processes are used.
+[32] Spatial Encoder This is used to encode spatial relationships using binary position hyper-vectors in images. 𝑀 position
+hyper-vectors are created for the x-axis of a 𝑀 × 𝑁 image using the linear encoding technique of the level
+hyper-vectors, and identical linear encoding technique is used to produce 𝑁 position hyper-vectors for the
+y-axis. Then the separate position hyper-vectors at each axis are bound together to form a final position
+hyper-vector at the pixel location (𝑥, 𝑦).
+[36], [37], [38] Sparse
+hyper-dimensional
+Encoder
+When dealing with numerical data, it is advantageous to use sparse vectors since they may effectively
+represent comparable values that are close to each other. If each hyper-vector varies from the others by
+only a few bits, then the sparsity may be achieved in the vector representation.
+[29] Spatial Encoding, Temporal Encoding, N-Gram
+Bundling
+This method eliminates the requirement for expensive memory storage. Instead, it uses more affordable
+logical operations to recreate seed hyper-vectors, making it easier to create composite hyper-vectors without
+requiring extra memory. A hyper-vector manipulator module is used to execute approximate majority
+gating in a step-by-step manner. This allows for continuous operation in the binary space, which is beneficial
+for efficient on-chip learning.
+[39], [40], [41] Sparse Random
+Projection
+Random projection utilize dense bipolar vectors (consisting of +1𝑠 and −1𝑠) to encode hyper-vectors. For
+hardware efficiency, sparse random projection with a sparsity factor of 𝑠% would enhance efficiency by
+randomly generating hyper-vector elements. Selecting the appropriate sparsity factor can greatly decrease
+the quantity of arithmetic operations.
+[42], [43] Random Indexing This approach generates each hyper-vector by randomly distributing a tiny percentage of +1𝑠 and −1𝑠,
+while the rest of the components are zeros. This results in a sparse hyper-vector for each piece of data.
+[4] Fractional
+Power
+Encoding
+Used to encode 2𝐷 images. This method entails generating two randomly allocated base hyper-vectors
+for the 𝑥 and 𝑦 axes, respectively. For every place (𝑖, 𝑗) in the picture, the corresponding hyper-vector is
+calculated by raising the base hyper-vector with the combined coordinate values (𝑖 and 𝑗).
+Fig. 2. Pie charts representing (A) learning domain distribution of HDC applications in AI, (B) application-wise distribution of the HDC models, and (C) distribution
+of HDC models w.r.t the classification tasks.
+Results in Engineering 29 (2026) 109589
+7
+A.Y. Salik et al.
+Fig. 3. The Role Selector Machine [3] operates on HRR. This machine is simulated on a convolution calculator having a 1024-element vector. Suitable roles and
+fillers are first selected. For a specific filler, this machine can extract the optimal role from an uninstantiated frame. Each filler and role is separately stored in item
+memory. Using HRR, this machine enables high-level simultaneous decisions. The red ’*’ represents an approximate inverse. (For interpretation of the references to
+colour in this figure legend, the reader is referred to the web version of this article.)
+Fig. 4. A Chunked Sequence Readout Machine consists of a stack, correlator, classifier, clean-up memory, two buffers, and three gating routes. The classifier identifies
+if the primary item is a chunk (non-terminal), a terminal, or nothing. In each iteration, this machine performs only one action sequence out of these three. The purpose
+of the trace buffer is to store the current chunk being decoded, while the stack stores the remaining higher-level chunks.
+or nothing. During each iteration, the machine performs one of three
+action sequences based on the result of the classifier. The stack can
+be implemented through multiple methods. The trace buffer in this
+machine stores the chunk that is presently being decoded, while the
+stack holds the portions of higher-level chunks that have not yet been
+decoded. Hiratani et al. [54] introduced a comprehensive framework
+called "quadratic binding" which encompasses several types of binding, such as outer product-based binding and circular convolution-based
+binding. It can, for example, be utilized to modify the dimensionality of
+the bounded hyper-vector to fall within the range of 𝐷 and 𝐷2. The superposition operation involves a component-wise addition. Frequently,
+normalization is employed following addition in order to maintain the
+unit Euclidean norm of compositional hyper-vectors. The binding and
+superposition operations in HRR exhibit commutativity. The similarity
+measure might be 𝑠𝑖𝑚𝑑𝑜𝑡 or 𝑠𝑖𝑚cos.
+3.3. Fourier holographic reduced representations (FHRR)
+Inspired by HRR and with complex numbers as the components of the
+hyper-vectors, Plate [55] introduced the Fourier Holographic Reduced
+Representations model (FHRR). Atomic hyper-vectors are random vectors with complex values, where each vector element can be considered as a phase angle (phasor) that is independently chosen at random
+from the uniform distribution over (0, 2𝜋). Typically, the unit magnitude of each component (unitary heuristics units) is used. The mean of
+the sum of the cosines of the angle differences represents the similarity metric. Here, component-wise complex multiplication (also known
+as Hadamard product) is the binding operation. By binding an hypervector conjugate (component-wise angle subtraction modulo 2𝜋), the
+unbinding operation is performed. The method for clean-up is applied
+similarly to HRR. After performing a component-wise complex addition
+Results in Engineering 29 (2026) 109589
+8
+A.Y. Salik et al.
+Fig. 5. A neural information processing schematic with inputs from vision,
+touch and hearing. This diagram represents the brain binding problem, where
+different sensory inputs are connected with current state of the system. Recurrent connections provide a means to bind inputs to both the current and past
+states of a system, as well as to each other. These connections may be produced
+at random.
+known as superposition, the next process is to normalize the magnitudes
+of all the components to ensure that they have the same magnitude.
+3.4. Matrix binding of additive terms (MBAT)
+The Matrix Binding of Additive Terms (MBAT) model, presented by Gallant et al. [5], suggests using matrix vector multiplication to carry out
+the binding action. This option was briefly covered in the Plate book
+[55] as well. Typically, it has the ability to alter the dimensionality of
+the resulting hyper-vector , if necessary. Atomic hyper-vectors have a
+high density and their components are chosen randomly and independently from the set of {-1, +1}. hyper-vectors with components that
+have real values are also feasible. The matrices are randomly generated, with elements chosen from the set {-1, +1}. The matrix vector
+multiplication results can be converted into binary values by applying
+a threshold. The characteristics of this binding are identical to those of
+other HDC models, such as HRR, etc. Specifically, when the input hypervectors are identical, the resulting bound hyper-vectors will also be similar. Here, 𝑠𝑖𝑚𝑑𝑜𝑡 or 𝑑𝑖𝑠𝑡𝐸𝑢𝑐 is the similarity measure. In addition, the superposition is based on component-wise addition, making normalization
+possible. By inverting the role matrix, the unbinding can be performed.
+To determine whether a certain hyper-vector is included in the sum of
+hyper-vectors resulting from matrix multiplication, the presence of that
+hyper-vector must be verified. The matrix should be multiplied by the
+hyper-vector , and the similarity of the resulting hyper-vector should be
+calculated and compared to a predefined similarity threshold.
+Fig. 5 represents a neural information processing schematic. Here, inputs are received from different sensory subsystems, including vision,
+touch, and hearing. The present condition of the system (the state of
+the neuron) is altered by data from these inputs, as well as from its recurrent connections. The diagram depicts the brain binding problem,
+which involves the need to connect various sensory inputs (or different
+neurological regions) with the current state of the system.
+3.5. Task-projected hyper-dimensional computing (TP-HDC)
+Chang et al. [56] introduced Task-Projected Hyper-Dimensional Computing (TP-HDC) as a method to enable the HD model to handle several
+tasks at the same time by utilizing excess dimensionality in the hyperspace. The TP-HDC framework is shown in Fig. 6. In order to update
+distinct Associative Memories (AMs) for every task in a task sequence,
+the methodology uses TP-HDC. In the inference stage, the HD queries are
+generated. TP-HDC achieves a 12.8% increase in accuracy compared to
+the baseline method and successfully reduces information loss between
+tasks by using redundant dimensionality in the hyperspace.
+3.6. VoiceHD
+Imani et al. [27] introduced an innovative design called VoiceHD, aimed
+at achieving energy efficiency and fast speech recognition to classify
+26 letters from the spoken dataset. VoiceHD uses a similarity check to
+categorize voices after encoding them into HD space. The VoiceHD system consists of two primary components: an encoder and an associative
+memory. VoiceHD architecture is shown in Fig. 7.
+Initially, the voice signal is converted into the frequency domain, where
+it is represented by 𝑁 frequency ID channels and 𝑀 levels. Subsequently, VoiceHD translates the ID and level information into arbitrary
+hyper-vectors that are stored in the item memory. During the training
+process, the VoiceHD encoding module combines these hyper-vectors to
+form learned patterns. These patterns correspond to 26 hyper-vectors,
+which are then saved in the AM. During the testing process, query hypervectors are produced using a similar encoding module. These query
+hyper-vectors are then transmitted to AM. The query hyper-vector is
+compared to the stored hyper-vectors of 26 classes. The hyper-vector
+with the highest similarity is selected to forecast the letter. The dimensionality 𝐷, of the hyper-vectors is 10,000.
+3.7. QuantHD
+Imani et al. [57] introduced a novel approach for quantizing the HD
+computing model during training called QuantHD. While maintaining
+the classification accuracy, QuantHD converts the trained non-binary
+hyper-vectors to binary (0, 1) or ternary (−1,0,+1) models to represent
+the class hyper-vectors. As shown in Fig. 8, QuantHD comprises three
+primary stages: 1) Initial Training: This process involves creating an initial HD model by aggregating all encoded hyper-vectors that correspond
+to each class. The initial training step follows the same process as the
+conventional HD computing methodologies. 2) Quantization: is a process that converts the HD model to a binary or ternary model. Due to
+the HD model being trained to process floating-point numbers, quantization leads to a substantial degradation in quality. Furthermore, 3)
+Retraining: is used, with a pre-defined iteration number of 30, to counteract the accuracy degradation caused by quantization. The similarity
+check now is either the dot product (ternary model) or the Hamming distance (binary model) rather than the cosine metric (non-binary model).
+Fig. 9 represents the Binary/Ternary models.
+3.8. NeuralHD
+Zou et al. [58] presented NeuralHD, an innovative HDC method featuring a dynamic encoder for adaptable learning. The process finds and
+eliminates irrelevant dimensions (least impact on learning) from the
+computation, hence improving accuracy by reconstructing them on the
+encoding module. Fig. 10 displays a NeuralHD learning framework. NeuralHD initially transforms the data into an HD space using one of the
+available encoding techniques. NeuralHD trains the encoded data and
+normalizes the trained model to simplify the similarity measure used in
+the inference/retraining process, specifically the dot product operation.
+Next, NeuralHD calculates the variance between different class dimensions to identify the dimensions with minimal effect on the accuracy of
+classification. The NeuralHD algorithm eliminates irrelevant dimensions
+from both the model and the base hyper-vectors in the encoder module.
+NeuralHD ultimately regenerates the fundamental hyper-vectors in the
+specified dimensions.
+Results in Engineering 29 (2026) 109589
+9
+A.Y. Salik et al.
+Fig. 6. During training of TP-HDC Framework, there are 𝑠 task sequences, each with 𝑘 classes. Corresponding 𝑠 associative memories (AMs) are updated. 𝑃 represents
+the generated task-oriented projection keys. The size of compressed AM is independent of task numbers. During the inference stage, the same mapping and encoding
+is used to generate query HD vector 𝑄. Hamming distance is calculated between 𝑄 and each class HD vectors. The class with the minimum hamming distance is the
+classification output.
+Fig. 7. In VoiceHD architecture, 𝑀 levels and 𝑁 ID channels are generated after the voice signal is converted to frequency domain. These levels and IDs are mapped
+to hyper-vectors and saved in item memory (IM). During training cycle, learned patterns are formed by the encoding module. These patterns represents 26 hypervectors (classes) and are stored in AM. Query hyper-vectors are generated in testing cycle using the same encoding module and are also stored in AM. These query
+hyper-vectors are compared with already stored hyper-vectors of 26 classes. The output letter is predicted by the hyper-vector with highest similarity.
+3.9. SecureHD
+Imani et al. [28] presented SecureHD, which is a framework in a secure
+HD space for collaborative learning, where the server and other clients
+are considered untrustworthy. In this context, they specifically examine the Honest-but-Curious (HbC) adversary model, which assumes that
+every party, whether it be a server or a client, is untrustworthy, but
+nonetheless adheres to the protocol. A Multi-Party Computation (MPC)
+protocol-based, user-specific keys are generated in the cloud as the initial step. Encoding the data with a collection of base hyper-vectors is
+required to execute an HD learning task. For the learning application,
+the MPC protocol generates Global Keys (GKeys), which are the base
+hyper-vectors. The server provides permutations of each GKey, which
+are hyper-vectors with randomly shuffled dimensions, instead of sharing the actual GKeys with clients. Due to the unique combinations of
+GKeys, known as Personal Keys (PKeys), possessed by each user, it is
+impossible for anyone to decode encoded data. Shuffling Keys (SKeys)
+are dimension indexes utilized by the cloud that are used in the GKey
+shuffling process. Due to the absence of GKeys, the cloud is unable to decrypt the encoded data of clients. This key generation process based on
+the MPC (Multi-Party Computation) algorithm is executed only once.
+Following the generation of the encryption keys, every client has the
+ability to encode their data using their respective Public Keys. After
+the encoded data is transmitted to the cloud, the cloud reorganizes the
+Results in Engineering 29 (2026) 109589
+10
+A.Y. Salik et al.
+Fig. 8. QuantHD architecture consists of three important stages. First one is the initial training, where by using the conventional HD computing methods, an initial
+HD model is created. During the second stage, the QuantHD converts the trained non-binary hyper-vectors into binary or ternary models. As the conventional HD
+model is used to train the floating-point numbers and quantization results in substantial degradation. The third stage of retraining addresses the accuracy loss by
+quantization. In the inference stage, a similarity check is performed by either the hamming distance or the dot product.
+encoded data using the SKeys for the client. This enables the cloud to
+execute the learning task without requiring access to GKeys and PKeys.
+The SecureHD framework is shown in Fig. 11.
+3.10. SearcHD
+Imani et al. [59] introduced a comprehensive binary HD computing algorithm called SearcHD, which is capable of performing all HD computing tasks, including training, encoding, and inference, exclusively
+using binary operations. Various encoding methods exist for mapping
+data points into an HD space, such as n-gram-based and record-based
+encoding. In this context, SearcHD employs record-based encoding, a
+method that is particularly advantageous for hardware implementation
+and relies solely on bitwise operations. This encoding method identifies
+the lowest and highest values of the features and then divides that range
+into 𝑚 equal-spaced levels. Next, it assigns a randomly generated binary
+hyper-vector of dimensions 𝐷 to each of the quantized levels.
+In the field of HD computing, the likelihood that two randomly generated data hyper-vectors are orthogonal to each other is high. During the
+training process, hyper-vectors representing data belonging to the same
+class are modified to be similar to each other. SearcHD is a framework
+(shown in Fig. 12) that facilitates the binarization of the HD computing
+technique in the training and inference stages. SearcHD eliminates the
+addition operation during training by utilizing bitwise substitution. This
+method trains a model by randomly sharing the query hyper-vectors’
+elements with each class hyper-vector. The binary model with HD computing has a limited level of accuracy in classification, so SearcHD takes
+advantage of vector quantization to describe an HD model employing
+many vectors for each class. SearcHD is able to increase the amount
+of information stored in each class without changing the model from
+binary vectors.
+3.11. GrapHD
+Poduval et al. [60] introduced a hyper-dimensional graph memory
+called GrapHD that makes holographic, effective, and reliable cognitive
+learning possible. GrapHD encodes different types of graph data in a HD
+space. The encoding is based on a clearly defined set of mathematical
+principles. GraphHD encoding utilizes a solitary hyper-vector to represent a graph, with each dimension representing a neuron. Numerous
+cognitive operations are possible directly over the graph hyper-vector
+with GrapHD. The exact information from the graph is extracted by these
+cognitive operations without directly accessing the original nodes. The
+authors utilize these functionalities to facilitate many applications, such
+as graph matching, finding the shortest path, and detecting objects. The
+figure shows a block diagram of GrapHD showing its encoding, applications, and cognitive operations Fig. 13.
+3.12. Hardware and system-level architectures
+Beyond algorithmic formulations, a growing body of work has focused
+on realizing HDC efficiently at the hardware and system level, targeting
+edge intelligence, energy efficiency, and scalability. Several studies have
+explored algorithm-hardware co-design approaches, where HDC primitives are mapped onto existing accelerator infrastructures to exploit data
+parallelism and reduce memory access overheads. Ni et al. [61] propose
+an algorithm-hardware co-design framework that maps HDC operations
+onto existing low-power accelerators, specifically the Google Edge TPU,
+by interpreting HDC as a hyper-wide neural network. Gupta et al. [62]
+introduce FELIX, a processing-in-memory (PIM) architecture that enables single-cycle Boolean logic operations directly within memristive
+crossbar memory, drastically reducing data movement for HDC. By executing HDC encoding and associative operations fully in memory, FELIX
+demonstrated the strong suitability of HDC for in-memory architectures.
+Khalegi et al. [17] present tiny-HD, a dedicated and configurable ASIC
+engine for HDC tailored to ultra-low-power IoT applications through
+algorithm-hardware co-optimization and simplified dataflow.
+There are also a few additional traditional and modern architectures
+that can be explored. For example, Binary spatter codes [63], MultiplyAdd-Permute (MAP) [64], Binary Sparse Distributed Codes (BSDC)
+[65], Geometric Analogue of Holographic Reduced Representations
+(GAHRR) [66], Model Compression for HDC (CompHD) [67], HRR Encoding Structure [68], HDC Adaptive Training (AdaptHD) [69], Modular Composite Representation (MCR) [70], HDC Semi-superised Learning (SemiHD) [71], Sparse Block Codes (SBC) [72], Holographic Graph
+Results in Engineering 29 (2026) 109589
+11
+A.Y. Salik et al.
+Fig. 9. QuantHD binarizing and ternarizing of the trained model is depicted in this diagram. The floating-point values of input hyper-vectors can be transformed to
+binary or ternary values. For binarization, the output values will be either 0 or +1. Whereas for ternarization, the floating-point values can be transformed to three
+values i.e., 0, +1 and -1.
+Fig. 10. NeuralHD is an innovative method featuring adaptive Learning and regenerative encoding. The main contribution of NeuralHD is to locate and eliminate
+dimensions having the least impact on training. NeuralHD uses traditional encoding methods, and after training, the model is normalized to simplify the similarity
+measure. Then it calculates the variance across different class dimensions. NeuralHD removes the dimensions that have the minimum effect on accuracy from the
+model and base hyper-vectors.
+Results in Engineering 29 (2026) 109589
+12
+A.Y. Salik et al.
+Fig. 11. SecureHD Framework is used in collaborative learning where client and server are considered untrustworthy. User-specific global keys (GKeys) are generated
+in the cloud using the Multi-Party Computation (MPC) protocol. Permutations are performed on each GKeys by the server, and resultant keys are called Personal
+Keys (PKeys). The Gkeys are not shared with the server and clients. Due to this key generation process, it is impossible for the server and clients to decode anyone’s
+encoded data. SKeys are used by the server to reorganize the encoded data on the server to execute the learning task without access to GKeys and PKeys, making the
+process secure.
+Fig. 12. SearcHD is a binary HD computing Framework that employs record-based encoding, which is more hardware-friendly. The encoding calculates the maximum
+and minimum feature values and quantizes them into linear 𝑚 levels. After that, it assigns a randomly generated binary hyper-vector of 𝐷 dimensions to each of the
+quantized levels. A random binary hyper-vector is also assigned to each existing feature index (𝐼𝐷) as well. Then these are combined using the XOR operation to
+make a non-binary encoded hyper-vector. SearcHD uses bit-wise substitution instead of addition, which stochastically trains the model by sharing query hyper-vector
+elements with each class hyper-vector.
+Neuron (HGN) [73] etc. In the following section, we will examine the
+diverse applications of HDC in various fields of AI.
+4. Utilization of HDC in different AI applications
+The flexibility and ability to adapt of HDC architectures have resulted
+in their effective utilization in different areas of AI.
+This section presents the challenges of using HDC models to handle various tasks, along with solutions. A progressive and chronological timeline
+of HDC applications is shown in Fig. 1. Due to the extensive utilization
+of HDC in AI applications, we can group them into three categories: supervised learning, unsupervised learning and semi-supervised learning.
+A typical example of an HDC application for supervised learning is text
+classification [74]. By encoding and categorizing large text corpora using HD representations, computational resources can be significantly
+reduced while still achieving competitive accuracy. Another example
+can be found in the domain of sentiment analysis, where HDC models
+possess the ability to comprehend intricate linguistic patterns and contextual subtleties in order to categorize sentiment polarity [75]. These
+models gain advantages from the resilience of HDC against noise and its
+efficiency in handling input spaces with high dimensions. Other applications in supervised learning include [19,76–78].
+HDC is utilized in the field of unsupervised learning for the purpose
+of performing clustering and anomaly detection tasks. For example, in
+sensor data analysis, HDC-based models have the ability to recognize
+patterns and identify anomalies without requiring labeled data. They
+achieve this by utilizing the HD space to distinguish subtle variations
+and irregularities. This feature is especially valuable in fields such as
+industrial monitoring and network security, as it can identify abnormal
+patterns and thereby prevent potential risks and malfunctions. Some
+applications in unsupervised learning are [79,80].
+Semi-supervised learning applications of HDC [58] encompass scenarios such as biomedical signal processing and speech recognition. These
+scenarios involve a limited availability of labeled data, necessitating the
+Results in Engineering 29 (2026) 109589
+13
+A.Y. Salik et al.
+Fig. 13. GrapHD Framework encodes many types of graph data into HD space. GraphHD uses solitary hyper-vector for a graph in training, where each dimension
+represents a neuron. Different cognitive operations are employed for information retrieval and node reconstruction.
+utilization of both labeled and unlabeled data to enhance the accuracy
+and generalization of models. For complex applications that involve insufficiently labeled data alongside a large amount of unlabeled data,
+HDC is the appropriate solution due to its robustness to noise and ability to manage different data types.
+While classification remains a dominant use case in the literature, the
+HDC has been successfully extended to other problem domains like clustering and recommendation systems. Imani et al. [81] propose HDCluster, an unsupervised clustering framework that extends HDC by iteratively forming and refining cluster hyper-vectors using similarity-based
+associative updates. By leveraging the robustness and noise tolerance
+of HD representations, HDCluster achieves competitive clustering accuracy with significantly lower computational and memory overhead
+compared to conventional clustering methods. Guo et al. [82] introduce
+HyperRec, an HDC-based recommender system that encodes users and
+items into hyper-vectors and performs recommendation through similarity search in HD space. The approach enables efficient, scalable, and
+privacy-friendly recommendations with low memory footprint and fast
+inference, making it well-suited for edge and resource-constrained deployment scenarios.
+Fig. 2(A) represents the learning domain distribution of HDC applications in AI, whereas Fig. 2(B) shows the application-wise distribution of
+the HDC models. Fig. 2 (C) represents the HDC distribution for classification tasks. Moreover, state-of-the-art (SOTA) HDC applications are
+shown in Table 3. This section provides various applications of HDC
+for AI. The potential of HDC architectures will be discussed in the next
+section, utilizing various benchmarking techniques and commonly used
+evaluation metrics.
+5. Evaluation metrics and benchmarking
+The transformation and progression of HDC are key factors in comprehending their effectiveness in diverse applications. This section will provide various essential evaluation metrics and benchmarking techniques
+for examining HDC models.
+5.1. Commonly used performance metrics
+1. The general correctness of the intended outcome is measured
+by an important metric called accuracy. Formally, accuracy is
+the ratio of correctly recognized cases to the overall number of
+cases. Conventionally, accuracy indicates how well a model performs from a broader perspective; however, in cases where classes
+Table 3
+State-of-the-art (SOTA) HDC methods for different applications.
+Applications SOTA Work
+Natural Language Processing [83–89]
+Faults and Automotive Data Classification [90–96]
+Behavioral Signals Classification [88,89,97–101]
+Biomedical Data [18,102–107]
+Computer Vision [108–114]
+Robotics [115–119]
+have unequal distributions, accuracy may not be sufficient for
+evaluation.
+2. The computational effectiveness of HDC architectures is measured by
+a metric called efficiency. It includes energy efficiency, speedup, area
+efficiency, memory efficiency, and throughput. For cases of practical deployment where real-time processing is required in resourceconstrained environments, these metrics are crucial for evaluating
+the performance of HDC architectures.
+3. The capability of the HDC architecture to manage bigger data or
+more complex tasks is known as scalability. This represents the effectiveness of the HDC architecture without any substantial reduction
+in performance.
+5.2. Benchmark datasets
+5.2.1. Computer vision datasets
+Computer vision applications commonly employ benchmark datasets
+such as CIFAR-10 [133], CMU Visual Localization [122], ORL [128],
+FACE [132], and MNIST [125] to assess the performance of HDC models in tasks such as object recognition, visual place recognition, face
+detection, and character recognition.
+5.2.2. Text datasets
+The following datasets are used as benchmarks to assess the performance
+of HDC for text-related tasks: Hotel Reviews [150], chatbot [154],
+Reuters Newswire [156], 20 Newsgroups corpus [160], and Reuters21578 [158] for tasks like text spam detection, intent classification,
+news and text classification.
+Results in Engineering 29 (2026) 109589
+14
+A.Y. Salik et al. Table 4 Benchmarking of HDC Architectures for Computer Vision Applications.
+Ref. Architecture /Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[111] VSR Visual Place Recognition 0.84, 0.35, 0.61b 0.97e - SW Complex OxfordRobotCar [120], StLucia[121], CMU Visual Localization [122]
+[112] Sparse HDC Ego-Motion Estimation 0.1608c 9.84× 6.25× GAP8 [123] S, B MVSEC [124]
+[108] PCNC Classifier Character Recognition 92.5% 0.440f - SW S, B MNIST [125]
+[126] HoloGN Encoding Character Recognition 89.94% - - SW D, B MNIST
+[127] TP-HDC Character Recognition 97.80% 51.30%g 15% CPU B MNIST
+[101] RFF HDC Character Recognition 95.40% - - SW Integer MNIST
+[108] PCNC classifier Face Recognition 100% 0.1f - SW S, B ORL [128]
+[129] PCNC+RLD Face Recognition 97.49%, Nill, 93.57% - - SW S, B ORL, FRAV3D [130], FEI [131]
+[99] StocHD Face Recognition 96% (approx.) 6.4× 3.3× SW + ASIC Bi FACE [132]
+[113] MOMBAT Object Classification 81%, 97.90% - - SW D, B CIFAR-10 [133], Artificial Face
+[134] HIL Object Classification 0.65, 0.58d - - SW D, B CIFAR-10, NUSWIDE_81 [135]
+[101] RFF HDC Object Classification 84% - - SW Integer Fashion-MNIST [136]
+a Class Representation: Bi: Bipolar, B: Binary, S: Sparse, D: Dense, Complex: Complex Valued, Integer: Integer Valued
+b Precision.
+c Average Relative Pose Error (ARPE).
+d F1 Score.
+e Recall.
+f Error.
+g Energy Reduction.
+Table 5
+Benchmarking of HDC Architectures for Faults and Automobile Classification.
+Ref. Architecture/ Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[93] VSA based Classifier Vehicle Type Identification - 1.0c 130d SW D, B From [137]
+[138] Vector Representations based Environment Modeling Driving Context Identification 96% - - SW Real Own Data
+[139,140] VSA based Encoding Vehicle Trajectory Prediction 86%, 95.1% - - SW Real Own Data, NGSIM US-101 [141]
+[142] HDC + feed-forward NN Driving Style Identification 0.94b - - GPU Complex UAH-DriveSet [143]
+[96] HDAD Automotive Sensor Attacks detection 100% - - SW Bi AEGIS Big Data Project [144]
+[91] HDBSCAN clustering algorithm Wafer map defects detection 95% - 46× CPU D,B WM-811K [145]
+[90,146] Distributed HoloGN Fault Isolation in Nuclear Power Plant 96.6% - - SW D, B From [147]
+[92] SCM-Based AM Ball Bearing Anomaly Detection 96.31% 3.3× 3.1×e SW D, B IMS Bearing Dataset [148]
+a Class Representation: Bi: Bipolar, B: Binary, D: Dense, Real: Real Valued, Complex: Complex Valued.
+b F1 Score.
+c Vector Size in Kb.
+d delay (ms).
+e Area Reduction.
+Results in Engineering 29 (2026) 109589
+15
+A.Y. Salik et al.
+Table 6
+Performance Evaluation of HDC Architectures for Text Spam Detection, Intent Classification, News Classification, and Text Classification Tasks.
+Ref. Architecture/ Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[149] SpamHD Text SpamDetection 92.75%,97.8%,92.84% 44d - SW Bi Hotel Reviews [150], SMS Text [151], Youtube Comments [152]
+[153] HyperEmbed Intent Classification 0.97,b 0.92, 0.82 - 100× SW Bi Chatbot, Ask Ubuntu, Web Applications [154]
+[155] End-to-End BNN with HDC Intent Classification 0.92b 4×e - SW D, B Chatbot, Ask Ubuntu, Web Applications
+[74] HDC for News Articles News Classification 94% - - SW D, B Reuters Newswire [156]
+[157] BDR Text Classification 0.861c - - SW S, B Reuters-21578 [158]
+[159] HRR based approach News Classification 58.19b - - SW Real 20 Newsgroups corpus [160]
+a Class Representation: Bi: Bipolar, B: Binary, S: Sparse, D: Dense, Real: Real Valued
+b F1 Score.
+c Recall/precision break point.
+d Model Size (kB).
+e Memory Efficiency.
+Table 7
+Benchmarking of HDC Architectures for Biomedical Applications.
+Ref. Architecture/ Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[161] HDC for Biosignal Processing Various ExG biosignals Classification 74.5% - 3× - D, NB 4-class EEG motor imagery signals [162]
+[71] Semi-HD self training Liver Disorder Detection 74.10% 12.6× 7.11× FPGA+ Respberry Pi 3 D, B Bupa Liver Disorder [163]
+[164] BinHD Cardiotocograms 97.60% 12.4× 6.3× ASIC D, B CARDIO [165]
+[81] HDCluster Breast Cancer Detection 96.20% 2.4× 2.1× SW D, B Breast Cancer dataset [166]
+[167–169] Laelaps Epileptic Seizure Detection 94.84% 1.4× 1.7× CPU D, B SWEC-ETHZ iEEG Dataset [168]
+[170,171] HDC for Brain-Computer Interfaces Intention Recognition 74.50% - - SW Bi ERPs Dataset [172]
+[173] hyper-vector Design for Edge Devices Subject’s Intention Recognition 74% 1.23× 54× Odroid XU3 Bi ERPs Dataset
+[174] HDNA DNA Classification 99.70% 2.05× 4.32× CPU D, B Empirical [175], Molecular Biology [176]
+[177] HDC for DNA Classification Tumor Detection 97.70% - 3c CPU Bi BRCA, KIRP, THCA [178]
+[14] DNA Sequencing Splice Junctions Recognition 97.03% - - SW S, B Splice-junction Gene Sequences [176]
+[14] DNA Sequencing Protein’s Secondary Structure Prediction 63.21% - - SW S, B Protein Secondary Structure [179]
+[173] hyper-vector Design for Edge Devices Parkinson’s Disease Detection 90% 1.41× 150× Odroid XU3 Bi DREAM challenge dataset [180]
+[181] HDC for Septic Septic Shock Detection 60%, 90%b - - SW D, B eICU [182]
+a Class Representation: Bi: Bipolar, B: Binary, S: Sparse, D: Dense, NB: Non-binary.
+b Sensitivity.
+c Seconds.
+Results in Engineering 29 (2026) 109589
+16
+A.Y. Salik et al.
+Table 8
+Benchmarking of HDC Architectures for Natural Language Processing Applications.
+Ref. Architecture/ Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[27] VoiceHD Speech Recognition 93.8% 11.9× 4.6× CPU B ISOLET [183]
+[73,184] HD for Pattern Recognition Pattern Recognition 90% - - CPU B, S, D EMG Dataset [185]
+[42,186] HDC for Language Identification Language Recognition 96.7% 2× - ASIC 6 D, B Wortschatz Corpora [187] & Europarl Parallel Corpus [188]
+[59] SearcHD Speech Recognition, IoT Botnet Detection 85.2% 31.1× 12.8× CPU, ReRAM D, B ISOLET, FACE [132], UCIHAR [189], IOT [190]
+[69] AdaptHD Speech Recognition 96.15% 6.3× 6.9× Raspberry Pi 3 D, B ISOLET
+[26] MHD Speech Recognition 95.9% 6.6× 6.3× CPU D, NB ISOLET
+[57] QuantHD Speech Recognition, Mobile Position Recognition 95.7% 34.1× 4.1× FPGA+ Raspberry Pi 3 D, NB, B ISOLET, EXTRA [191]
+[15,192] FACH Speech Recognition 95% 5.9× 5.1× FPGA D, B ISOLET
+[193,194] HD based Nano-system Language Identification/ Recognition 96.7% 50× - 3D VRRAM/ CMOS D, NB, B Wortschatz Corpora & Europarl Corpus
+[37] SparseHD Language Recognition 95.4% 5.2× 1.4× ASIC S, B Wortschatz Corpora & Europarl Corpus
+[195] HDC for Language Classification Language Classification, Topic Extraction 91% - - SW Bi Wortschatz Corpora & Europarl Corpus
+[80] In-Memory HD Computing Language Recognition 96.86% - - SW D, B Wortschatz Corpora & Europarl Corpus
+a Class Representation: Bi: Bipolar, B: Binary, S: Sparse, D: Dense, NB: Non-binary
+Table 9
+Classification Results of HDC Architectures for Human Activity, Gesture, and Emotion Recognition.
+Ref. Architecture/ Encoding Algo. Application Acc. Energy Effncy. Speed up SW/ HW Class Rep.a Datasets
+[76] HDCP Activity Recognition 82.2% - - SW NB, D Palantir Context Data Library 2004 [196] [197]
+[67] CompHD Gesture Recognition 91.04% 74% 4.1× FPGA NB, D Own Dataset, Daily Sports and Activities dataset [198], Condition Monitoring of Hydraulic Systems [199]
+[29,185] HDC For Biosignal Processing Hand Gesture Recognition (EMG) 97.8% 2.39×b 986×c FPGA NB, B, D EMG Dataset [200]
+[201] HDC Activity Recognition 97% 7× 486× FPGA NB, B, D UCIHAR[189], PAMAP2[202], EXTRA[191]
+[203] BRIC Activity Recognition 95% 64.1× 9.8× FPGA B, D UCIHAR
+[16] PULP-HD Gesture Recognition 92.4% 2× 18.4× PULP B,D From [200]
+[204] HDC-MER Emotions Recognition 83.2% - - SW S, B AMIGOS [205]
+[97] HDC Early Fusion Emotions Recognition 76.7%, 87.1% - - SW D, B DEAP [206], AMIGOS
+a Class Representation: B: Binary, S: Sparse, D: Dense, NB: Non-binary
+b Area Efficiency
+c Throughput
+Results in Engineering 29 (2026) 109589
+17
+A.Y. Salik et al.
+5.2.3. Biomedical datasets
+To evaluate the effectiveness of HDC in biomedical applications,
+datasets such as eICU [182], BRCA [178], SWEC-ETHZ iEEG [168], and
+CARDIO [165] are used for the detection of septic shock, tumor detection, epileptic seizures, and cardiotocograms.
+5.2.4. Speech datasets
+Speech processing tasks are assessed using datasets such as ISOLET
+[183], Wortschatz corpora [187], and Europarl corpus [188] for tasks
+such as speech recognition and language recognition.
+For HDC, benchmark datasets are necessary to check how well HDC
+models work in different situations. More datasets are available in Tables 4–9.
+5.3. Results benchmarking
+The benchmarking performance of HDC in various applications highlights its adaptable and robust capabilities in AI. HDC models exhibit
+remarkable accuracy and efficacy in recognizing and distinguishing intricate patterns of human movement in activity and gesture recognition tasks. HDC’s proficiency in managing noisy and variable data is
+especially apparent in the fields of emotion and speech recognition,
+effectively producing dependable outcomes in tasks involving speech
+recognition and emotion detection. HDC is highly proficient in capturing
+linguistic nuances and surpasses conventional techniques in text classification and sentiment analysis for language recognition, classification,
+and identification. HDC’s HD representations are utilized in biomedical, bio-informatics, and genomics applications to enable advanced data
+analysis, providing valuable insights into intricate biological processes
+and genetic sequences. Furthermore, HDC models offer resilient solutions for anomaly detection and predictive maintenance in the domain of
+faults and automotive classification. HDC’s capabilities in object recognition and scene understanding in computer vision are comparable to
+the most advanced neural networks, especially in real-time processing situations with limited computational resources. Through rigorous
+benchmarking against well-established datasets and comparative studies, HDC consistently demonstrates its effectiveness across these diverse
+domains, highlighting its promise as a potent and adaptable computing
+paradigm. The benchmark results for these applications are shown in
+Tables 4–9.
+This section provides a clear overview of the essential evaluation metrics and benchmarking strategies used to evaluate HDC architectures.
+The following section will explore the limitations and challenges linked
+to HDC, providing a comprehensive overview of the current state of research in this domain.
+6. Limitations of existing HDC architectures
+Numerous interesting avenues and research directions arise as HDC in
+AI continues to develop and become more popular. This section examines the limitations of current HDC architectures, identifying specific
+areas in which researchers can investigate to improve the capabilities
+and usefulness of this paradigm.
+Despite the fact that it has promising capabilities, HDC is faced with a
+number of significant limitations that have not yet been resolved. Scalability is a major obstacle when dealing with extremely large datasets
+or highly complex tasks, as the size and complexity of the data can result in excessive computational and memory demands. Noise handling
+is a significant concern when it comes to HDC models, as they may face
+difficulties in maintaining accuracy and resilience in the presence of
+excessive noise or when handling input data that is highly variable.
+Moreover, the issue of interpretability persists; although HDC can effectively analyze and process HD data, the resultant models frequently
+lack transparency, thereby complicating the comprehension and explanation of their decision-making mechanisms. This presents difficulties
+in areas that require a high degree of explainability and accountability,
+such as autonomous and healthcare systems. Furthermore, the continuous development of dynamic and adaptive encoding schemes that can
+customize representations for particular tasks or data types is still an active research area. More comprehensive comparative studies and benchmarking against a wider range of cutting-edge models are also required
+to create standardized evaluation procedures and identify precise situations in which HDC exceeds or underachieves current methods. The integration of HDC with current AI frameworks and infrastructure presents
+practical difficulties, as HDC’s distinct computational paradigm may not
+easily align with traditional architectures and toolsets employed in machine learning and AI. To ensure wider acceptance and progress of HDC
+in various AI applications, it is essential to address these limitations.
+Although the field of research on merging HDC with vision-language
+models is developing, much work has not been done specifically to combine these two technologies. However, researchers have investigated the
+potential and have taken initial measures to combine vision-language
+models with HDC. Recent studies have shown that HDC can be efficiently utilized for multi-modal sensor fusion and integration of sensory
+data into a cohesive representation. For example, studies in robotics
+have shown that HDC has the ability to effectively combine perception
+and motor commands, making it suitable for active perception tasks that
+require integration of vision and language. Moreover, the utilization of
+hyper-dimensional vectors for the purpose of representing and binding
+multi-modal data, such as images and related descriptive text, implies
+that HDC can function as a link between linguistic and visual information [9,134,207,208].
+Although specific applications of vision-language models using HDC are
+still being developed, these initial studies demonstrate the potential of
+HDC to improve the representation and processing of visual and linguistic data when combined. This has the potential to drive progress in areas
+such as scene understanding, where a model using natural language can
+comprehend and articulate visual scenes, or interactive AI systems that
+can comprehensively understand and respond to both visual and verbal
+input. Additional studies and experiments in this field are expected to
+produce more definitive models and applications, broadening the scope
+and potential of AI systems utilizing HDC. The challenges and limitations associated with HDC that are discussed in this section can be resolved by implementing some of the strategies discussed in the future
+work section (Section 7).
+7. Future work
+7.1. Research trends:
+Further investigation could examine the incorporation of HDC into other
+AI paradigms, resulting in hybrid models that capitalize on the advantages of multiple approaches. Hybrid models have the potential to improve performance and versatility through the integration of deep learning, symbolic reasoning, reinforcement learning, and HDC. Exploring
+dynamic encoding schemes that are adaptable to the unique attributes
+of particular tasks has the potential to improve the versatility of HDC
+models. Research in this area could investigate methods for automatically updating encoding parameters according to the characteristics of
+input data, enabling more flexible and context-aware representations.
+Future research could prioritize the investigation of HDC in interdisciplinary applications, expanding its scope beyond the conventional domains of AI . Applications in disciplines such as social sciences, biology,
+and neuroscience have the potential to reveal new knowledge and aid
+in the creation of HDC models designed to address specific interdisciplinary problems.
+7.2. Potential applications
+Although HDC shows potential in many areas, its full potential is still
+mostly untapped in a number of applications. HDC can be used in the
+field of financial fraud detection to examine large datasets with high
+Results in Engineering 29 (2026) 109589
+18
+A.Y. Salik et al.
+dimensions. Its purpose is to detect intricate patterns and anomalies that
+can indicate the presence of fraudulent activities. HDC’s capacity to process extensive meteorological data has the potential to enhance the accuracy of long-term climate projections and short-term weather forecasts
+in the field of climate modeling and weather prediction.
+Moreover, the field of cybersecurity threat detection presents a promising opportunity for exploration. HDC has the potential to improve the
+real-time processing of HD network traffic data, allowing the identification and mitigation of malicious activities and intrusions. HDC has the
+ability to forecast crop yields in agriculture by examining datasets that
+include soil characteristics, weather patterns, and crop health metrics.
+This helps to facilitate precision agriculture procedures.
+In the field of astronomy and space exploration, HDC has the potential to process and analyze astronomical data in order to predict cosmic
+events, classify celestial objects, and identify exoplanets. Urban planning and smart cities can use HDC to improve urban data analysis, such
+as traffic patterns, energy utilization, and population dynamics. This can
+lead to the creation of more effective urban environments. Moreover,
+HDC has the potential to be instrumental in safeguarding the privacy of
+genomic data by facilitating secure sharing and analysis of data while
+ensuring the protection of sensitive genetic information. Finally, HDC’s
+ability to analyze environmental data could be advantageous for environmental monitoring and conservation initiatives. This capability can
+aid in the tracking of endangered species, the monitoring of biodiversity,
+and the evaluation of ecosystem health. Investigating these innovative
+applications has the potential to greatly broaden the scope of HDC, revealing new advantages and understandings in diverse domains.
+It is essential to tackle the issue of interpretability in HDC models in
+order to ensure their widespread acceptance and adoption. Future research could prioritize the development of explainable AI (XAI) methods for HDC architectures, which would allow users to comprehend and
+have confidence in the decision-making processes of these models. It is
+possible to strengthen HDC’s resilience in noisy environments by creating advanced error-correction methods and noise-resilient encoding
+strategies.
+7.3. Hardware acceleration
+With the increasing prevalence of HDC models, specialized hardware
+architectures specifically designed to meet their computational needs
+can be developed. Research in this area could investigate the development of customized hardware accelerators designed to efficiently carry
+out HDC tasks, thereby improving both speed and energy efficiency. Future research may explore the potential integration of HDC with quantum computing paradigms, considering the quantum-inspired nature of
+certain HDC principles. Investigating the potential of utilizing quantum
+computing resources to improve the capabilities of HDC models offers
+an interesting opportunity for further research.
+7.4. Interdisciplinary approaches
+The collaboration between neuroscientists and AI researchers has the
+potential to enhance the understanding of HDC and its possible links
+to biological neural processes. These interdisciplinary approaches have
+the potential to generate valuable insights that can benefit both fields
+and advance the creation of brain-inspired AI models. It is crucial to
+address the ethical and social implications as HDC applications become
+more and more popular. Future research could investigate the societal
+consequences of HDC models, including concerns related to bias, fairness, and transparency. It could also focus on creating guidelines for the
+responsible deployment of these models.
+In conclusion, the future of HDC presents a plethora of exciting
+prospects, encompassing improved model capabilities, innovative applications, and interdisciplinary collaborations. Researchers are urged
+to investigate these avenues in order to fully exploit the capabilities of
+HDC and make significant contributions to the progress of AI .
+8. Conclusion
+This paper provides a thorough examination of HDC frameworks and
+their applications in AI. HDC has become a promising paradigm that
+offers distinct advantages in how information is represented and processed, from its fundamental principles to practical applications. We
+initiated our journey by conducting a thorough analysis of the fundamental principles of HDC. We explored the theoretical foundations, comprehending the complexities of encoding schemes, mathematical principles, and fundamental operations such as binding and superposition.
+The analysis of prominent HDC architectures offered a thorough understanding of the development of this domain. Progressing further, we
+explored a wide range of applications in different fields of AI . HDC
+demonstrated its versatility and effectiveness in various fields such as
+natural language processing, computer vision, speech processing, and
+beyond. The paper covers the fundamental aspects of HDC, including
+the main encoding schemes, as well as the results and dataset benchmarking. The limitations of HDC are also addressed in the paper. The
+impact of HDC on the wider field of AI is significant. The paradigm’s
+capacity to comprehend intricate connections in HD spaces has the potential to fundamentally transform our approach to tasks spanning from
+data processing to decision-making. Given its proven success in various
+applications, as well as the current research trends and future prospects,
+HDC is poised to play a crucial role in the ongoing advancement of AI .
+The incorporation of HDC into interdisciplinary domains, such as quantum computing and neuroscience, offers promising prospects for the exchange and blending of concepts and approaches. The possibility of creating XAI methods and customized hardware architectures designed for
+HDC increases its chances of being widely accepted. The potential for
+integrating HDC with vision-language models is very promising. This
+integration has the potential to advance multi-modal AI systems by improving the efficiency and robustness of data representation and enhancing the scaling capabilities of large-scale language-vision tasks. By doing
+so, the ambiguity in complex datasets and noise can be handled more
+effectively. The integration of HDC’s HD encoding with vision-language
+models has the potential to drive significant advancements in various applications, including context-aware robotics, visual question answering
+and image captioning. This combination can result in more robust and
+adaptable AI solutions by leveraging HDC’s encoding capabilities and
+the contextual understanding of vision-language models. As we wrap
+up this survey, it is crucial to recognize the challenges and limitations
+that come with the progress in HDC. The researchers can ensure the reliability and robustness of HDC models by addressing various aspects such
+as noise handling, memory requirements, scalability and interpretability. The combined efforts of researchers, interdisciplinary experts and
+practitioners will be crucial in fully harnessing the capabilities of HDC.
+As this domain develops further, we expect a diverse range of research
+contributions, innovations, and practical uses that will strengthen HDC
+as a powerful influence in the field of AI . HDC is a remarkable example of researchers pushing the limits of computational paradigms in the
+constantly changing field of AI. The journey does not conclude at this
+point but rather expands into unexplored areas, where the combination
+of theoretical comprehension and practical implementations will persist
+in shaping the future of HDC and its contribution to the advancement
+of AI .
+CRediT authorship contribution statement
+Adnan Yaqoob Salik: Writing – original draft, Methodology, Conceptualization; Muhammad Shafay: Writing – original draft, Methodology, Conceptualization; Muhammad Owais: Writing – review & editing, Supervision; Sajid Gul Khawaja: Writing – review & editing; Shehzad Khalid: Writing – review & editing; Irfan Hussain: Writing – review & editing; Taimur Hassan: Writing – review & editing, Supervision.
+Results in Engineering 29 (2026) 109589
+19
+A.Y. Salik et al.
+Data availability
+This review paper is based solely on previously published studies,
+with all data and sources cited in the references. No new datasets were
+generated or analyzed for this work.
+Declaration of competing interest
+The authors declare that they have no known competing financial
+interests or personal relationships that could have appeared to influence
+the work reported in this paper.
+Acknowledgment
+This work is supported in part by a research fund from Abu Dhabi
+University, UAE (Ref: 19300910, 19300904, and 19300979), in part by
+a research fund from Mubadala, UAE (Ref: MuACPA-2025/2026), and
+in part by Khalifa University Center for Autonomous Robotic Systems
+(KUCARS) under Award RC1-2018-KUCARS.
+References
+[1] P. Kanerva, Hyperdimensional computing: an introduction to computing in distributed representation with high-dimensional random vectors, Cognit. Comput

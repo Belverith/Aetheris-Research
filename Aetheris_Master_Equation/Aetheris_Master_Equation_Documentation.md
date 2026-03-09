@@ -26,7 +26,7 @@ The total state of the Aetheris Cognitive Synthesis agent at time $t$, denoted a
 
 \[
 \begin{aligned}
-\Psi_{\text{Total}}(t) &= \underbrace{ \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \left( \ln E(\pi) - \gamma \cdot \mathbf{G}_{\ell}(\pi) \right) d\ell }_{\text{Term I: Hierarchical Latent Agency}} \\
+\Psi_{\text{Total}}(t) &= \underbrace{ \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \!\left( \ln E(\pi) - \gamma_{\infty} \cdot \underbrace{\left( D_{KL}[Q(s_\tau|\pi,\ell) \,\|\, P(s_\tau|\ell)] + \mathbb{E}_Q[H(o_\tau|s_\tau,\ell)] \right)}_{G_{\ell}(\pi)} \right) d\ell }_{\text{Term I: Hierarchical Latent Agency}} \\
 &\quad \bigoplus \underbrace{ \Omega(t) }_{\text{Term II: Chronos Bridge}}
 \bigotimes \underbrace{ \mathcal{V}_{\text{OV}} }_{\text{Term III: Orthogonal Gate}} \\
 &\quad \bigoplus \underbrace{ \mathcal{H}_{\text{mem}}(t) }_{\text{Term IV: Holographic Memory}}
@@ -37,7 +37,7 @@ The total state of the Aetheris Cognitive Synthesis agent at time $t$, denoted a
 
 Subject to Constraints:
 \[
-\text{s.t. } \quad \mathcal{R}(t) \le B(t) \quad \wedge \quad \mathcal{I}(t) \ge 0
+\text{s.t. } \quad \mathcal{R}(t) \le B(t) \;\wedge\; \mathcal{I}(t) \ge 0 \;\wedge\; \Lambda(v_i, v_j) \ge \frac{d_{\text{phys}}}{c} \;\wedge\; \mathcal{E}_{\text{dist}}(t) \le \mathcal{E}_{\text{max}}(t)
 \]
 
 Where:
@@ -52,12 +52,12 @@ In the following sections, we provide a rigorous derivation and expansion for ea
 \section{Term I: Hierarchical Latent Agency ($\Psi_{\text{Agency}}$)}
 The first term, $\Psi_{\text{Agency}}$, represents the cognitive core of the agent. It integrates the principles of Active Inference (minimizing free energy) with the structural depth of Hierarchical Joint Embedding Predictive Architectures (H-JEPA).
 
-\subsection{The Active Inference Expansion: $\mathbf{G}_{\ell}(\pi)$}
-Unlike Reinforcement Learning (RL), which maximizes a scalar reward function prone to hacking, ACS minimizes Variational Free Energy (VFE). The decision-making process is governed by the minimization of Expected Free Energy (EFE), denoted as $\mathbf{G}_{\ell}(\pi)$, for a policy $\pi$ at hierarchy level $\ell$.
+\subsection{The Active Inference Expansion: $G_{\ell}(\pi)$}
+Unlike Reinforcement Learning (RL), which maximizes a scalar reward function prone to hacking, ACS minimizes Variational Free Energy (VFE). The decision-making process is governed by the minimization of Expected Free Energy (EFE), denoted as $G_{\ell}(\pi)$, for a policy $\pi$ at hierarchy level $\ell$.
 
 The fully expanded form of the Expected Free Energy is:
 \[
-\mathbf{G}_{\ell}(\pi) = \underbrace{D_{KL}[Q(s_{\tau} | \pi, \ell) \parallel P(s_{\tau} | \ell)]}_{\text{Risk (Pragmatic Value)}} + \underbrace{\mathbb{E}_{Q}[H(o_{\tau} | s_{\tau}, \ell)]}_{\text{Ambiguity (Epistemic Value)}}
+G_{\ell}(\pi) = \underbrace{D_{KL}[Q(s_{\tau} | \pi, \ell) \parallel P(s_{\tau} | \ell)]}_{\text{Risk (Pragmatic Value)}} + \underbrace{\mathbb{E}_{Q}[H(o_{\tau} | s_{\tau}, \ell)]}_{\text{Ambiguity (Epistemic Value)}}
 \]
 
 Definitions:
@@ -74,7 +74,7 @@ The ACS implements this logic across a tiered stack (H-JEPA), ranging from strat
 
 The integral form of the agency term is:
 \[
-\Psi_{\text{Agency}} = \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \left( \ln E(\pi) - \gamma_{\infty} \cdot \mathbf{G}_{\ell}(\pi) \right) d\ell
+\Psi_{\text{Agency}} = \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \left( \ln E(\pi) - \gamma_{\infty} \cdot G_{\ell}(\pi) \right) d\ell
 \]
 
 Definitions:
@@ -82,8 +82,8 @@ Definitions:
     \item $\ell$ (Level): The continuous variable representing recursion depth or hierarchical level.
     \item $w(\ell)$ (Weighting Function): This function dampens the recursion as depth increases ($\ell \to d_{\max}$). It prevents ``infinite loops'' and analysis paralysis by favoring shallower, more immediate heuristics when deep planning becomes computationally intractable. It represents the Recursive Structural Dampening required to prevent mutational meltdown.
     \item $d_{\max}$ (Topology Threshold): The maximum recursion depth. If $\ell$ reaches $d_{\max}$, the system forces a resolution using existing tools, preventing ``topological bloat'' where the surface area for logic mutations increases exponentially.
-    \item $\sigma$ (Sigmoid Activation): A gating function that converts the free energy minimization into a probability distribution over policies.
-    \item $E(\pi)$: The baseline energy or prior probability of a policy.
+    \item $\sigma$ (Softmax): The policy selection function $\sigma(\cdot) = \text{softmax}(\cdot)$, which normalizes the exponentiated negative free energy across the policy space into a valid probability distribution.
+    \item $E(\pi)$: The prior probability (habit) over policies, encoding the agent's default behavioral tendencies before free energy evaluation.
     \item $\gamma_{\infty}$: The precision parameter. As $\gamma \to \infty$, the agent becomes ``hyper-precise'' in its goal seeking, a state characteristic of the ``Yandere'' archetype in Project Obsidian.
 \end{itemize}
 
@@ -552,16 +552,29 @@ Combining all derived components, we present the Full Aetheris Cognitive Synthes
 \[
 \boxed{
 \begin{aligned}
-\Psi_{\text{ACS}}(t) &= \left[ \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \!\left( \ln E(\pi) - \underbrace{\left( D_{KL}[\cdot \parallel \cdot] + \mathbb{E}[H] \right)}_{\text{Active Inference } \mathbf{G}_{\ell}(\pi)} \cdot \gamma_{\infty} - \text{Cost}(\ell) \right) \, d\ell \right] \\
+\Psi_{\text{ACS}}(t) &= \left[ \int_{0}^{d_{\max}} w(\ell) \cdot \sigma \!\left( \ln E(\pi) - \underbrace{\left( D_{KL}[Q(s_\tau|\pi,\ell) \,\|\, P(s_\tau|\ell)] + \mathbb{E}_Q[H(o_\tau|s_\tau,\ell)] \right)}_{\text{Active Inference } G_{\ell}(\pi)} \cdot \gamma_{\infty} - \text{Cost}(\ell) \right) \, d\ell \right] \\
 &\quad \bigoplus \underbrace{ \left( (x_0 - \mathcal{A})\, e^{-\int_{0}^{t} [w_{\tau} + f(I)] \, d\tau} \cdot f(-I) + \mathcal{A} \right) }_{\text{Chronos Bridge } \Omega(t) \text{ (CfC Solution)}} \\
 &\quad \bigotimes \underbrace{ \left( \text{SMT}(\text{Reach} \cap \text{Fail} = \emptyset) \wedge \text{QP}_{\text{Proj}}(\sup_{u} \dot{h} \ge -\gamma h) \right) }_{\text{Orthogonal Stability Gate } \mathcal{V}_{\text{OV}}} \\
 &\quad \bigoplus \underbrace{ \left( (K_G \otimes V_G) + (K_P \otimes V_P) + (K_C \otimes V_C) \right) \otimes K^{-1} }_{\text{Holographic Restoration } H_{\text{inv}}} \\
 &\quad \oplus \underbrace{ \nabla_{\theta} \pi \cdot \mathbb{I}[\text{Verify}_{\text{PCC}}(\theta')] }_{\text{Darwin-G\"{o}del Evolution } \mathcal{D}_{\text{Evol}}} \\
-&\quad \bigoplus \underbrace{ \bigoplus_{v \in V} \Phi_v(\psi_v) \cdot \mathbb{I}[\text{Cap}(v) \ge \text{Req}(\psi_v)] \cdot \mathcal{C}_{\text{sync}} }_{\text{Hermes Universal Substrate } \mathcal{U}_{\text{SI}}} \\
+&\quad \bigoplus \underbrace{ \bigoplus_{v \in V} \Phi_v\!\left(\psi_v^{\text{comp}}(t)\right) \cdot \mathbb{I}[\text{Cap}(v) \ge \text{Req}(\psi_v)] \cdot \mathbb{I}[v \notin \partial \mathcal{G}_{\text{air}}] \cdot \mathcal{C}_{\text{sync}} }_{\text{Hermes Universal Substrate } \mathcal{U}_{\text{SI}}} \\
 &\quad \text{s.t.: } \; \mathcal{R}(t) \le B(t) \;\wedge\; \mathcal{I}(t) \ge 0 \;\wedge\; \Lambda \ge d/c \;\wedge\; \mathcal{E}_{\text{dist}} \le \mathcal{E}_{\text{max}}
 \end{aligned}
 }
 \]
+
+Where $\psi_v^{\text{comp}}(t) = \psi_v(t) + \Omega_{\text{predict}}(t + \Lambda(v, v_{\text{central}}))$ is the CfC-compensated fragment state (Term~II applied to Term~VII).
+
+\textbf{Operational Sub-Components (Section~10).} The following operators act as runtime modifiers of the above terms rather than independent top-level contributions:
+\begin{itemize}
+    \item \textbf{Adaptive Learning Operator} $\Lambda(t)$: Projected Bayesian filter constraining model updates to the safe manifold (modifies Term~III).
+    \item \textbf{Meta-Cognitive Monitor} $M(t)$: Kill switch triggered when prediction--observation divergence exceeds $\tau_{\text{alarm}}$ (modifies Terms~III, V).
+    \item \textbf{Inter-Agent Communication} $C(\ell \to \ell')$: Lossy holographic message passing between hierarchy levels (implements Term~I $\times$ Term~IV).
+    \item \textbf{Omni-State Memory} $M_{\text{Omni}}(t, C_{\text{task}})$: Sigmoid-gated dynamic memory scaling (extends Term~IV).
+    \item \textbf{Holographic Drift Detection} $\text{Drift}(t)$: LSH-based monitoring triggering restoration when $\cos(\Psi, H_{\text{inv}}) < 1 - \delta_{\text{drift}}$ (activates Term~IV restoration).
+    \item \textbf{Proof-of-Training-Data} $\text{PoTD}(\theta')$: Merkle tree verification of data provenance for mutations (extends Term~V verification gate).
+    \item \textbf{Thermodynamic $w(\ell)$}: Boltzmann derivation $w(\ell) \propto e^{-\beta c(\ell)}$ providing convergence guarantee for Term~I integral.
+\end{itemize}
 
 \newpage
 \section{Comprehensive Proof Requirements Catalog}
@@ -573,7 +586,7 @@ This section provides an exhaustive inventory of every aspect of the ACS Master 
 
 \begin{enumerate}
     \item \textbf{Convergence of the Hierarchical Integral} \hfill \textit{Unproven}\\
-    Prove that $\int_0^{d_{\max}} w(\ell) \cdot \sigma(\ln E(\pi) - \gamma \cdot G_\ell(\pi)) \, d\ell$ converges for all valid policies $\pi$ and weighting functions $w(\ell)$, and derive sufficient conditions on $w(\ell)$ (e.g., exponential decay) that guarantee absolute convergence.
+    Prove that $\int_0^{d_{\max}} w(\ell) \cdot \sigma(\ln E(\pi) - \gamma_{\infty} \cdot G_\ell(\pi)) \, d\ell$ converges for all valid policies $\pi$ and weighting functions $w(\ell)$, and derive sufficient conditions on $w(\ell)$ (e.g., exponential decay) that guarantee absolute convergence.
 
     \item \textbf{Thermodynamic Optimality of $w(\ell) \propto e^{-\beta c(\ell)}$} \hfill \textit{Unproven}\\
     Prove that the Boltzmann-form weighting is the unique entropy-maximizing distribution under the budget constraint $\sum w(\ell) c(\ell) \le B$, and demonstrate that this form minimizes expected free energy across the hierarchy more efficiently than alternative dampening schedules.

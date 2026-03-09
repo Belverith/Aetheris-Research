@@ -1,0 +1,1494 @@
+Large-Margin Hyperdimensional Computing:
+A Learning-Theoretical Perspective
+Nikita Zeulin, Olga Galinina, Ravikumar Balakrishnan, Nageen Himayat, and Sergey Andreev
+Abstract—Overparameterized machine learning (ML) methods such as neural networks may be prohibitively resourceintensive for devices with limited computational capabilities.
+Hyperdimensional computing (HDC) is an emerging resourceefficient and low-complexity ML method that allows hardwareefficient implementations of (re-)training and inference procedures. In this paper, we propose a maximum-margin HDC
+classifier, which significantly outperforms baseline HDC methods
+on several benchmark datasets. Our method leverages a formal
+relation between HDC and support vector machines (SVMs)
+that we established for the first time. Our findings may inspire
+novel HDC methods with potentially more hardware-oriented
+implementations compared to SVMs, thus enabling more efficient
+learning solutions for various intelligent resource-constrained
+applications.
+Index Terms—hyperdimensional computing, support vector
+machines, margin maximization, supervised learning
+I. INTRODUCTION
+A. Motivation
+O
+VER the past years, integration of machine learning (ML) algorithms into various downstream tasks has
+been an active topic in many research fields. Specifically, there
+has been a remarkable advancement in the development of
+methods based on large, overparameterized neural networks.
+However, such methods may involve prohibitively high computational complexity for real-time training or inference in
+applications with inherent resource constraints.
+Hyperdimensional computing (HDC) [1] provides a conceptually different perspective on pattern recognition. It relies on a
+distributed, or holographic, representation of the data, where
+information is distributed over thousands of dimensions [2].
+HDC represents original low-dimensional data points as very
+large, randomized hypervectors, typically consisting of 5-10K
+real-, integer-, or binary-valued features. Such distributed
+representations make the hypervectors robust to individual position errors, which is exploited for improving fault-tolerance
+of classification algorithms [3].
+These core principles of HDC have motivated a large
+body of work on hardware-efficient implementations compared
+to deep neural networks (DNNs). While neural networks
+rely on resource-intensive matrix-to-matrix multiplications,
+N. Zeulin and S. Andreev are with Tampere University, Tampere, Finland.
+E-mail: {nikita.zeulin,sergey.andreev}@tuni.fi
+O. Galinina is with Tampere Institute for Advanced Study, Tampere
+University, Finland. E-mail: olga.galinina@tuni.fi.
+N. Himayat and R. Balakrishnan are with Intel
+Corporation, Santa Clara, CA, United States. E-mail:
+{nageen.himayat,ravikumar.balakrishnan}@intel.com
+the training operations in HDC can be reduced to elementwise summations, multiplications, or dot-products over the
+individual hypervectors. Moreover, HDC natively supports
+online retraining, which can be beneficial for applications
+with online learning on resource-constrained devices. HDC has
+been successfully adapted for the classification of images [4],
+[5], [6], [7], time series [8], [9], graphs [10], [11], federated
+learning [12], [13], [14], medical applications [15], and other
+problems. A comprehensive overview of the existing HDC
+classification algorithms is provided in the recent survey [16].
+A more traditional alternative to overparameterized deep
+learning methods is support vector machines (SVMs), a classical statistical learning framework. SVMs offer resourceefficient solutions and can successfully compete with DNNs
+across various tasks [17]. Compared to DNNs, SVM models
+demonstrate better generalization ability even if trained on
+tens of data points and can offer training and inference that
+are orders of magnitude faster [18], [19]. As an example,
+SVM-based algorithms have been applied for positioning in
+networking applications [18], on-device malware detection
+for industrial Internet of Things networks [19], and accurate
+probabilistic load forecasting for energy storage systems [20].
+Although SVM models typically utilize kernel functions to
+handle non-linearity, they also support DNN-based feature
+extractors for higher performance on complex data [21].
+In contrast to the analytically rigorous SVM framework,
+many HDC methods rely on heuristic update rules with limited
+analytical justification. While many HDC-centric works focus
+on empirically successful hardware-level implementations, the
+theoretical foundations of HDC as a learning framework are
+still developing. In the following, we provide an overview
+of the previous efforts in this direction, together with several
+notable works in HDC research.
+B. Related work
+Originally, HDC was first introduced by P. Kanerva [1] as an
+umbrella term for different vector symbol architectures (VSAs)
+[22] that employ randomized, high-dimensional data representations. Conventional symbolic HDC frameworks, such as
+multiply-accumulate-permute [23], binary spatter codes [24],
+or Fourier holographic reduced representations (FHRR) [25],
+were adopted to formally encode relations between independent entities and enable analytically explainable reasoning
+via similarity checks between hypervectors. Comprehensive
+overviews of VSA models, data transformations, and applications can be found in [26], [27].
+HDC has become more closely associated with hardwareefficient pattern recognition frameworks, while VSAs are more
+arXiv:2603.03830v1 [cs.LG] 4 Mar 2026
+2
+often discussed in the context of symbolic representations
+[28]. This distinction became more pronounced after HDC
+was adapted to the classification of texts [29] and electromyography signals [30]. These early works demonstrated
+the simplicity of hardware implementation of HDC classifiers,
+while achieving performance comparable to or higher than
+established baselines.
+This discovery inspired a surge of interest in ML and
+hardware-oriented communities to develop both theoretical
+foundations and resource-efficient hardware implementations
+for ML-related HDC frameworks. Below, we briefly review
+several representative efforts in HDC research related to HD
+representations, hardware-oriented implementations, and studies that adapt HDC for other learning applications.
+1) Structure-Preserving HD Representations: While conventional HDC frameworks can demonstrate high performance
+on textual and time-series data, they may be less suitable
+for structured data, such as images and graphs. In the case
+of visual pattern recognition, the conventional pixel-wise encodings become unsuitable as they do not provide translation
+invariance and treat individual pixels independently. One of
+the first HDC frameworks to overcome this limitation was
+proposed in [4], where image hypervectors were constructed
+from features extracted with a convolutional neural network
+(CNN). With this approach, for the first time, HDC achieved
+comparable classification performance to conventional neural
+network-based baselines on such a complex image dataset as
+CIFAR-10 [31]. However, this approach requires additional
+computational resources for running CNN inference and does
+not produce explainable feature representations.
+As an alternative, the work in [5] proposes the LaplaceHDC framework that constructs translation-invariant hypervector representations based on the Laplace kernel. The method
+constructs a set of bipolar hypervectors from a semi-positive
+definite covariance matrix that meets a specific criterion.
+To support translation-invariance, this approach employs 2D
+cyclic permutations for binding with hypervectors representing
+the image (or one of its tiles).
+Another line of work considers HD encoding methods for
+binary images. For example, the work in [6] introduces the
+HD encoding that preserves similarity between hypervectors
+of spatially close points, while keeping more distant vectors
+orthogonal. The proposed method achieves state-of-the-art
+accuracy on MNIST and Fashion MNIST datasets; however,
+the input is currently limited to monochrome images.
+Another approach for producing structure-aware hypervectors is to use kernel approximations and perform similarity
+checks between hypervectors in the kernel space. This approach was analytically studied in [32, Sec. 5.2.1], where
+hypervectors were constructed using random Fourier features
+(RFF) that approximate the radial basis function kernel. We
+note, however, that a similar idea was concurrently introduced
+in [33] and [34] to capture non-linear relations between data
+features.
+While the RFF method is most commonly applied for approximating the shift-invariant radial basis function kernel, arbitrary kernels can be approximated with the Nystrom method ¨
+[35]. The work in [36] proposes the NysHD framework,
+which adapts the Nystrom method to construct hypervectors ¨
+approximating the kernel covariance matrix. This is a powerful
+method since it can approximate kernels for different types of
+data, such as strings, time series, and graphs. The Nystrom¨
+method is, however, known to be sensitive to the selection
+of landmarks for the sub-kernel matrix and may be prone to
+numerical instability.
+Most existing studies focus on improving the quality of
+HD data representations. In contrast, our work analyzes the
+learning objective of HDC classification.
+2) Hardware-Oriented HDC Research: Although
+hardware-oriented HDC is not the focus of this work,
+we briefly summarize representative efforts for completeness.
+The work in [37] introduces an in-memory HDC
+framework DependableHD, which is resilient to bit-level
+failures. DependableHD supports a controlled number of
+misclassifications by introducing an adjustable classification
+margin and adding a small amount of noise to improve the
+classification performance. Adding noise during training is
+a well-known regularization mechanism that can improve
+generalization of the model [38]. The DropHD framework [39]
+exploits the fact that hypervector positions with low entropy
+are more prone to hardware errors and prunes them to improve
+the hypervector resilience. This approach can be applied
+for non-volatile memories with data-dependent, non-uniform
+level changes. A similar idea was previously proposed in
+[40], where the resilience of HDC against model inversion
+attacks is enhanced by pruning the hypervector positions
+with minimal impact on the performance. The MicroHD
+framework [41] optimizes the model hyperparameters
+(hypervector size, bitwidth, and number of quantization
+levels for feature values) to minimize memory and compute
+consumption given the user-defined maximum accuracy
+degradation. Furthermore, [42] explores the use of cellular
+automata (CA) for on-the-fly generation of temporal features
+for reservoir computing and resource-efficient implementation
+of image classification [7].
+While these hardware-oriented studies focus on HDC implementation and robustness and are orthogonal to the proposed
+theoretical perspective, they illustrate the potential for the
+theory-based design of future accelerators.
+3) HDC-Powered ML Frameworks: There are several contributions that apply the HDC principles to learning tasks
+beyond conventional supervised learning. For example, the reinforcement Q-learning-based approach in [43] encodes states
+and actions into hypervectors and computes the Q-values using
+similarity checks between them. Action hypervectors can be
+subsequently refined based on discrepancies between true and
+predicted Q-values using the HDC retraining procedure. The
+work in [44] incorporated HDC into a contextual multi-armed
+bandit setting with a linear relationship between the context
+and the reward. Similar to [11], this framework encodes the
+context as a hypervector and performs similarity checks with
+the hypervectors of actions to infer the value of the payoff.
+Beyond that, the ideas of symbolic HDC representations have
+been adopted in computer vision frameworks to enhance outof-distribution detection [45] and to improve uncertainty estimation in 3D object detection under visual impairments [46].
+3
+These works illustrate the use of HDC in ML tasks beyond
+standard classification. In contrast, our contribution targets the
+core supervised setting and strengthen its theoretical foundations by relating HDC classifiers to linear soft-margin SVMs.
+4) Relation Between HDC and Classical ML Methods: One
+of the first efforts to establish theoretical foundations of HDC
+was presented in [32], with the focus on the analytical properties of hypervector representations. A formal perspective on
+the HDC training principles was established in the subsequent
+works by relating HDC to the existing learning frameworks.
+For example, the work in [47] highlights the similarity between
+HDC and generalized learning vector quantization (GLVQ)
+[48]. Particularly, this work demonstrates that the conventional
+perceptron-based HDC training procedure closely resembles
+the iterative gradient descent-based optimization of the GLVQ
+loss function.
+The work in [12] establishes a relation between a binary
+HDC classifier and Fisher’s linear discriminant. Similarly, the
+perceptron-based HDC training is shown to be identical to
+the gradient descent-based empirical risk minimization of the
+linear discriminant. In [49], the HDC-based regression method
+was derived from the kernel ridge regression, where the hypervectors were constructed using RFF [50] that approximate
+shift-invariant kernels.
+Our work continues this line of research by establishing a
+formal relationship between HDC classifiers and soft-margin
+SVMs. This perspective offers a theoretical basis for developing new HDC algorithms.
+C. Our Contribution
+In this article, we establish a formal relation between binary
+(two-class) HDC and linear SVM classifiers. Our contributions
+are as follows:
+• We demonstrate that a binary HDC classifier can be
+reformulated as a special case of a linear SVM classifier
+with identical decision rules.
+• Leveraging the established relation, we propose an iterative algorithm to train a novel binary maximum-margin
+HDC (MM-HDC) classifier with potentially higher generalization ability compared to conventional HDC methods.
+• We present a detailed performance evaluation and demonstrate that our MM-HDC classifier outperforms the baseline HDC algorithms on the selected benchmark datasets.
+We emphasize that the discovered relation between HDC
+and SVM allows us to apply rich theoretical foundations of
+SVM to the formal analysis of HDC algorithms. Importantly,
+our MM-HDC framework reveals analytical justifications for
+several successful HDC methods, including OnlineHD [51],
+DependableHD [37], and LeHDC [52]. While HDC in general is often motivated by its lightweight and hardwareefficient implementations, this work is primarily theoretical
+and algorithmic. We expect that our findings can open new
+opportunities for designing new, analytically grounded HDCbased algorithms for well-established SVM tasks, such as
+regression and anomaly detection.
+TABLE I
+NOTATIONS AND DESCRIPTIONS USED IN THIS WORK
+Notation Description
+N Number of data points
+d Dimensionality of data points
+X ∈ Rd×N Set of d-dimensional data points
+y ∈ RN Vector of corresponding labels, yj ∈ {−1, +1}
+xj ∈ Rd Individual i-th data point
+yj Label of individual i-th data point
+D Dimensionality of hypervector
+θ(·) HD representation function, Rd → RD
+pi Prototype of class i, i ∈ {−1, +1}
+Ci Set of indices of data points corresponding to class i
+aj Weighting coefficients for prototype initialization
+sim(a, b) Similarity function between vectors a and b
+α Learning rate for prototype retraining
+w Separating hyperplane
+b Bias term
+ζi Slack variable corresponding to i-th data point
+C Regularization constant
+λi Lagrange multiplier corresponding to i-th data point xi
+ηi Lagrange multiplier corresponding to i-th slack variable ζi
+A+, A− Sets of points within the positive and negative class margins
+F(·) Objective function for HDC optimization
+II. BACKGROUND AND PROBLEM FORMULATION
+We consider a classification problem with a dataset {X, y}
+consisting of N d-dimensional data points xj ∈ X and
+corresponding labels yj ∈ {−1, +1}. This section briefly
+reviews HDC training and inference procedures and describes
+the SVM problem formulation. For convenience, we also
+summarize the employed notations in Table I.
+A. Binary HDC Classification
+Most HDC algorithms include four core procedures: (i) data
+projection, (ii) prototype initialization, (iii) similarity check,
+and (iv) iterative prototype retraining. Below, we describe
+these procedures for a binary HDC classifier.
+Data projection. In HDC, each data point xj ∈ X is
+mapped to D-dimensional hyperdimensional (HD) space using
+a randomized mapping function θ(xj ): R
+d → R
+D. Without
+loss of generality, we consider a real-valued mapping for
+convenience in relating to the linear C-SVM formulation.
+Our analytical results can be readily extended to integer- or
+binary-valued hypervectors, as the proposed analysis does not
+impose any strict limitation on the choice of transform θ(·).
+Therefore, the mapping can be selected based on the encoding
+complexity or desired analytical properties, as in symbolic
+HDC frameworks.
+Prototype initialization. Let Ci represent a set of data
+indices that correspond to the i-th class, i ∈ {−1, +1}
+for binary classification. The training data of each class are
+bundled into the respective class prototype pi defined as
+pi =
+X
+j∈Ci
+aj θ(xj ), i ∈ {−1, +1}, (1)
+where aj are the weighting coefficients. A typical heuristic is
+to set aj =
+1
+|Ci|
+, which means that the prototype is initialized
+as the average of HD representations θ(xj ) of the data points
+xj in the respective class. The exact values of the coefficients {aj} are implicitly refined during the HDC retraining
+4
+procedure, as we demonstrate below. The prototypes can be
+interpreted as an “average” HD representation of the class data.
+Depending on the representation type, the prototypes can be
+converted back into the original data space [40].
+Similarity check and inference. The HDC inference procedure involves computing similarity values between the HD
+representation θ(x∗) of the test point x∗ and the prototype pi
+.
+The similarity between a and b is denoted as sim(a, b). For
+real-valued vectors, a typical choice of similarity is the dot
+product or cosine similarity, depending on the application.
+Therefore, for a point x∗, its label yˆ∗ may be estimated as
+yˆ∗ = arg max
+i
+sim(θ(x∗), pi). (2)
+Iterative prototype retraining. To further improve the
+classification performance after the prototype initialization
+in (1), one can perform a retraining procedure. The retraining
+algorithm exploits the fact that some data points may have
+substantial similarity despite belonging to different classes,
+thus resulting in class prototypes that can be characterized
+as “fuzzy”. Therefore, the goal of the retraining procedure is
+to increase dissimilarity between the prototypes by reinforcing
+correct predictions while penalizing incorrect ones. If a training data point x of class i is misclassified as class j, then the
+corresponding HDC prototypes pi and pj are updated as
+pi = pi + α · θ(x), pj = pj − α · θ(x), (3)
+where α ∈ [0, 1] is the learning rate. We refer to the
+prototype update rule in (3) as the perceptron-based retraining
+procedure, which was originally employed for HDC training
+and further developed in subsequent works [51].
+The specific implementation of the retraining procedure in
+(3) largely depends on the employed hypervector type, which
+can be binary-, integer-, or real-valued. Particularly, the implementations based on floating-point arithmetics require minimal
+or no care of overflow/underflow or normalization. However,
+they are less spread in practice due to lower computational
+and energy efficiency compared to the fixed-point counterparts.
+Nevertheless, the performance of real-valued implementations
+is close to the integer-based ones and can be viewed as an
+upper bound for achievable classification performance [32].
+To further enhance the predictive performance of HDC
+classifiers, previous studies proposed several algorithmic enhancements to the discussed retraining procedure. For example, the OnlineHD algorithm [51] implements the adaptive
+retraining algorithm based on (3) by weighting the misclassified hypervectors with similarity values corresponding to the
+refined prototypes. The retraining procedure of LeHDC [52]
+refines every prototype with higher similarity than that of the
+correct-class prototype. The DependableHD framework [37]
+introduces the similarity margin that controls the maximum
+possible violation of the similarity check. However, the modifications presented in these studies, albeit effective, are heuristic
+and lack formal theoretical justification. These enhancements
+can be analytically explained within the large-margin HDC
+classification framework presented in this work.
+B. Binary Linear C-SVM Classification
+In the binary SVM classification, the objective is to find
+a hyperplane that separates the training points of two classes,
+while maximizing the distance from the nearest points of each
+class. We assume that the separating hyperplane is defined by
+equation ⟨w, x⟩ = b, w ∈ R
+d
+, b ∈ R. Then, the label yi of a
+data point xi ∈ X can be estimated using the relative position
+w.r.t. the hyperplane, which is equivalent to the following
+decision rule:
+yˆi = sign (⟨xi
+, w⟩ − b). (4)
+The parameters w, b of the separating hyperplane can be
+arbitrarily scaled by a positive constant. Therefore, it is commonly assumed that for the nearest points, or support vectors,
+yi
+· [⟨xi
+, w⟩ − b] = 1.
+In the case of a linearly separable training set, the following
+conditions should hold for every point xi
+:
+
+⟨xi
+, w⟩ − b ≤ −1, for yi = −1
+⟨xi
+, w⟩ − b ≥ 1, for yi = 1.
+(5)
+To determine the margin surrounding the separating hyperplane, let us consider support vectors x+ and x− that belong
+to classes +1 and −1, correspondingly. The margin can be
+found as a projection of a vector onto the unit normal vector
+of a hyperplane as
+
+
+
+D
+(x+ − x−),
+w
+∥w∥2
+E
+
+ =
+|⟨x+,w⟩−⟨x−,w⟩|
+∥w∥2
+=
+(b+1)−(b−1)
+∥w∥2
+=
+2
+∥w∥2
+.
+(6)
+We can determine the parameters w and b maximizing the
+margin 2
+∥w∥2
+between two classes by solving the following
+optimization problem:
+min
+w,b
+1
+2
+∥w∥
+2
+2
+(7)
+s.t. yi
+· [⟨xi
+, w⟩ − b] ≥ 1.
+The problem formulation in (7) is known as hard-margin SVM
+since no training point is allowed to violate the margin constraint, which is only possible in the case of linear separability
+of the data. If the classes are linearly non-separable, we may
+introduce slack variables ζ = {ζi} to allow margin violations:
+min
+w,b,ζ
+1
+2
+∥w∥
+2
+2 + C
+X
+N
+i=1
+ζi (8)
+s.t. yi
+· [⟨xi
+, w⟩ − b] ≥ 1 − ζi
+, ζi ≥ 0,
+where the regularization coefficient C is a hyperparameter that
+controls the penalty for violating the margin condition. The
+problem formulation in (8) is known as soft-margin SVM or
+C-SVM, where the margin constraints are relaxed and the
+margin violation penalty is controled by the regularization
+coefficient C.
+The above optimization problem is convex and can be
+solved either by applying gradient descent-based methods
+directly or by solving the dual problem using the method of
+5
+Lagrange multipliers. For the gradient descent-based optimization, it is often more convenient to reformulate the problem
+in (8) as an equivalent Tikhonov regularization problem:
+min
+w,b
+1
+2C
+∥w∥
+2
+2 +
+X
+N
+i=1
+[1 − yi
+· (⟨xi
+, w⟩ − b)]+ , (9)
+where [x]+ = max(0, x) is the hinge loss function.
+III. RELATION BETWEEN HDC AND SVM
+In this section, we formulate the primal and dual optimization problems for binary HDC classification and demonstrate
+their alignment with the SVM optimization framework. We
+further use this relation to show that the perceptron-based
+HDC retraining procedure in (3) is equivalent to performing
+gradient descent-based optimization of the formulated HDC
+loss function.
+A. Primal HDC Optimization Problem
+Let p− and p+ be the prototypes of two classes with labels
+−1 and +1, respectively. In a binary HDC classifier, we infer
+that a data point xi belongs to a class C+ or C− if it has the
+highest similarity with the corresponding prototype. Formally,
+the data point xi
+is classified correctly if
+yi
+· [sim(θ(xi), p+) − sim(θ(xi), p−)] > 0, (10)
+where yi
+is the label of xi
+. For simplicity, we assume dot
+product–based similarity sim(a, b) = ⟨a, b⟩. Our analysis is
+also valid for a similarity measure based on the dot product
+normalized by ∥θ(xi)∥2 and can be easily extended to the case
+of cosine similarity sim(a, b) = ⟨a,b⟩
+∥a∥2∥b∥2
+.
+To demonstrate the connection between the binary SVM and
+HDC classifiers, we rewrite the condition in (10) as
+yi
+· ⟨θ(xi), p+ − p−⟩ > 0. (11)
+Let us consider the difference between the prototypes p+
+and p− in (11) as a separating hyperplane w = p+ − p−.
+Consequently, the condition in (11) can be reformulated as
+yi
+· ⟨θ(xi), w⟩ > 0, (12)
+which translates into the decision rule yˆi = sign⟨θ(xi), w⟩,
+identical to the SVM decision rule in (4) with a zero bias
+term.
+The classifier depends only on the sign of ⟨θ(xi), w⟩.
+Therefore, we can rescale the parameter vector w such that the
+closest training point corresponds to the unit margin, similarly
+to SVM. Following this normalization, the condition in (12)
+is transformed into the equivalent inequality
+yi
+· ⟨θ(xi), w⟩ ≥ 1, (13)
+which turns into equality only for the support vectors θ(xj )
+that determine the prototypes p+ and p−, as we demonstrate
+further on.
+The expression in (13) defines the constraints that the HDC
+model should satisfy. Based on these constraints, we formulate
+an optimization problem to improve the generalization ability
+of the resulting HDC model. To formulate the objective function, we search for a separating hyperplane w that maximizes
+the margin between two classes. The said margin is equal to
+2
+∥w∥2
+after the rescaling applied in (13). The objective function
+can be formulated by analogy with the hard-margin SVM. To
+address classes that cannot be linearly separated, we add slack
+variables ζ = {ζi}, ζi ≥ 0. The optimal value of w can then
+be found by solving the following minimization problem:
+min
+w,ζ
+1
+2
+∥w∥
+2
+2 + C
+X
+N
+i=1
+ζi (14)
+s.t. yi
+· ⟨θ(xi), w⟩ ≥ 1 − ζi
+, ζi ≥ 0.
+The problem in (14) matches the optimization problem for
+the linear soft-margin SVM with a zero-bias term b. The key
+advantage of solving the formulated optimization problem over
+the conventional perceptron-based retraining procedures is the
+improved generalization capability of the HDC model. According to statistical learning theory, the model generalization
+ability is closely linked to the model complexity, which in
+SVM is inversely related to the margin and can be characterized by the norm of the weight vector. This complexity is
+controlled by the regularization term 1
+2
+∥w∥
+2
+2
+, which promotes
+large margins, and by the regularization constant C in (14),
+which sets the trade-off between the margin maximization
+and penalizing training errors. In Section III-C, we show
+that our method is a general case of the perceptron-based
+HDC classifier and, therefore, may have higher predictive
+performance compared to conventional HDC methods.
+Importance of formulated HDC optimization. In practice,
+if a classification problem is not linearly separable under the
+selected HDC mapping θ(·), then the perceptron-based HDC
+classifier may not converge and, in the worst case, “explode”
+such that the performance decreases over time. Alternatively,
+if the selected HDC mapping does induce linear separability,
+then the HDC classifier will converge to some solution that is
+the first to satisfy the condition in (10) for every data point. In
+contrast, the HDC optimization problem formulated in (14) is
+guaranteed to converge to the global optimum, which often
+provides better generalization due to margin regularization.
+Later in this work, we provide an iterative algorithm to solve
+this optimization problem and find p+ and p− in a way similar
+to the perceptron procedure.
+The formulated optimization problem demonstrates that the
+key criterion for selecting the transform θ(·) is improved
+linear separability of classes. The key corollary is that, for
+classification tasks (and probably for other pattern recognition
+tasks), HDC does not require a randomization mechanism per
+se. The projection of data into randomized, near-orthogonal
+hypervectors was inherited from VSAs and Kanerva’s sparse
+distributed memories (SDMs) [53] to support formal reasoning and information retrieval, respectively. This conclusion
+was illustrated in [40], where the prototype positions were
+selectively pruned to impede data retrieval, while retaining
+comparable classification performance.
+We note that the goal of the randomization mechanism
+is to introduce redundancy that enhances the resilience of
+hypervectors to noise. The randomization mechanism can be
+6
+applied separately, for example, via random projection as done
+in several previous works [4], [36]. In fact, the improved faulttolerance was one of the motivations behind the use of highdimensional, randomized data vectors in SDMs [53, Sec. 1.1,
+Sec. 9]. In the next section, we demonstrate that the optimal
+class prototypes are formed solely of those hypervectors that
+are support vectors for the selected transform θ(·).
+B. Dual HDC Optimization Problem
+Here, we present the dual formulation of the HDC optimization problem in (14). We use the standard SVM derivation
+with b = 0. Solving the dual HDC optimization problem
+reveals that the optimized HDC prototypes p+ and p−
+may be represented as a linear combination of the support
+vectors from the corresponding classes. We solve the dual
+HDC optimization problem using the method of Lagrange
+multipliers. This method involves maximizing the Lagrangian
+function formulated based on the constrained optimization in
+(14) w.r.t. Lagrange multipliers λ = {λi} and η = {ηi}.
+The corresponding saddle-point optimization problem can be
+formulated as follows:
+max
+λ,η
+"
+min
+w,ζ
+1
+2
+∥w∥
+2
+2 −
+X
+N
+i=1
+λi (yi
+· ⟨θ(xi), w⟩ − 1)
+−
+X
+N
+i=1
+ζi (λi + ηi − C)
+#
+, (15)
+s.t. λi ≥ 0, ηi ≥ 0, ζi ≥ 0, (16)
+yi
+· ⟨θ(xi), w⟩ − 1 + ζi ≥ 0, (17)
+λi (yi
+· ⟨θ(xi), w⟩ − 1 + ζi) = 0, (18)
+ηiζi = 0 for all i = 1, ..., N. (19)
+We denote the Lagrangian as L(w, ζ,λ, η). For the sought
+saddle point, the following conditions hold:
+∂L(w, ζ,λ, η)
+∂w
+= 0,
+∂L(w, ζ,λ, η)
+∂ζi
+= 0, i = 1, ..., N. (20)
+The zero derivatives in (20) yield two additional conditions:
+
+w =
+PN
+i=1 λiyiθ(xi),
+ηi + λi = C, i = 1, ..., N. (21)
+The separating hyperplane is defined above as a difference
+between the class prototypes p+ and p−, i.e., w = p+ − p−.
+Hence, the form of the first equation in (21) allows us to express each prototype as a sum of the support vectors weighed
+with the corresponding non-zero Lagrange multipliers:
+w=
+X
+N
+i=1
+λiyiθ(xi)=X
+xi∈C+
+λiθ(xi) −
+X
+xj∈C−
+λj θ(xj )=p+ − p−,
+(22)
+where sets C+ and C− contain the data points corresponding
+to the classes +1 and −1, respectively. Therefore, the conventional prototype construction procedure in (1) essentially
+initializes Lagrange coefficients, which are then iteratively
+refined later on during the HDC retraining procedure. Interestingly, in very high-dimensional regimes typical to HDC,
+large fraction of data points may become support vectors with
+high probability [54]. This can serve as a formal rationale
+for bundling all data points into class prototypes before their
+refinement.
+Furthermore, substituting the equations in (21) into the
+Lagrange function, we eliminate all variables ηi and ζi from
+the optimization problem. As a result, we obtain the following
+dual problem formulation:
+max
+λ
+X
+N
+i=1
+λi −
+1
+2
+X
+N
+i=1
+X
+N
+j=1
+λiλjyiyj ⟨θ(xi), θ(xj )⟩ (23)
+s.t. 0 ≤ λi ≤ C, i = 1, ..., N, (24)
+where the constraint in (24) follows from the second expression in (21). Solving the optimization problem above provides
+the optimal Lagrange coefficients λ determining the weights
+of the support points to be bundled into the class prototypes
+p+ and p− as demonstrated in (22).
+C. Maximum-Margin HDC Classifier
+Here, we devise a procedure to train the proposed
+maximum-margin HDC (MM-HDC) classifier. With the established relation in mind, we reformulate the primal optimization
+problem in (9) as
+min
+p+,p−
+1
+2C
+∥p+ −p−∥
+2
+2+
+X
+N
+i=1
+[1−yi
+·⟨θ(xi), p+−p−⟩]+. (25)
+Further, we adapt the approach from [12], [13] to design an
+iterative retraining procedure based on the batched gradient
+descent algorithm. Using this algorithm, we iteratively optimize the parameters p+, and p− by applying the following
+update rule:
+p
+(t+1)
++ = p
+(t)
++ − α ·
+∂F
+∂p+
+, p
+(t+1)
+− = p
+(t)
+− − α ·
+∂F
+∂p−
+, (26)
+where F(·) is the objective function in (25) and t is the
+optimization step index.
+We group class +1 and −1 points that are either misclassified or classified correctly but located inside the margin into
+sets A+ and A−, correspondingly. Particularly, xi ∈ A+ ∪A−
+if and only if 1 − yi⟨θ(xi), w⟩ > 0. In other words, these sets
+combined contain all the data points for which the condition
+in (13) does not hold. We calculate the derivatives of F as
+follows:
+∂F
+∂p+
+=
+1
+C
+(p+ −p−)−
+
+
+X
+xi∈A+
+θ(xi)−
+X
+xj∈A−
+θ(xj )
+
+, (27)
+∂F
+∂p−
+=
+1
+C
+(p− −p+)−
+
+
+X
+xi∈A−
+θ(xi)−
+X
+xj∈A+
+θ(xj )
+
+. (28)
+Substituting the derivatives in (27) and (28) into the respective
+equations in (26), we complete the iterative update procedure
+for MM-HDC retraining.
+The introduced retraining procedure can be easily extended
+to the case of cosine similarity. For inequality (12) to hold,
+the prototypes should have equal ℓ2-norms. In this case, the
+problem in (25) can be solved using projected gradient descent,
+where after each update, the prototypes are normalized to
+7
+preserve the condition ∥p+∥2 = ∥p−∥2. This method can be
+extended to online learning by applying the update rule in (26)
+to batches of streamed data. In online setting, parameters can
+be further tuned to provide better adaptability.
+Based on the form of derivatives in (26), we may observe
+that the conventional perceptron-based HDC classifier is a
+special case of the derived algorithm with C → ∞. This
+implies that the key advantage of the MM-HDC classifier is
+in its inherent regularization support that may enhance the
+generalization ability of HDC. We note that the derivation
+above may not be limited to batched gradient descent. The update rule in (26) could be modified to support more advanced
+gradient descent-based methods similar to the one in [55].
+Currently, the MM-HDC update procedure supports only
+real-valued HD transforms. Our algorithm, however, can be
+implemented in fixed-point arithmetic with a specified bitwidth
+similar to [51]. Essentially, our MM-HDC method offers an
+“HDC way” of linear C-SVM training with batched gradient
+descent. With this reformulation, our work provides a mechanism to introduce margin-based learning into HDC while
+preserving implementation simplicity that originally motivated
+HDC research.
+D. Complexity Analysis
+Here, we analyze the computational complexity of our MMHDC method. For convenience, we provide an assessment for
+every key procedure of the algorithm: prototype initialization,
+similarity check, and prototype retraining. We express the costs
+in the number of elementary operations (addition, subtraction,
+multiplication, division) and assume that all operations have
+equal complexity. We also exclude the projection of the data
+into hypervectors from the analysis, as our method is agnostic
+to the selection of the HD transform.
+Prototype initialization. In our framework, the bundling
+operation in (1) is implemented as an element-wise summation. Since the prototype initialization procedure bundles
+all data points into the corresponding class prototypes, the
+computational cost of this step is ND.
+Similarity check. In our method, the similarity check
+involves computing dot products between the test point x∗
+and the positive and negative class prototypes p+ and p−,
+respectively. The computational complexity of the dot product
+between two D-dimensional hypervectors is 2D−1. Therefore,
+the total inference complexity is 2 · (2D − 1) ∼ O(D).
+Prototype retraining. Recall that the retraining procedure
+of MM-HDC consists of iteratively updating the prototypes
+p+ and p− according to the corresponding update rules in
+(27) and (28). Let us assume that the retraining procedure
+is performed over the batch of training points of size B,
+each belonging to either set A+ or set A−. One can observe
+that the derivative terms in (27) and (28) differ only in sign
+and, therefore, can be precomputed. Given this observation,
+the computational complexity of updating both prototypes is
+(B + 7)D + 1 ∼ O(BD).
+IV. NUMERICAL RESULTS
+In this section, we fix the mapping θ(x), which makes
+MM-HDC equivalent to a linear soft-margin SVM formulation
+TABLE II
+PARAMETERS OF CONSIDERED HDC AND SVM METHODS.
+Hyperparameter Dataset
+MNIST FASHION UCI HAR
+All methods
+HD representation size, D 5000
+Batch size 1000
+Maximum-margin HDC
+Learning rate, α 1 · 10−5
+Regularization constant, C 500
+Linear C-SVM
+Learning rate, α 1 · 10−4
+Regularization constant, C 500
+Perceptron-based HDC and OnlineHD
+Learning rate, α 1 · 10−5
+with zero bias. The main objective of the experiments below
+is to study the benefits of explicit margin-based optimization
+compared to conventional HDC update rules.
+A. Experimental Setup
+We evaluate the performance of our MM-HDC algorithm on
+several community-adopted multi-class classification datasets,
+including MNIST [56], Fashion MNIST (FASHION) [57], and
+UCI HAR [58]. For each of these datasets, we apply the HD
+transform proposed in [51], i.e.,
+θ(x) = cos(xW + φ) · sin(xW), (29)
+where W ∼ N (0, I) is a d × D random projection matrix
+and φ ∼ Uni[0, 2π] is a random D-dimensional phase shift
+vector. This type of encoding is often referred to as non-linear
+encoding [55], which can be interpreted as a fully connected
+layer of a neural network with a non-linear function applied
+to its output. The parameters W and ϕ can be sampled using
+a pseudo-random number generator with some predefined
+seed, as done in many conventional HDC frameworks. The
+OnlineHD mapping has been successfully adopted in previous
+HDC frameworks for image retrieval [59], image classification
+[60], and time series forecasting [9], which confirms its
+universality for a wide range of applications.
+To control feature space, we also normalize the individual
+data points to a unit ℓ2-norm prior to applying the HD
+transform in (29). Based on our previous discussion, we note
+that the HD transform θ(x) acts as a non-trainable feature
+transform and can be replaced by a pretrained neural networkbased feature extractor, as demonstrated in [4]. Ultimately, the
+HD transform θ(·) can be any function that transforms the
+original data x into a suitable feature space, not necessarily
+high-dimensional. A key insight of our work is that the feature
+transform θ(·) does not require high dimensionality, or randomness for HDC to function efficiently. Randomized feature
+expansions provide a set of advantageous properties, such as
+near-orthogonality and resilience to noise [51]. We note that
+randomization is not strictly required. The key requirement is
+that the HD transform θ(·) maps the data into a space where
+classes are linearly separable.
+B. Comparison with Baseline Algorithms
+We compare our MM-HDC algorithm to several baseline
+models: linear C-SVM [61], perceptron-based HDC, On-
+8
+20 40 60 80 100
+Epoch
+0.90
+0.92
+0.94
+0.96
+0.98
+1.00
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+MLP
+CNN
+XGBoost
+(a) MNIST dataset
+20 40 60 80 100
+Epoch
+0.750
+0.775
+0.800
+0.825
+0.850
+0.875
+0.900
+0.925
+0.950
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+MLP
+CNN
+XGBoost
+(b) Fashion MNIST dataset
+20 40 60 80 100
+Epoch
+0.800
+0.825
+0.850
+0.875
+0.900
+0.925
+0.950
+0.975
+1.000
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+MLP
+CNN
+XGBoost
+(c) UCI HAR dataset
+Fig. 1. Comparison of performance of maximum-margin HDC (blue), linear C-SVM (orange), OnlineHD (green), perceptron-based HDC (red), and other
+algorithms.
+TABLE III
+CLASSIFICATION PERFORMANCE COMPARISON OF MM-HDC WITH THE BASELINES IN TERMS OF MEAN ACCURACY SCORES AT THE LAST EPOCH.
+Classifier Enc. type Format Accuracy
+MNIST FASHION UCI HAR
+HDC methods
+Binary MM-HDC (OvO) NL FP32 0.979 0.885 0.948
+OnlineHD NL FP32 0.966 0.859 0.934
+Perceptron-based HDC NL FP32 0.966 0.858 0.933
+FedHDC [12], [13] NL BP/FP32 0.968 - 0.945
+TrainableHD [55] NL INT8/FP32 0.980 - 0.955
+DependableHD [37] RP INT16 0.966 - 0.969
+LeHDC [52] BNN BP/FP32 0.947 0.871 0.952
+Laplace-HDC [5] CB BP/FP32 0.964 0.887 -
+RFF-HDC [34] CB BP/FP32 0.966 0.874 0.966
+Deep learning and classical ML methods
+Linear C-SVM - - 0.980 0.890 0.947
+MLP - - 0.979 0.881 0.946
+CNN - - 0.986 0.902 0.956
+XGBoost - - 0.979 0.901 0.932
+lineHD [34], FedHDC [12], [13], TrainableHD [55], DependableHD [37], LeHDC [52], Laplace-HDC [5], and RFF-HDC
+[34]. Here, perceptron-based HDC corresponds to the basic
+HDC method with the conventional perceptron-based retraining procedure as in (3). The FedHDC method is based on
+the Fisher’s linear discriminant and, therefore, is conceptually
+closest to our framework. We also note that the reported
+performance of FedHDC is for the federated implementation
+and, therefore, may be higher for the centralized case.
+For linear C-SVM, perceptron-based HDC, and OnlineHD,
+we report the performance results obtained from own implementations. For other baseline methods, we reproduce
+the classification performance results reported in the original
+publications. As the hyperparameter values, such as the hypervector size D, can differ between the implementations, we
+include the highest reported performance figures. We note that
+all baseline methods from the referenced works employ bipolar
+hypervectors of size D = 10000, except for DependableHD,
+which employs integer-valued hypervectors of size D = 3000.
+The baseline HDC methods rely on different encoding
+algorithms and hypervector data formats. There are three main
+types of employed HD transforms: non-linear (NL), random
+projection (RP)-based, and codebook (CB)-based. The former
+two are based on the matrix-to-vector multiplication between
+the data vector and the randomized short-and-fat matrix. The
+only difference is that in the RP-based transform, the matrix
+is sampled from a Bernoulli distribution, while the nonlinear transform utilizes a Gaussian matrix and applies nonlinearity to the matrix-to-vector product. The codebook-based
+transforms rely on conventional symbolic HDC mappings
+based on the algebra over hypervectors. The only exception is
+the LeHDC method [52] that employs a binary neural network
+(BNN) for feature extraction.
+In our implementation, the linear C-SVM, perceptronbased HDC, and OnlineHD use a variation of the non-linear
+transform, namely, the OnlineHD transform in (29), with the
+discussed preprocessing steps. Most of the baseline methods
+rely on bipolar (BP) or integer-valued (INT8/INT16) hypervectors for better resource efficiency, while we employ realvalued (FP32) hypervector representations. We also note that
+the performance gap between using real-valued and bipolar
+hypervectors can be marginal when the BP hypervectors are
+sufficiently large [32].
+We note that all baselines, except for DependableHD, rely
+on floating-point operations during the training or inference
+stage. Specifically, FedHDC constructs bipolar data hypervectors, but the prototype is real-valued, and its refinement is done
+in the floating-point arithmetic [12, Sec. 4]. The TrainableHD
+method adopts quantization-aware training by refining the
+prototypes in the FP32 format and subsequently quantizing
+them at the inference stage into the INT8 format [55, Sec. 6.2].
+The LeHDC [52, Sec. 4] and RFF-HDC [34, Sec. 7] methods
+9
+20 40 60 80 100
+Epoch
+0.86
+0.88
+0.90
+0.92
+0.94
+0.96
+0.98
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+(a) Size of hypervector D = 500
+20 40 60 80 100
+Epoch
+0.86
+0.88
+0.90
+0.92
+0.94
+0.96
+0.98
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+(b) Size of hypervector D = 1000
+20 40 60 80 100
+Epoch
+0.86
+0.88
+0.90
+0.92
+0.94
+0.96
+0.98
+Accuracy
+Binary MM-HDC (OvO)
+Linear C-SVM (OvO)
+OnlineHD
+Perceptron-based HDC
+(c) Size of hypervector D = 2500
+Fig. 2. Performance comparison of maximum-margin HDC (blue), linear C-SVM (orange), OnlineHD (green), and perceptron-based HDC (red) for MNIST
+dataset and different sizes of hypervectors D.
+optimize the bipolar prototypes using SGD with straightthrough estimation, which involves computation of real-valued
+gradients. The Laplace-HDC framework similarly relies on the
+real-valued SGD-based training of the prototypes, the values
+of which are clamped to sign either every or only the last
+iteration, depending on the selected regime [5, Sec. 2.1].
+Moreover, we discover that the perceptron-based HDC and
+OnlineHD methods may converge significantly faster when
+their prototypes are normalized after each retraining iteration.
+Therefore, we additionally implement this normalization practice for these methods in our experiments. The parameters of
+MM-HDC, perceptron-based HDC, OnlineHD, and linear CSVM methods are summarized in Table II.
+Since SVM and MM-HDC methods are inherently designed
+for binary classification, we adopt one-versus-one (OvO) classification to test them on standard multi-class datasets. For
+the classification problem with K classes, the OvO classifier
+trains K(K−1)
+2 models for each pair of classes. Alternatively,
+one may adopt a one-versus-rest classification with only K
+classifiers, which is more similar to the HDC framework. However, we observe that one-versus-one classification performs
+significantly better on the selected datasets. Consequently, we
+adopt the OvO approach despite its higher computational complexity.
+In addition, we compare our MM-HDC method with other
+deep learning and classical ML methods: MLP (multi-layer
+perceptron), CNN (convolutional neural network), and XGBoost [62]. For MLP, we use a three-layered configuration
+(512, 256, 126) with ReLU activations. For CNN, we employ
+two (32, 64) convolutional layers with 2 × 2 max-pooling and
+the last 128-dimensional fully-connected layer. Both networks
+are trained with 0.2 dropout rate, softmax outputs, crossentropy loss, and Adam optimizer [63] with 1 · 10−3
+learning rate.
+We present a comparison of the considered methods in
+terms of classification accuracy in Fig. 1 and Table III. For
+each method, we provide the mean accuracy averaged over
+50 experiments, together with (5, 95)-percentile. For SVM
+training, we employ the Adam optimizer since it demonstrates
+significantly more stable and faster convergence compared
+to batched gradient descent-based optimization. The results
+demonstrate that even with these enhancements, our MM-HDC
+method achieves smoother convergence with a notable accuracy improvement compared to the baseline HDC methods.
+Slower convergence of MM-HDC compared to linear CSVM can be attributed to the difference in the optimization
+backbones. The retraining procedure of MM-HDC is based on
+SGD, which demonstrates generally slower convergence compared to the Adam optimizer employed for the linear C-SVM
+training. We note that the SGD-based retraining procedure can
+be readily extended to the Adam-based optimization as demonstrated in [55]. However, both methods have equivalent loss
+functions (excluding the bias term) and demonstrate almost
+identical classification performance for smaller hypervector
+sizes D as demonstrated in Section IV.C below.
+In our experiments, we also observe an interesting phenomenon: for the applied OnlineHD mapping in (29) and the
+selected hypervector size D = 5000, lowering the impact
+of regularization (equivalently, increasing the regularization
+parameter so that the objective function is less sensitive to the
+changes in ∥pi∥2) results in higher classification accuracy.
+C. Impact of Hypervector Size
+Despite high resource efficiency, large sizes of hypervectors can still be difficult to store for memory-constrained
+architectures [64]. Therefore, we vary the dimensionality D
+of hypervectors and explore its effects to lower the memory
+usage and, consequently, compute requirements. In Fig. 2,
+we compare the classification accuracy of the considered
+HDC algorithms on the MNIST dataset for varied sizes D of
+hypervectors. For every value of D, we apply a higher learning
+rate of α = 1 · 10−4
+, while the rest of the hyperparameters for
+the MNIST dataset are reported in Table II. We observe that
+a higher learning rate results in unstable training convergence
+for the base hypervector size of D = 5000. Such an instability
+can be potentially treated with the dropout-inspired enhancement of the retraining procedure proposed in our previous
+work in [14].
+The results reveal an interesting trend: if the hypervector
+size is relatively small, conventional perceptron-based and OnlineHD methods overfit, as demonstrated by a slow accuracy
+decay for D = {500, 1000}. In contrast, our MM-HDC algorithm and its SVM counterpart maintain a stable performance
+over the training process. We explain this behavior by the
+capability of MM-HDC/SVM to attain a larger margin, which
+stabilized training for low values of D.
+10
+V. IMPLICATIONS AND OPEN RESEARCH DIRECTIONS
+Sections II and III demonstrate that HDC with dot-product
+similarity is equivalent to a linear soft-margin SVM classifier
+with zero bias. This section describes practical implications
+of this result by elaborating on (i) relation between θ(x) and
+kernel methods, (ii) extensions to multi-class formulations, and
+(iii) alternative loss functions.
+A. Relation to Kernel Methods
+In classical SVMs, a well-established practice for handling data that are not linear separable is applying the socalled kernel trick, where the dot-products ⟨xi
+, xj ⟩ in the
+finite feature space are replaced by a positive-definite kernel
+function k(xi
+, xj ) that implicitly defines the feature map.
+For continuous shift-invariant kernels, Bochner’s theorem [65,
+Sec. 4.2.1] provides a characterization that enables randomized
+finite-dimensional approximations. A practical implication of
+this theorem is that such kernel functions can be approximated
+by dot-products in the finite feature space. In other words,
+k(xi
+, xj ) ≈ ⟨ϕ(xi), ϕ(xj )⟩, where ϕ(·) : R
+d → R
+D is a randomized explicit feature mapping corresponding to the kernel
+function. A well-known example of such a mapping is the random Fourier feature mapping ϕ(x) = [cos (xW) sin (xW)]
+approximating the radial basis function (RBF) kernel [50],
+where W ∼ N (0, σ2
+I) is a d × D random projection matrix
+and σ is an RBF kernel parameter.
+Following the result in [32, Sec. 5.2.1], our discussion
+highlights a formal relation between HDC and kernel methods: selecting an HDC mapping θ(·) as a random feature mapping ϕ(·) turns HDC into a kernel method with
+k(xi
+, xj ) ≈ ⟨θ(xi), θ(xj )⟩. We also note that some SVM implementations may benefit from using the cosine kernel [66],
+which is conventionally applied for measuring similarity in
+HDC algorithms. This observation further reinforces a strong
+connection between HDC, SVM, and kernel methods.
+B. Multi-Class Classification
+In contrast to conventional HDC classifiers, the presented
+MM-HDC approach has limited native support for multiclass classification. Similar to the original SVM formulation,
+binary MM-HDC can be combined with the one-vs-one or
+one-vs-rest classification, which may increase training and
+inference complexity compared to conventional multi-class
+HDC methods.
+A direct multi-class MM-HDC formulation could be obtained by applying similar derivation steps to the multi-class
+SVM method in [67], here referred to as Weston-Watkins
+(WW)-SVM. Particularly, the decision rule of WW-SVM
+coincides with the HDC decision rule in (2) for the case of
+dot-product similarity. Consequently, it could be possible to
+extended the derivations in Section III to a multi-class MMHDC formulation based on WW-SVM. Such a reformulation
+eliminates the need for additional ensemble methods to tackle
+multi-class problems. This is an important extension of binary
+MM-HDC, the implementation of which remains open for
+future research.
+C. Loss Function Selection
+The original binary SVM optimization problem in (9) employs the hinge loss function with ℓ2-regularization. The hinge
+loss can be replaced with other functions, such as the squared
+hinge loss, which may modify the behavior of the SVM. In
+fact, substituting the hinge loss with the squared hinge loss in
+the MM-HDC objective in (25) reveals an interesting relation
+of our method to the OnlineHD retraining procedure proposed
+in [51]. The MM-HDC objective with the squared hinge loss
+can be rewritten as:
+min
+p+,p−
+1
+2C
+∥p+ −p−∥
+2
+2+
+X
+N
+i=1
+[1−yi
+·⟨θ(xi), p+ −p−⟩]
+2
++.
+(30)
+The partial derivatives of the objective in (30) w.r.t. the
+prototypes p+ and p− have the following form:
+∂F
+∂p+
+=
+1
+C
+(p+ −p−)−
+
+
+X
+xi∈A+
+∆iθ(xi)−
+X
+xj∈A−
+∆j θ(xj )
+
+,
+∂F
+∂p−
+=
+1
+C
+(p− −p+)−
+
+
+X
+xi∈A−
+∆iθ(xi)−
+X
+xj∈A+
+∆j θ(xj )
+
+,
+where ∆i = 2 · [1−yi
+·⟨θ(xi), p+ −p−⟩]+ is the weight coefficient. Without margin maximization, the weight coefficient
+becomes ∆i = 2 · ⟨θ(xi), p+ − p−⟩, since ∆i are always positive for data points xi from A+ and A−. Substituting the
+above derivatives into (26) and selecting C → ∞ results in an
+update rule closely resembling the OnlineHD method from
+[51] for the binary classification case. The only difference
+between the methods is in the choice of the function ∆i
+.
+While OnlineHD uses a cosine distance based on heuristics,
+we select ∆i as a hinge loss based on formal derivations. This
+suggests that adopting alternative loss functions may result
+in discovering multiple variations of MM-HDC tailored to
+different tasks.
+D. Neural Network-Based Feature Extraction
+Our MM-HDC framework is compatible with the end-toend training of the HDC classifier and neural network-based
+feature extractor. The core idea of such end-to-end training
+is to jointly optimize the encoder parameters and the HDC
+class prototypes using standard backpropagation. Particularly,
+let Θ be the parameters of some neural network-based feature
+extractor θ(x; Θ), which maps raw input x into the HD
+space. Gradient-based optimization can be applied to both the
+encoder and the HDC prototypes:
+p
+(t+1) = p
+(t) −α·
+∂F
+∂p
+and Θ(t+1) = Θ(t) −α·
+∂F
+∂Θ
+,
+where we omit the signs of the prototypes p+ and p− for
+brevity. Since the HDC algorithm is a classification head for
+the feature extractor parameterized by Θ, its partial derivative
+can be represented using the chain rule:
+∂F
+∂Θ
+=
+∂F
+∂p+
+·
+∂p+
+∂Θ
++
+∂F
+∂p−
+·
+∂p−
+∂Θ
+,
+11
+where the partial derivatives for the positive and negative class
+prototypes are derived in (27) and (28), correspondingly. This
+allows us to perform full end-to-end training through automatic differentiation frameworks as was previously demonstrated in [4], [52]. If real-valued automatic differentiation
+cannot be implemented due to hardware constraints, it may
+be possible to apply binary neural networks [52] or fully integer neural networks that implement backpropagation without
+relying on floating-point arithmetic [68].
+VI. CONCLUSION
+In this article, we established a formal relation between
+binary HDC and linear soft-margin SVM classifiers. We
+demonstrated that a binary HDC classifier can be reformulated
+as a linear C-SVM classifier with identical decision rules.
+Building on this result, we formulated a convex optimization problem and proposed an iterative algorithm to train a
+maximum-margin HDC classifier. The proposed MM-HDC
+algorithm matches or outperforms the baseline HDC classifiers
+on several benchmark datasets.
+The presented analytical perspective complements the growing body of ML-oriented HDC work that focuses on encoding
+and representation design. Our results also provide a theoretical interpretation of several previously heuristic HDC training
+procedures. More broadly, the margin-based perspective provides a foundation for the systematic design of future HDC
+methods, grounded in the well-established theory of SVMs.
+REFERENCES
+[1] P. Kanerva, “Hyperdimensional computing: An introduction to computing in distributed representation with high-dimensional random vectors,”
+Cognitive Computation, vol. 1, pp. 139–159, 2009.
+[2] D. Kleyko and D. A. Rachkovskij, “On design choices in similaritypreserving sparse randomized embeddings,” in 2024 International Joint
+Conference on Neural Networks (IJCNN), pp. 1–8, IEEE, 2024.
+[3] K. Fan, W.-C. Chen, S. Pinge, H.-S. P. Wong, and T. Rosing, “Efficient
+open modification spectral library searching in high-dimensional space
+with multi-level-cell memory,” in Proceedings of the 61st ACM/IEEE
+Design Automation Conference, pp. 1–6, 2024.
+[4] A. Dutta, S. Gupta, B. Khaleghi, R. Chandrasekaran, W. Xu, and
+T. Rosing, “HDnn-PIM: Efficient in memory design of hyperdimensional
+computing with feature extraction,” in Proceedings of the Great Lakes
+Symposium on VLSI 2022, pp. 281–286, 2022.
+[5] S. Pourmand, W. D. Whiting, A. Aghasi, and N. F. Marshall, “LaplaceHDC: Understanding the geometry of binary hyperdimensional computing,” Journal of Artificial Intelligence Research, vol. 82, pp. 1293–1323,
+2025.
+[6] L. Smets, W. Van Leekwijck, I. J. Tsang, and S. Latre, “An encoding ´
+framework for binarized images using hyperdimensional computing,”
+Frontiers in Big Data, vol. 7, 2024.
+[7] A. Moran, C. F. Frasser, M. Roca, and J. L. Rossello, “Energy-efficient
+pattern recognition hardware with elementary cellular automata,” IEEE
+Transactions on Computers, vol. 69, no. 3, pp. 392–401, 2019.
+[8] K. Schlegel, P. Neubert, and P. Protzel, “HDC-MiniROCKET: Explicit
+time encoding in time series classification with hyperdimensional computing,” in 2022 International Joint Conference on Neural Networks
+(IJCNN), pp. 1–8, IEEE, 2022.
+[9] I. G. Moreno, X. Yu, and T. Rosing, “KalmanHD: Robust on-device time
+series forecasting with hyperdimensional computing,” in 2024 29th Asia
+and South Pacific Design Automation Conference (ASP-DAC), pp. 710–
+715, IEEE, 2024.
+[10] I. Nunes, M. Heddes, T. Givargis, A. Nicolau, and A. Veidenbaum,
+“GraphHD: Efficient graph classification using hyperdimensional computing,” in 2022 Design, Automation & Test in Europe Conference &
+Exhibition (DATE), pp. 1485–1490, IEEE, 2022.
+[11] J. Kang, M. Zhou, W. Xu, and T. Rosing, “RelHDx: Hyperdimensional
+computing for learning on graphs with FeFET acceleration,” IEEE
+Transactions on Computers, 2025.
+[12] K. Ergun, R. Chandrasekaran, and T. Rosing, “Federated hyperdimensional computing,” arXiv preprint arXiv:2312.15966, 2023.
+[13] Y. Tian, R. Chandrasekaran, K. Ergun, X. Yu, and T. Rosing, “Federated hyperdimensional computing: Comprehensive analysis and robust
+communication,” ACM Transactions on Internet of Things, 2025.
+[14] N. Zeulin, O. Galinina, N. Himayat, and S. Andreev, “Resource-efficient
+federated hyperdimensional computing,” in MLSys 2023 Federated
+Learning Systems Workshop (FLSys), pp. 1–8, 2023.
+[15] D. Kleyko, E. Osipov, and U. Wiklund, “A hyperdimensional computing
+framework for analysis of cardiorespiratory synchronization during
+paced deep breathing,” IEEE Access, vol. 7, pp. 34403–34415, 2019.
+[16] P. Verges, M. Heddes, I. Nunes, D. Kleyko, T. Givargis, and A. Nicolau, ´
+“Classification using hyperdimensional computing: A review with comparative analysis,” Artificial Intelligence Review, vol. 58, no. 6, p. 173,
+2025.
+[17] P. Liu, K.-K. R. Choo, L. Wang, and F. Huang, “SVM or deep learning?
+A comparative study on remote sensing image classification,” Soft
+Computing, vol. 21, pp. 7053–7065, 2017.
+[18] Q. Hua, M. H. Nielsen, Z. An, J. Ren, R. Wisniewski, S. Kold,
+O. Rahbek, and M. Shen, “Lab to multiscene generalization for nonline-of-sight identification with small-scale datasets,” IEEE Transactions
+on Artificial Intelligence, vol. 5, no. 2, pp. 516–529, 2023.
+[19] J. Carter, S. Mancoridis, and E. Galinkin, “Fast, lightweight IoT anomaly
+detection using feature pruning and PCA,” in Proceedings of the 37th
+ACM/SIGAPP Symposium on Applied Computing, pp. 133–138, 2022.
+[20] Z. Zhang, Y. Dong, and W.-C. Hong, “Long short-term memory-based
+twin support vector regression for probabilistic load forecasting,” IEEE
+Transactions on Neural Networks and Learning Systems, vol. 36, no. 1,
+pp. 1764–1778, 2025.
+[21] Y. Tang, “Deep learning using linear support vector machines,” in
+International Conference on Machine Learning 2013: Challenges in
+Representation Learning Workshop, pp. 1–6, 2013.
+[22] R. W. Gayler, “Vector symbolic architectures answer Jackendoff’s challenges for cognitive neuroscience,” arXiv preprint cs/0412059, 2004.
+[23] R. W. Gayler, “Multiplicative binding, representation operators & analogy,” in Advances in Analogy Research: Integration of Theory and Data
+from the Cognitive, Computational, and Neural Sciences, pp. 1–4, 1998.
+[24] P. Kanerva, “The spatter code for encoding concepts at many levels,”
+in ICANN’94: Proceedings of the International Conference on Artificial
+Neural Networks Sorrento, Italy, 26–29 May 1994 Volume 1, Parts 1
+and 2 4, pp. 226–229, Springer, 1994.
+[25] T. A. Plate, Distributed Representations and Nested Compositional
+Structure. PhD thesis, University of Toronto, Department of Computer
+Science, 1994.
+[26] D. Kleyko, D. Rachkovskij, E. Osipov, and A. Rahimi, “A survey on
+hyperdimensional computing aka vector symbolic architectures, Part I:
+Models and data transformations,” ACM Computing Surveys, vol. 55,
+no. 6, pp. 1–40, 2023.
+[27] D. Kleyko, D. Rachkovskij, E. Osipov, and A. Rahimi, “A survey on
+hyperdimensional computing aka vector symbolic architectures, Part
+II: Applications, cognitive models, and challenges,” ACM Computing
+Surveys, vol. 55, no. 9, pp. 1–52, 2023.
+[28] D. Kleyko, A. Rahimi, D. A. Rachkovskij, E. Osipov, and J. M. Rabaey,
+“Classification and recall with binary hyperdimensional computing:
+Tradeoffs in choice of density and mapping characteristics,” IEEE
+Transactions on Neural Networks and Learning Systems, vol. 29, no. 12,
+pp. 5880–5898, 2018.
+[29] A. Rahimi, P. Kanerva, and J. M. Rabaey, “A robust and energyefficient classifier using brain-inspired hyperdimensional computing,”
+in Proceedings of the 2016 International Symposium on Low Power
+Electronics and Design, pp. 64–69, 2016.
+[30] A. Rahimi, S. Benatti, P. Kanerva, L. Benini, and J. M. Rabaey,
+“Hyperdimensional biosignal processing: A case study for EMG-based
+hand gesture recognition,” in 2016 IEEE International Conference on
+Rebooting Computing (ICRC), pp. 1–8, IEEE, 2016.
+[31] A. Krizhevsky, G. Hinton, et al., “Learning multiple layers of features
+from tiny images,” 2009.
+[32] A. Thomas, S. Dasgupta, and T. Rosing, “A theoretical perspective
+on hyperdimensional computing,” Journal of Artificial Intelligence Research, vol. 72, pp. 215–249, 2021.
+[33] Z. Zou, Y. Kim, F. Imani, H. Alimohamadi, R. Cammarota, and
+M. Imani, “Scalable edge-based hyperdimensional learning system with
+brain-like neural adaptation,” in Proceedings of the International Con-
+12
+ference for High Performance Computing, Networking, Storage and
+Analysis, pp. 1–15, 2021.
+[34] T. Yu, Y. Zhang, Z. Zhang, and C. M. De Sa, “Understanding hyperdimensional computing for parallel single-pass learning,” Advances in
+Neural Information Processing Sqystems, vol. 35, pp. 1157–1169, 2022.
+[35] C. Williams and M. Seeger, “Using the Nystrom method to speed up ¨
+kernel machines,” Advances in Neural Information Processing Systems,
+vol. 13, 2000.
+[36] Q. Zhao, A. H. Thomas, A. Brin, X. Yu, and T. Rosing, “Bridging the
+gap between hyperdimensional computing and kernel methods via the
+Nystrom method,” ¨ Proceedings of the AAAI Conference on Artificial
+Intelligence, vol. 39, pp. 22813–22821, Apr. 2025.
+[37] D. Liang, H. Awano, N. Miura, and J. Shiomi, “DependableHD: A
+hyperdimensional learning framework for edge-oriented voltage-scaled
+circuits,” in Proceedings of the 28th Asia and South Pacific Design
+Automation Conference, pp. 416–422, 2023.
+[38] C. M. Bishop, “Training with noise is equivalent to Tikhonov regularization,” Neural Computation, vol. 7, no. 1, pp. 108–116, 1995.
+[39] P. R. Genssler, M. Mayahinia, S. Thomann, M. B. Tahoori, and H. Amrouch, “DropHD: Technology/algorithm co-design for reliable energyefficient NVM-based hyper-dimensional computing under voltage scaling,” in 2024 Design, Automation & Test in Europe Conference &
+Exhibition (DATE), pp. 1–6, IEEE, 2024.
+[40] B. Khaleghi, M. Imani, and T. Rosing, “Prive-HD: Privacy-preserved
+hyperdimensional computing,” in 2020 57th ACM/IEEE Design Automation Conference (DAC), pp. 1–6, IEEE, 2020.
+[41] F. Ponzina and T. Rosing, “MicroHD: An accuracy-driven optimization
+of hyperdimensional computing algorithms for tinyml systems,” arXiv
+preprint arXiv:2404.00039, 2024.
+[42] D. Kleyko, E. P. Frady, and F. T. Sommer, “Cellular automata can reduce
+memory requirements of collective-state computing,” IEEE Transactions
+on Neural Networks and Learning Systems, vol. 33, no. 6, pp. 2701–
+2713, 2022.
+[43] Y. Ni, W. Y. Chung, S. Cho, Z. Zou, and M. Imani, “Efficient exploration
+in edge-friendly hyperdimensional reinforcement learning,” in Proceedings of the Great Lakes Symposium on VLSI 2024, pp. 111–118, 2024.
+[44] M. Angioli, A. Rosato, M. Barbirotta, R. Martino, F. Menichelli, and
+M. Olivieri, “HD-CB: The first exploration of hyperdimensional computing for contextual bandits problems,” arXiv preprint arXiv:2501.16863,
+2025.
+[45] S. Wilson, T. Fischer, N. Sunderhauf, and F. Dayoub, “Hyperdimensional ¨
+feature fusion for out-of-distribution detection,” in Proceedings of the
+IEEE/CVF Winter Conference on Applications of Computer Vision,
+pp. 2644–2654, 2023.
+[46] L. Chen, J. Wang, T. Mortlock, P. Khargonekar, and M. A. Al Faruque,
+“Hyperdimensional uncertainty quantification for multimodal uncertainty fusion in autonomous vehicles perception,” in Proceedings of the
+Computer Vision and Pattern Recognition Conference, pp. 22306–22316,
+2025.
+[47] C. Diao, D. Kleyko, J. M. Rabaey, and B. A. Olshausen, “Generalized
+learning vector quantization for classification in randomized neural
+networks and hyperdimensional computing,” in 2021 International Joint
+Conference on Neural Networks (IJCNN), pp. 1–9, IEEE, 2021.
+[48] A. Sato and K. Yamada, “Generalized learning vector quantization,”
+Advances in Neural Information Processing Systems, vol. 8, pp. 423–
+429, 1995.
+[49] A. Hernandez-Cano, Y. Ni, Z. Zou, A. Zakeri, and M. Imani, “Hyperdi- ´
+mensional computing with holographic and adaptive encoder,” Frontiers
+in Artificial Intelligence, vol. 7, p. 1371988, 2024.
+[50] A. Rahimi and B. Recht, “Random features for large-scale kernel
+machines,” Advances in Neural Information Processing Systems, vol. 20,
+pp. 1–8, 2007.
+[51] A. Hernandez-Cano, N. Matsumoto, E. Ping, and M. Imani, “OnlineHD: ´
+Robust, efficient, and single-pass online learning using hyperdimensional
+system,” in 2021 Design, Automation & Test in Europe Conference &
+Exhibition (DATE), pp. 56–61, IEEE, 2021.
+[52] S. Duan, Y. Liu, S. Ren, and X. Xu, “LeHDC: Learning-based hyperdimensional computing classifier,” in Proceedings of the 59th ACM/IEEE
+Design Automation Conference, pp. 1111–1116, 2022.
+[53] P. Kanerva, “Sparse distributed memory and related models,” tech. rep.,
+1992.
+[54] D. Hsu, V. Muthukumar, and J. Xu, “On the proliferation of support
+vectors in high dimensions,” in International Conference on Artificial
+Intelligence and Statistics, pp. 91–99, PMLR, 2021.
+[55] J. Kim, H. Lee, M. Imani, and Y. Kim, “Advancing hyperdimensional
+computing based on trainable encoding and adaptive training for efficient
+and accurate learning,” ACM Transactions on Design Automation of
+Electronic Systems, vol. 29, no. 5, pp. 1–25, 2024.
+[56] Y. Lecun, L. Bottou, Y. Bengio, and P. Haffner, “Gradient-based learning
+applied to document recognition,” Proceedings of the IEEE, vol. 86,
+no. 11, pp. 2278–2324, 1998.
+[57] H. Xiao, K. Rasul, and R. Vollgraf, “Fashion-MNIST: A novel image
+dataset for benchmarking machine learning algorithms,” arXiv preprint
+arXiv:1708.07747, 2017.
+[58] D. Anguita, A. Ghio, L. Oneto, X. Parra Perez, and J. L. Reyes Ortiz,
+“A public domain dataset for human activity recognition using smartphones,” in Proceedings of the 21th International European Symposium
+on Artificial Neural Networks, Computational Intelligence and Machine
+Learning, pp. 437–442, 2013.
+[59] S. Yun, R. Masukawa, S. Jeong, and M. Imani, “NeuroHash: A hyperdimensional neuro-symbolic framework for spatially-aware image hashing
+and retrieval,” arXiv preprint arXiv:2404.11025, 2024.
+[60] Y. Ni, N. Lesica, F.-G. Zeng, and M. Imani, “Neurally-inspired hyperdimensional classification for efficient and robust biosignal processing,”
+in Proceedings of the 41st IEEE/ACM International Conference on
+Computer-Aided Design, pp. 1–9, 2022.
+[61] C. Cortes and V. Vapnik, “Support-vector networks,” Machine Learning,
+vol. 20, no. 3, pp. 273–297, 1995.
+[62] T. Chen and C. Guestrin, “XGBoost: A scalable tree boosting system,”
+in Proceedings of the 22nd ACM SIGKDD International Conference on
+Knowledge Discovery and Data Mining, pp. 785–794, 2016.
+[63] D. P. Kingma and J. Ba, “Adam: A method for stochastic optimization,”
+in International Conference on Learning Representations, 2015.
+[64] D. Y. Kang, Y. H. Oh, C. Hwang, J. Kim, K. E. Jeon, and J. H. Ko,
+“MEMHD: Memory-efficient multi-centroid hyperdimensional computing for fully-utilized in-memory computing architectures,” arXiv preprint
+arXiv:2502.07834, 2025.
+[65] C. E. Rasmussen and C. K. I. Williams, Gaussian processes for machine
+learning. Taylor & Francis Group, 2006.
+[66] A. Ben-Hur and J. Weston, “A user’s guide to support vector machines,”
+Data Mining Techniques or the Life Sciences, pp. 223–239, 2010.
+[67] J. Weston and C. Watkins, “Multi-class support vector machines,”
+Technical Report CSD-TR-98-04, pp. 1–9, 1998.
+[68] S. Wu, G. Li, F. Chen, and L. Shi, “Training and inference with integers
+in deep neural networks,” in International Conference on Learning
+Representations, 2018.

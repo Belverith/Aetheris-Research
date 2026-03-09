@@ -51,7 +51,7 @@ Verifying safety constraints in high-dimensional state spaces is computationally
 
 The trajectory of artificial intelligence has shifted rapidly from reactive, token-prediction models to persistent, autonomous Agentic Control Systems (ACS). This evolution has revealed a fundamental fragility in current architectural paradigms: the phenomenon of ``Agent Drift'' \cite{scrivens2026}, which can expose the system to adversarial exploits and alignment failures \cite{wei2023}. LeCun's framework for autonomous machine intelligence \cite{lecun2022} independently motivates the need for persistent, self-correcting architectures that maintain behavioral coherence over extended operation. A related phenomenon---distributional degradation when models are trained on their own outputs---has been documented as ``Model Collapse'' \cite{shumailov2023}. More broadly, as systems operate over extended temporal horizons, they suffer from a form of structural entropy---sometimes termed ``mutational meltdown'' in evolutionary biology \cite{lynch1995}---where behavioral stability and decision quality degrade \cite{amodei2016}.
 
-In our previous work, \textit{Mitigating Large Language Model Context Drift via Holographic Invariant Storage} \cite{scrivens2026}, we addressed the semantic component of this failure. We demonstrated that by anchoring an agent's identity in a Vector Symbolic Architecture (VSA) substrate \cite{kanerva2009}---a holographic read-only memory---we could substantially reduce the corruption of its goals and personality. While Vector Symbolic Architectures inherently possess the high-dimensional noise tolerance required to solve this problem \cite{plate1995, gayler2003}, a distinct but parallel challenge exists in the kinematic domain: dynamical control drift.
+In our previous work, \textit{Toward Mitigating Large Language Model Context Drift via Holographic Invariant Storage} \cite{scrivens2026}, we characterized the semantic component of this failure. We showed that by encoding an agent's safety constraints in a Vector Symbolic Architecture (VSA) substrate \cite{kanerva2009}---a holographic external memory---the constraints can be algebraically recovered from additive noise with provably optimal fidelity. While Vector Symbolic Architectures inherently possess the high-dimensional noise tolerance required for this task \cite{plate1995, gayler2003}, a distinct but parallel challenge exists in the kinematic domain: dynamical control drift.
 
 \subsection{The High-Dimensional Control Divergence}
 Modern autonomous agents do not merely process text; they operate in high-dimensional state spaces, mapping inputs to actions in continuous environments \cite{ames2019}. Whether controlling a swarm of drones ($n>100$) \cite{brunke2022} or navigating the semantic embedding space of a multi-modal reasoning engine ($n=12,288$ \cite{brown2020}) or a visual transformer \cite{radford2021}, the agent must constantly optimize for utility while adhering to strict safety constraints (e.g., ``Do not delete root files,'' ``Do not collide'').
@@ -703,7 +703,7 @@ Tables~\ref{tab:results} and~\ref{tab:comparison} summarize empirical performanc
 
 \bibitem{scrivens2026}
 Scrivens, A. (2026).
-\textit{Mitigating Large Language Model Context Drift via Holographic Invariant Storage}.
+\textit{Toward Mitigating Large Language Model Context Drift via Holographic Invariant Storage}.
 Zenodo (preprint). \url{https://doi.org/10.5281/zenodo.18500602}
 
 \bibitem{kanerva2009}
