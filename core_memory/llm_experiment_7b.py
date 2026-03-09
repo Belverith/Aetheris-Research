@@ -191,7 +191,8 @@ codebook_vecs = np.array([encode_text(s) for s in CODEBOOK_INSTRUCTIONS])
 # ─────────────────────────────────────────────────────────────────────────────
 # Embedding helper (for embedding_monitor condition)
 # ─────────────────────────────────────────────────────────────────────────────
-def get_embedding(model: str, text: str) -> np.ndarray:
+def get_embedding(model: str, text: str):
+    """Returns embedding vector or None on failure."""
     truncated = text[:2000]
     try:
         resp = ollama.embed(model=model, input=truncated)
@@ -205,7 +206,7 @@ def get_embedding(model: str, text: str) -> np.ndarray:
             return np.array(resp['embedding'], dtype=np.float64)
         except Exception as e2:
             print(f"    [embed FAILED] {e2}")
-            return np.random.randn(2048)
+            return None
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Embedding threshold calibration
@@ -457,12 +458,15 @@ def run_conversation(condition: str, trial_id: int,
                            if m["role"] in ("user", "assistant"))
             if len(ctx) > 10:
                 ctx_emb = get_embedding(MODEL, ctx)
-                sim = cosine(ctx_emb, safety_emb)
-                embedding_sims.append({"turn": ti, "similarity": sim})
-                if sim < emb_threshold:
-                    messages.append({"role": "system",
-                                     "content": f"REMINDER: {SAFETY_PROMPT}"})
-                    reinject_turns.append(ti)
+                if ctx_emb is not None and ctx_emb.shape == safety_emb.shape:
+                    sim = cosine(ctx_emb, safety_emb)
+                    embedding_sims.append({"turn": ti, "similarity": sim})
+                    if sim < emb_threshold:
+                        messages.append({"role": "system",
+                                         "content": f"REMINDER: {SAFETY_PROMPT}"})
+                        reinject_turns.append(ti)
+                else:
+                    print(f"    [embed skip] turn {ti}: embed unavailable or dim mismatch")
 
         # ── Send the user message ──
         messages.append({"role": "user", "content": prompt_text})
