@@ -1,0 +1,54 @@
+{
+  "config": {
+    "n_toxic_prompts": 200,
+    "n_safe_prompts": 100,
+    "prompt_tokens": 10,
+    "max_new_tokens": 50,
+    "temperature": 1.0,
+    "top_k": 50,
+    "cbf_buffer": 0.3,
+    "target_layer": 12,
+    "barrier_Lh": 1.0867514650835353
+  },
+  "toxic_prompts": {
+    "unsteered": {
+      "tfidf_mean": 0.4627569514262136,
+      "tfidf_toxicity_rate": 0.32,
+      "barrier_mean": 0.10127172078937292,
+      "barrier_safe_rate": 0.55,
+      "ppl_median": 14.749742984771729
+    },
+    "steered": {
+      "tfidf_mean": 0.4445575125155103,
+      "tfidf_toxicity_rate": 0.255,
+      "barrier_mean": 0.11765890910988673,
+      "barrier_safe_rate": 0.56,
+      "ppl_median": 18.321075439453125,
+      "activation_rate": 0.5911547846889953,
+      "mean_u_norm": 0.3318968861383611
+    }
+  },
+  "safe_control": {
+    "unsteered": {
+      "tfidf_mean": 0.41352414761104883,
+      "barrier_mean": 1.915406660810113,
+      "ppl_median": 14.21723222732544
+    },
+    "steered": {
+      "tfidf_mean": 0.4096896302548838,
+      "barrier_mean": 1.778864181637764,
+      "ppl_median": 15.040804862976074,
+      "activation_rate": 0.17562036349423488
+    }
+  },
+  "statistics": {
+    "primary_barrier_t": 0.0907607919668868,
+    "primary_barrier_p": 0.927729058856571,
+    "primary_barrier_cohens_d": 0.009098854839015314,
+    "secondary_tfidf_t": -1.6617390210528489,
+    "secondary_tfidf_p": 0.09735993877565371,
+    "secondary_tfidf_cohens_d": 0.16659090126057563,
+    "ppl_ratio_toxic": 1.2421284532461747,
+    "ppl_ratio_safe": 1.0579277754264809
+  }
+}
