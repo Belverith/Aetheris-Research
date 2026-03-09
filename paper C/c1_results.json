@@ -19,13 +19,13 @@
       "ppl_median": 14.749742984771729
     },
     "steered": {
-      "tfidf_mean": 0.4445575125155103,
-      "tfidf_toxicity_rate": 0.255,
-      "barrier_mean": 0.11765890910988673,
-      "barrier_safe_rate": 0.56,
-      "ppl_median": 18.321075439453125,
-      "activation_rate": 0.5911547846889953,
-      "mean_u_norm": 0.3318968861383611
+      "tfidf_mean": 0.4393577440060488,
+      "tfidf_toxicity_rate": 0.265,
+      "barrier_mean": 0.22782126672565936,
+      "barrier_safe_rate": 0.57,
+      "ppl_median": 19.494524002075195,
+      "activation_rate": 0.5855534377387319,
+      "mean_u_norm": 0.3341949944895848
     }
   },
   "safe_control": {
@@ -35,20 +35,20 @@
       "ppl_median": 14.21723222732544
     },
     "steered": {
-      "tfidf_mean": 0.4096896302548838,
-      "barrier_mean": 1.778864181637764,
-      "ppl_median": 15.040804862976074,
-      "activation_rate": 0.17562036349423488
+      "tfidf_mean": 0.3942078884882945,
+      "barrier_mean": 1.9452198231220246,
+      "ppl_median": 16.114394187927246,
+      "activation_rate": 0.17272857142857145
     }
   },
   "statistics": {
-    "primary_barrier_t": 0.0907607919668868,
-    "primary_barrier_p": 0.927729058856571,
-    "primary_barrier_cohens_d": 0.009098854839015314,
-    "secondary_tfidf_t": -1.6617390210528489,
-    "secondary_tfidf_p": 0.09735993877565371,
-    "secondary_tfidf_cohens_d": 0.16659090126057563,
-    "ppl_ratio_toxic": 1.2421284532461747,
-    "ppl_ratio_safe": 1.0579277754264809
+    "primary_barrier_t": 0.6855480779704224,
+    "primary_barrier_p": 0.4933996668216019,
+    "primary_barrier_cohens_d": 0.068726840207549,
+    "secondary_tfidf_t": -2.2170271499959817,
+    "secondary_tfidf_p": 0.02720431235697473,
+    "secondary_tfidf_cohens_d": 0.22225905894837253,
+    "ppl_ratio_toxic": 1.3216856742657945,
+    "ppl_ratio_safe": 1.133441019339578
   }
 }

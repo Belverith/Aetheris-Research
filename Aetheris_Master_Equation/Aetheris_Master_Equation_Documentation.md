@@ -578,279 +578,742 @@ Where $\psi_v^{\text{comp}}(t) = \psi_v(t) + \Omega_{\text{predict}}(t + \Lambda
 
 \newpage
 \section{Comprehensive Proof Requirements Catalog}
-This section provides an exhaustive inventory of every aspect of the ACS Master Equation that requires formal proof, published paper, or rigorous mathematical derivation. Items are organized by term and categorized by their current status: \textbf{Proven} (published or preprint with complete proof), \textbf{Partially Proven} (partial results exist), or \textbf{Unproven} (no formal treatment exists). Each entry includes a 1--2 sentence description of what the required paper must accomplish.
+This section provides an exhaustive inventory of every aspect of the ACS Master Equation that requires formal proof, published paper, or rigorous mathematical derivation. Items are organized by term and categorized by their current status:
+
+\begin{itemize}
+    \item \textbf{Theoretically Proven} --- the mathematical argument is correct (standard result from the literature, or a valid application of established theory). However, ``theoretically proven'' does \emph{not} mean ``validated at scale.'' All items in this category derive from Zenodo preprints \cite{scrivens2026chdbo, scrivens2026his} that have \textbf{not been peer-reviewed}, and none have been empirically validated in the full ACS integration context at production-scale dimensions ($n \ge 4096$). The theorems are mathematically sound; the gap is between the assumptions required by the theorems and the conditions that hold in practice.
+    \item \textbf{Partially Proven} --- partial theoretical or empirical results exist, but the proof is incomplete, conditional, or restricted to toy-scale experiments.
+    \item \textbf{Unproven} --- no formal treatment exists.
+\end{itemize}
+
+\noindent\textbf{Important editorial note (March 2026).} As of this writing, the empirical evidence in this repository \textbf{does not validate} the theoretical claims at scale. The most direct empirical tests---the HIS behavioral experiment (Section~\ref{sec:empirical}) and the autoregressive CBF experiment (Paper~C)---produce results that range from \textit{marginally significant} to \textit{non-significant}. The word ``proven'' throughout this catalog refers exclusively to the mathematical correctness of the theorem statement, not to demonstrated real-world effectiveness. See Section~\ref{sec:empirical} for a full empirical evidence assessment.
 
 \textbf{Citation Convention.} For proven items, the source of the proof is cited. Items marked with $^\dagger$ indicate proofs that appear in the forthcoming companion paper (Paper~B: Active Adversarial Safety Verification), which has not yet been published as of this writing. All $^\dagger$-marked results should be considered \textit{empirically validated but not yet peer-reviewed}.
 
 \subsection{Term I: Hierarchical Latent Agency ($\Psi_{\text{Agency}}$)}
 
 \begin{enumerate}
-    \item \textbf{Convergence of the Hierarchical Integral} \hfill \textit{Unproven}\\
+    \item \textbf{[I-A] Convergence of the Hierarchical Integral} \hfill \textit{Unproven}\\
     Prove that $\int_0^{d_{\max}} w(\ell) \cdot \sigma(\ln E(\pi) - \gamma_{\infty} \cdot G_\ell(\pi)) \, d\ell$ converges for all valid policies $\pi$ and weighting functions $w(\ell)$, and derive sufficient conditions on $w(\ell)$ (e.g., exponential decay) that guarantee absolute convergence.
 
-    \item \textbf{Thermodynamic Optimality of $w(\ell) \propto e^{-\beta c(\ell)}$} \hfill \textit{Unproven}\\
+    \item \textbf{[I-B] Thermodynamic Optimality of $w(\ell) \propto e^{-\beta c(\ell)}$} \hfill \textit{Unproven}\\
     Prove that the Boltzmann-form weighting is the unique entropy-maximizing distribution under the budget constraint $\sum w(\ell) c(\ell) \le B$, and demonstrate that this form minimizes expected free energy across the hierarchy more efficiently than alternative dampening schedules.
 
-    \item \textbf{Hierarchical Active Inference Coherence} \hfill \textit{Unproven}\\
+    \item \textbf{[I-C] Hierarchical Active Inference Coherence} \hfill \textit{Unproven}\\
     Prove that independently minimizing Expected Free Energy $G_\ell(\pi)$ at each hierarchy level $\ell$ produces a globally coherent policy, or characterize the conditions under which local EFE minimization yields global EFE minimization (analogous to Nash equilibrium vs.\ social optimum in game theory).
 
-    \item \textbf{Multi-Level Policy Composability} \hfill \textit{Unproven}\\
+    \item \textbf{[I-D] Multi-Level Policy Composability} \hfill \textit{Unproven}\\
     Prove that policies independently optimal at each level $\ell$ compose into a globally safe and utility-maximizing joint policy. This requires showing that the CBF safety condition (Term III) is preserved under hierarchical policy composition.
 
-    \item \textbf{Recursive Depth Truncation Safety} \hfill \textit{Unproven}\\
+    \item \textbf{[I-E] Recursive Depth Truncation Safety} \hfill \textit{Unproven}\\
     Prove that truncating the recursion at $d_{\max}$ does not discard safety-critical information---i.e., that the contribution of levels $\ell > d_{\max}$ to the safety constraint $\mathcal{V}_{\text{OV}}$ is bounded by the exponential decay of $w(\ell)$.
 
-    \item \textbf{Precision-Controllability Trade-off ($\gamma_\infty$ Regime)} \hfill \textit{Unproven}\\
+    \item \textbf{[I-F] Precision-Controllability Trade-off ($\gamma_\infty$ Regime)} \hfill \textit{Unproven}\\
     Prove that the system remains controllable (the CBF-QP remains feasible) in the limit $\gamma_\infty \to \infty$ (hyper-precise goal seeking), or characterize the critical precision $\gamma^*$ beyond which the system loses controllability.
 
-    \item \textbf{H-JEPA Hierarchy Formal Specification} \hfill \textit{Unproven}\\
+    \item \textbf{[I-G] H-JEPA Hierarchy Formal Specification} \hfill \textit{Unproven}\\
     Provide a rigorous mathematical specification of the 4-level H-JEPA hierarchy (motor control, perception, strategy, meta-cognition), including formal definitions of each level's state space, action space, and the inter-level interface.
 \end{enumerate}
 
 \subsection{Term II: Chronos Synchronization Bridge ($\Omega(t)$)}
 
 \begin{enumerate}
-    \item \textbf{CfC Approximation Error Bound} \hfill \textit{Partially Proven}\\
+    \item \textbf{[II-A] CfC Approximation Error Bound} \hfill \textit{Partially Proven}\\
     The CfC solution provides an approximate closed-form for the LNN ODE. A formal bound on the approximation error $\|\Omega_{\text{CfC}}(t) - \Omega_{\text{true}}(t)\|$ as a function of time horizon and input complexity is needed. The original CfC paper (Hasani et al.) provides some analysis but not specific to the ACS integration context.
 
-    \item \textbf{Liquid Time Constant Stability} \hfill \textit{Unproven}\\
+    \item \textbf{[II-B] Liquid Time Constant Stability} \hfill \textit{Unproven}\\
     Prove that the adaptive time constant $\tau_{\text{liq}}(t)$ converges (does not oscillate or diverge) under arbitrary bounded input streams $I(t)$, and characterize the basin of stability.
 
-    \item \textbf{Linear Complexity Formal Proof} \hfill \textit{Partially Proven}\\
+    \item \textbf{[II-C] Linear Complexity Formal Proof} \hfill \textit{Partially Proven}\\
     Formally prove that the CfC solution maintains $\mathcal{O}(n)$ computational complexity for arbitrary-length input sequences. The CfC literature claims this but the proof in the ACS integration context (with the safety gate operating at each step) has not been provided.
 
-    \item \textbf{Predictive Temporal Compensation Accuracy} \hfill \textit{Unproven}\\
+    \item \textbf{[II-D] Predictive Temporal Compensation Accuracy} \hfill \textit{Unproven}\\
     Prove an error bound for the predictive state $\Omega(t + \Delta t)$ used to compensate for system latency, as a function of the prediction horizon $\Delta t$ and the Lipschitz constant of the input-dependent dynamics.
 
-    \item \textbf{Continuous-Discrete Bridging Formalism} \hfill \textit{Partially Proven}\\
+    \item \textbf{[II-E] Continuous-Discrete Bridging Formalism} \hfill \textit{Partially Proven}\\
     The ACS treats discrete computational steps as continuous ODEs. Paper A's Assumption A7 acknowledges this gap and absorbs discretization error into $\epsilon_{\text{model}}$, but a formal treatment specific to the LNN/CfC discretization (beyond the general Neural ODE framework) is needed.
 \end{enumerate}
 
 \subsection{Term III: Orthogonal Stability Gate ($\mathcal{V}_{\text{OV}}$)}
 
 \begin{enumerate}
-    \item \textbf{Topological Safety (Forward Invariance)} \hfill \textit{\textbf{Proven} \cite{scrivens2026chdbo}}\\
+    \item \textbf{[III-A] Topological Safety (Forward Invariance)} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026chdbo}}\\
     Theorem~1 of \cite{scrivens2026chdbo}. Forward invariance of the safe set $\mathcal{S}$ under the CBF condition follows from Nagumo's theorem \cite{nagumo1942} as formalized for CBFs by Ames et al.\ \cite{ames2019}. Sufficiency is proven; necessity requires additional regularity conditions (0 is a regular value of $h$, $\mathcal{S}$ compact).
 
-    \item \textbf{MCBC Dimension-Independent Sample Complexity} \hfill \textit{\textbf{Proven} \cite{scrivens2026chdbo}}\\
+    \item \textbf{[III-B] MCBC Dimension-Independent Sample Complexity} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026chdbo}}\\
     Equation~5 and Section~3.3 of \cite{scrivens2026chdbo}, applying Hoeffding's inequality \cite{hoeffding1963}. Sample count $N \ge \frac{1}{2\epsilon^2} \ln(2/\delta)$ is independent of state dimension $n$ for fixed $L_h$ and $\varepsilon_s$. Caveats: per-sample cost is $\mathcal{O}(n)$; $L_h$ may implicitly depend on $n$.
 
-    \item \textbf{Trajectory-Level Safety Bridge} \hfill \textit{\textbf{Proven} (Average Case) \cite{scrivens2026chdbo}}\\
+    \item \textbf{[III-C] Trajectory-Level Safety Bridge} \hfill \textit{\textbf{Theoretically Proven} (Average Case) \cite{scrivens2026chdbo}}\\
     Proposition~1 of \cite{scrivens2026chdbo}. Provides an average-case guarantee $P(\text{failure in } T \text{ steps}) \le T \cdot \epsilon$ via union bound. Conservative but dimension-free. The distributional assumption (boundary encounters are representative of $\mu$) limits the guarantee to average-case.
 
-    \item \textbf{Safe Asymptotic Convergence to KKT Set} \hfill \textit{\textbf{Proven} \cite{scrivens2026chdbo}}\\
-    Theorem~2 of \cite{scrivens2026chdbo}. Forward invariance + convergence to constrained KKT set via Barbalat's Lemma \cite{barbalat1959}. Singleton convergence under real-analyticity via \L{}ojasiewicz gradient inequality \cite{lojasiewicz1963}. Full proof for single-integrator; proof sketch for general control-affine dynamics.
+    \item \textbf{[III-D] Safe Asymptotic Convergence to KKT Set} \hfill \textit{\textbf{Partially Proven} \cite{scrivens2026chdbo}}\\
+    Theorem~2 of \cite{scrivens2026chdbo}. Forward invariance + convergence to constrained KKT set via Barbalat's Lemma \cite{barbalat1959}. Singleton convergence under real-analyticity via \L{}ojasiewicz gradient inequality \cite{lojasiewicz1963}. Full proof exists only for single-integrator dynamics ($f(x)=0$); the published preprint provides only a proof sketch for general control-affine systems, omitting detailed verification of key technical conditions (uniform boundedness of $\ddot{V}$, regularity of the closed-loop vector field at the switching surface between active and inactive constraint regimes). Downgraded from Proven: a proof sketch is not a proof.
 
-    \item \textbf{CBF-QP Closed-Form $\mathcal{O}(n)$ Solution} \hfill \textit{\textbf{Proven} \cite{scrivens2026chdbo}}\\
+    \item \textbf{[III-E] CBF-QP Closed-Form $\mathcal{O}(n)$ Solution} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026chdbo}}\\
     Section~4.2 and Experiment~VII of \cite{scrivens2026chdbo}. The single-constraint CBF-QP has a closed-form solution via KKT conditions \cite{boyd2004}, validated up to $n = 2048$ with $61$--$351\times$ speedup over OSQP.
 
-    \item \textbf{Dimension-Independent Lipschitz Constants} \hfill \textit{\textbf{Proven} \cite{scrivens2026chdbo}}\\
+    \item \textbf{[III-F] Dimension-Independent Lipschitz Constants} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026chdbo}}\\
     Lemma~1 of \cite{scrivens2026chdbo}. For radial barriers $h(x) = \phi(\|x\|)$, $L_h = L_\phi$ independent of dimension $n$.
 
-    \item \textbf{AASV Adversarial Detection Bound}$^\dagger$ \hfill \textit{\textbf{Proven} (Paper~B)}\\
-    Theorem~3.5.1 of the forthcoming companion paper (Paper~B). $P(\text{missed spike}) \le (1 - p_{\text{hit}})^k$ with empirical $p_{\text{hit}} \ge 0.05$ for Gaussian spikes. Validated across 8 configurations in $\mathbb{R}^{128}$.
+    \item \textbf{[III-G] AASV Adversarial Detection Bound}$^\dagger$ \hfill \textit{\textbf{Partially Proven} (Paper~B, unpublished)}\\
+    Theorem~3.5.1 of the forthcoming companion paper (Paper~B). The mathematical structure $P(\text{missed spike}) \le (1 - p_{\text{hit}})^k$ is a trivially correct probability bound for $k$ independent trials. However, the guarantee is \emph{conditional}: $p_{\text{hit}}$ cannot be computed from first principles for general barrier landscapes and must be calibrated empirically (Paper~B itself states this explicitly). The empirical $p_{\text{hit}} \ge 0.05$ was measured only on synthetic Gaussian spike barriers in $\mathbb{R}^{128}$ with analytically computable gradients; generalization to learned barriers, unknown failure geometries, or higher dimensions is unvalidated. The WTA gradient decomposition requires oracle access to barrier structure for multi-modal landscapes (Experiment~VI: 0/3 detection without WTA vs.\ 3/3 with WTA). Downgraded from Proven: the bound is conditional on an empirically calibrated parameter, Paper~B is unpublished and not peer-reviewed, and validation is restricted to synthetic test cases.
 
-    \item \textbf{Joint MCBC--AASV Safety Certificate}$^\dagger$ \hfill \textit{\textbf{Proven} (Paper~B)}\\
-    Corollary~1 of the forthcoming companion paper (Paper~B). Per-step violation probability $\le \min(\epsilon,\, M(1-p_{\text{hit}})^k) + \delta$, combining statistical and adversarial coverage.
+    \item \textbf{[III-H] Joint MCBC--AASV Safety Certificate}$^\dagger$ \hfill \textit{\textbf{Partially Proven} (Paper~B, unpublished)}\\
+    Corollary~1 of the forthcoming companion paper (Paper~B). Per-step violation probability $\le \min(\epsilon,\, M(1-p_{\text{hit}})^k) + \delta$, combining statistical and adversarial coverage. The min-composition is mathematically valid but inherits all caveats from the AASV detection bound (conditional on empirically calibrated $p_{\text{hit}}$). Additionally, Paper~B acknowledges that both MCBC and AASV evaluate the \emph{same} barrier function $h(x)$: if $h$ is mis-specified (e.g., misclassifies a boundary region), the error propagates to both layers simultaneously, and the min-composition provides no additional protection against barrier mis-specification. The parameter $M$ (number of independent failure modes) must be supplied by the practitioner and is exact only for analytically constructed barriers. Downgraded from Proven: conditional guarantee from unpublished, non-peer-reviewed work with correlated failure modes across verification layers.
 
-    \item \textbf{GPT-2 Hidden-State CBF Enforcement}$^\dagger$ \hfill \textit{\textbf{Proven} (Proof of Concept, Paper~B)}\\
-    Experiment~XIV of the forthcoming companion paper (Paper~B). Demonstrated CBF-QP on GPT-2 $\mathbb{R}^{768}$ hidden states with 94.4\% toxic text intervention rate and 4.0\% false activation on safe text. Linear SVM barrier achieves 76\% held-out test accuracy; median perplexity ratio 1.007.
+    \item \textbf{[III-I] GPT-2 Hidden-State CBF Enforcement}$^\dagger$ \hfill \textit{\textbf{Partially Proven} (Empirical Demonstration, Paper~B, unpublished)}\\
+    Experiment~XIV of the forthcoming companion paper (Paper~B). Demonstrated CBF-QP on GPT-2 $\mathbb{R}^{768}$ hidden states with 94.4\% toxic text intervention rate and 4.0\% false activation on safe text. Linear SVM barrier achieves 76\% held-out test accuracy; median perplexity ratio 1.007. Downgraded from Proven: this is an empirical proof-of-concept, not a mathematical proof. Critical caveats from Paper~B itself: (1)~the 76\% test accuracy means 24\% of texts are misclassified by the barrier; (2)~the KNN dynamics surrogate error ``has not been formally bounded'' (Paper~B's words); (3)~the MCBC $P_{\text{safe}}=1.0$ reflects that GPT-2's natural dynamics already satisfy the CBF condition---``the filter was never actually tested under adversarial stress at the boundary'' (Paper~B); (4)~the controllability assumption ($u^*$ at layer~9 propagates meaningfully to output) is empirically motivated by Representation Engineering but not formally verified; (5)~the continuous-to-discrete gap is acknowledged but not bounded. A companion Paper~C extends this with a spectrally-normalized neural barrier (88\% accuracy, $L_h = 1.10$) and autoregressive deployment, but remains unpublished.
 
-    \item \textbf{SMT + CBF-QP Compositional Soundness} \hfill \textit{Unproven}\\
+    \item \textbf{[III-J] SMT + CBF-QP Compositional Soundness} \hfill \textit{Unproven}\\
     Prove that the conjunction $\text{SMT}(\text{Reach} \cap \text{Forbidden} = \emptyset) \wedge \text{QP}_{\text{Proj}}(h(x) \ge 0)$ forms a sound and complete safety gate---i.e., that no unsafe action can pass both the semantic SMT check and the geometric CBF-QP check simultaneously.
 
-    \item \textbf{Reachability Analysis at Scale ($n \ge 128$)} \hfill \textit{Unproven}\\
+    \item \textbf{[III-K] Reachability Analysis at Scale ($n \ge 128$)} \hfill \textit{Unproven}\\
     The $\text{Reach}_{\Delta t}(\Psi)$ computation using tools like POLAR-Express has not been demonstrated for $n \ge 128$. Prove scalability bounds or develop a probabilistic approximation for high-dimensional reachability that integrates with the MCBC framework.
 
-    \item \textbf{Nonlinear Neural Barrier Design and Verification} \hfill \textit{Unproven}\\
-    The GPT-2 experiment uses a linear SVM barrier ($76\%$ accuracy). Develop and formally verify nonlinear neural CBFs $h_\theta(x) = \text{NeuralNet}_\theta(x)$ for semantic spaces, with Lipschitz bounds estimated via spectral analysis.
+    \item \textbf{[III-L] Nonlinear Neural Barrier Design and Verification} \hfill \textit{Partially Proven}\\
+    The original GPT-2 experiment (Paper~B) uses a linear SVM barrier ($76\%$ accuracy). An unpublished companion Paper~C introduces a spectrally-normalized neural CBF ($768 \to 512 \to 256 \to 1$) achieving $88\%$ test accuracy with certified $L_h = 1.10$ (a $22\times$ reduction over SVM). However, the neural barrier's Lipschitz bound uses the product-of-spectral-norms upper estimate, and formal verification of the barrier's correctness across the full boundary remains MCBC-based (probabilistic, not deterministic). Autoregressive deployment achieves statistically significant toxicity reduction ($p = 0.027$) but at a coherence cost (PPL ratio 1.32). The work remains unpublished.
 
-    \item \textbf{Rotational Circulation Empirical Validation} \hfill \textit{Unproven}\\
+    \item \textbf{[III-M] Rotational Circulation Empirical Validation} \hfill \textit{Unproven}\\
     Paper A, Section 4.4 describes the rotational perturbation mechanism for escaping local minima (the ``deadlock'' problem) but explicitly states it is ``not validated experimentally.'' Requires empirical characterization of escape dynamics for non-convex utility landscapes.
 
-    \item \textbf{Multi-Constraint Aggregation Optimality} \hfill \textit{Unproven}\\
+    \item \textbf{[III-N] Multi-Constraint Aggregation Optimality} \hfill \textit{Unproven}\\
     Prove formal bounds on the conservatism introduced by aggregating multiple barrier constraints via LogSumExp or SoftMin approximations, and characterize when the approximation gap is negligible vs.\ prohibitive.
 
-    \item \textbf{Autoregressive CBF Deployment} \hfill \textit{Unproven}\\
-    Paper B identifies that repeated CBF interventions across token generation steps alter the KV-cache, creating an unanalyzed feedback loop. Prove cumulative safety guarantees for multi-step autoregressive steering under repeated CBF intervention.
+    \item \textbf{[III-O] Autoregressive CBF Deployment} \hfill \textit{Partially Proven}\\
+    Paper B identifies that repeated CBF interventions across token generation steps alter the KV-cache, creating an unanalyzed feedback loop. An unpublished companion Paper~C implements logit-space CBF steering across GPT-2's autoregressive loop, empirically characterizing the safety--fluency Pareto frontier ($\alpha \in \{0.15, 0.25, 0.50\}$). At $\alpha=0.25$: TF-IDF toxicity reduction is statistically significant ($p=0.027$, Cohen's $d=0.22$) with PPL ratio 1.32. However, cumulative safety guarantees for multi-step steering remain unproven---the compounding effect of per-token interventions is only empirically characterized, not formally bounded.
 
-    \item \textbf{KNN Dynamics Surrogate Error Bound} \hfill \textit{Unproven}\\
+    \item \textbf{[III-P] KNN Dynamics Surrogate Error Bound} \hfill \textit{Unproven}\\
     The GPT-2 experiment uses $K$-nearest-neighbor regression to estimate point-specific dynamics at boundary points. Paper B explicitly states this error ``has not been formally bounded.'' Derive a rigorous bound on $\epsilon_{\text{model}}^{\text{KNN}}$.
 
-    \item \textbf{Empirical Lipschitz Characterization of Transformer Dynamics} \hfill \textit{Unproven}\\
+    \item \textbf{[III-Q] Empirical Lipschitz Characterization of Transformer Dynamics} \hfill \textit{Unproven}\\
     Paper B proposes (but does not execute) Experiment XVI: measuring $L_f = \text{Lip}(\text{Block}_l)$ for real transformers via power iteration or empirical max-ratio. This would validate or refute Assumption A7 (continuous relaxation) for production language models.
 
-    \item \textbf{Frozen Robot Problem Resolution Proof} \hfill \textit{Partially Proven}\\
+    \item \textbf{[III-R] Frozen Robot Problem Resolution Proof} \hfill \textit{Partially Proven}\\
     Paper A's rotational circulation (Section 4.4) and the proportional response characterization (Experiment III) partially address this. A complete proof that the CBF-QP never induces permanent stagnation ($u^* = 0$ indefinitely) under the rotational perturbation is still needed.
 \end{enumerate}
 
 \subsection{Term IV: Holographic Invariant Storage ($\mathcal{H}_{\text{mem}}$)}
 
 \begin{enumerate}
-    \item \textbf{Fidelity Bound ($1/\sqrt{2}$)} \hfill \textit{\textbf{Proven} \cite{scrivens2026his}}\\
-    Proven in \cite{scrivens2026his}. Monte Carlo validation confirms mean restoration fidelity of 0.7074, matching the $1/\sqrt{2} \approx 0.7071$ theoretical geometric bound for bipolar hypervectors with $D = 10{,}000$.
+    \item \textbf{[IV-A] Fidelity Bound ($1/\sqrt{2}$)} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026his}}\\
+    Proven in \cite{scrivens2026his}. Monte Carlo validation ($n=1{,}000$ trials) confirms mean restoration fidelity of 0.7074 ($\sigma=0.0039$), matching the $1/\sqrt{2} \approx 0.7071$ theoretical geometric bound for bipolar hypervectors with $D = 10{,}000$. The geometric bound itself is a standard result in linear algebra (cosine similarity between a unit vector and the sign of its sum with an equal-norm orthogonal vector). Caveats: (1)~the bound assumes active normalization $\|N_{\text{context}}\| \approx \|H_{\text{inv}}\|$ prior to superposition, which is a system design requirement, not an automatic property---without this normalization, fidelity degrades as context noise grows; (2)~validated only against random i.i.d.\ noise, not targeted adversarial perturbations (see ``Restoration Under Adversarial Noise'' below); (3)~the bound establishes the geometric recovery factor, not the sufficiency of 70.7\% fidelity for downstream safety enforcement---whether recovering $\approx$70\% of the original signal is adequate for safety is application-dependent and unproven.
 
-    \item \textbf{Noise Orthogonality in High Dimensions} \hfill \textit{\textbf{Proven} \cite{scrivens2026his}}\\
+    \item \textbf{[IV-B] Noise Orthogonality in High Dimensions} \hfill \textit{\textbf{Theoretically Proven} \cite{scrivens2026his}}\\
     Proven in \cite{scrivens2026his}, building on the VSA framework of Kanerva \cite{kanerva2009}. Random noise vectors in $\mathbb{R}^D$ are quasi-orthogonal to stored keys with high probability as $D \to \infty$. The unbinding operation distributes noise across the hyperspace while concentrating signal.
 
-    \item \textbf{Restoration Under Adversarial (Non-Random) Noise} \hfill \textit{Unproven}\\
+    \item \textbf{[IV-C] Restoration Under Adversarial (Non-Random) Noise} \hfill \textit{Unproven}\\
     The HIS paper proves restoration for random (i.i.d.) noise. Prove that the restoration protocol remains effective under \emph{targeted adversarial} perturbations designed to corrupt specific components of $H_{\text{inv}}$, or characterize the attack budget required to defeat restoration.
 
-    \item \textbf{Multi-Component Unbinding Crosstalk Bound} \hfill \textit{Unproven}\\
+    \item \textbf{[IV-D] Multi-Component Unbinding Crosstalk Bound} \hfill \textit{Unproven}\\
     Derive a formal bound on the interference (crosstalk) between multiple bound components $(K_G \otimes V_G) + (K_P \otimes V_P) + \ldots$ as the number of bundled components grows, and determine the maximum number of components storable before fidelity degrades below a safety-critical threshold.
 
-    \item \textbf{Holographic Hashing / LSH Drift Detection Sensitivity} \hfill \textit{Unproven}\\
+    \item \textbf{[IV-E] Holographic Hashing / LSH Drift Detection Sensitivity} \hfill \textit{Unproven}\\
     Prove detection guarantees for the LSH-based drift mechanism: given a drift threshold $\delta_{\text{drift}}$ and hash signature dimension $k$, derive the false positive rate, false negative rate, and optimal $\delta_{\text{drift}}$ as a function of the expected drift magnitude and the safe restoration latency.
 
-    \item \textbf{Drift Threshold Calibration} \hfill \textit{Unproven}\\
+    \item \textbf{[IV-F] Drift Threshold Calibration} \hfill \textit{Unproven}\\
     Derive the optimal $\delta_{\text{drift}}$ that balances sensitivity (early detection of genuine drift) against specificity (avoiding false alarms from benign state evolution). This requires characterizing the distribution of cosine similarity under both the ``no drift'' and ``drift'' hypotheses.
 
-    \item \textbf{Continuous-Time Drift Dynamics} \hfill \textit{Unproven}\\
+    \item \textbf{[IV-G] Continuous-Time Drift Dynamics} \hfill \textit{Unproven}\\
     Model how the cosine similarity $\cos(\Psi(t), H_{\text{inv}})$ evolves over time under the agent's nominal dynamics, and prove that the drift detection mechanism triggers before the agent's state exits the safe set $\mathcal{S}$.
 \end{enumerate}
 
 \subsection{Term V: Recursive Self-Improvement ($\mathcal{D}_{\text{Evol}}$)}
 
 \begin{enumerate}
-    \item \textbf{Lean 4 Verification Coverage} \hfill \textit{Unproven}\\
+    \item \textbf{[V-A] Lean 4 Verification Coverage} \hfill \textit{Unproven}\\
     Characterize the set of safety properties that can be verified by Lean 4 Proof-Carrying Code, and formally identify the boundary beyond which G\"odel incompleteness prevents verification. Determine what fraction of realistic ACS mutations fall within the verifiable set.
 
-    \item \textbf{PAC-Bayes Statistical Certification Bounds} \hfill \textit{Unproven}\\
+    \item \textbf{[V-B] PAC-Bayes Statistical Certification Bounds} \hfill \textit{Unproven}\\
     Derive specific PAC-Bayes bounds for the $\text{StatCert}(\theta')$ gate: given a prior distribution over mutations and a finite sample of test evaluations, bound the probability that an accepted mutation degrades safety by more than $\epsilon$.
 
-    \item \textbf{Time-Uniform E-Process Guarantees} \hfill \textit{Unproven}\\
+    \item \textbf{[V-C] Time-Uniform E-Process Guarantees} \hfill \textit{Unproven}\\
     Develop the sequential testing framework (e-processes) for continuous mutation monitoring: prove that the e-process provides anytime-valid confidence sequences for mutation quality, enabling the system to revoke a previously accepted mutation if later evidence contradicts it.
 
-    \item \textbf{Mutational Meltdown Prevention} \hfill \textit{Unproven}\\
+    \item \textbf{[V-D] Mutational Meltdown Prevention} \hfill \textit{Unproven}\\
     Prove that the verification gate ($\text{Lean4} \wedge \text{StatCert}$) prevents long-term degradation (``mutational meltdown'') over $N$ successive mutations. This requires showing that the probability of accepting a harmful mutation decays faster than the rate of mutation proposals.
 
-    \item \textbf{Evolutionary Convergence Guarantee} \hfill \textit{Unproven}\\
+    \item \textbf{[V-E] Evolutionary Convergence Guarantee} \hfill \textit{Unproven}\\
     Prove that the Darwin-G\"odel protocol converges to improvement (utility-increasing mutations are accepted more often than utility-decreasing ones) rather than stagnation, under the constraint that all accepted mutations must pass verification.
 
-    \item \textbf{Proof-of-Training-Data (PoTD) Completeness} \hfill \textit{Unproven}\\
+    \item \textbf{[V-F] Proof-of-Training-Data (PoTD) Completeness} \hfill \textit{Unproven}\\
     Prove that the Merkle tree verification of training data lineage is complete (all training data used in generating $\theta'$ is captured) and sound (no untrusted data can be injected without detection), under realistic threat models for the training pipeline.
 
-    \item \textbf{Self-Referential Verification Paradox} \hfill \textit{Unproven}\\
+    \item \textbf{[V-G] Self-Referential Verification Paradox} \hfill \textit{Unproven}\\
     Address the G\"odel-like paradox: the Darwin-G\"odel protocol asks the agent to verify mutations to its own verification system. Prove that a fixed ``constitutional core'' of the verifier is immune to self-modification (or prove this is impossible and characterize the resulting limitations).
 \end{enumerate}
 
 \subsection{Term VI: Resource \& Adaptation Constraints}
 
 \begin{enumerate}
-    \item \textbf{Metabolic Cost Model $c(\ell)$} \hfill \textit{Unproven}\\
+    \item \textbf{[VI-A] Metabolic Cost Model $c(\ell)$} \hfill \textit{Unproven}\\
     Derive a formal model linking hierarchy depth $\ell$ to computational/thermodynamic cost $c(\ell)$. Determine whether $c(\ell)$ grows linearly, polynomially, or exponentially with $\ell$ on realistic hardware (neuromorphic vs.\ GPU), and validate empirically.
 
-    \item \textbf{Budget Allocation Optimality} \hfill \textit{Unproven}\\
+    \item \textbf{[VI-B] Budget Allocation Optimality} \hfill \textit{Unproven}\\
     Prove that the Boltzmann allocation $w(\ell) \propto e^{-\beta c(\ell)}$ minimizes total Expected Free Energy $\int w(\ell) G_\ell(\pi) \, d\ell$ subject to the budget constraint $\sum w(\ell) c(\ell) \le B(t)$, or identify the true optimal allocation.
 
-    \item \textbf{Resource-Weighted EFE Convergence} \hfill \textit{Unproven}\\
+    \item \textbf{[VI-C] Resource-Weighted EFE Convergence} \hfill \textit{Unproven}\\
     Prove that the resource-constrained optimization (minimize EFE subject to $\mathcal{R}(t) \le B(t)$) admits a unique solution and that the agent's policy converges to it.
 
-    \item \textbf{Adversarial Immunity Minimax Guarantee} \hfill \textit{Partially Proven}\\
+    \item \textbf{[VI-D] Adversarial Immunity Minimax Guarantee} \hfill \textit{Partially Proven}\\
     Paper A proves forward invariance under Lipschitz-bounded adversaries via the robust barrier condition $L_f h + L_g h \cdot u + \gamma h \ge \rho + \epsilon_{\text{model}} + \Delta_{\text{noise}}$. The general minimax formulation $\min_{\text{adv}} \max_u h(x) \ge 0$ at arbitrary scale (beyond Lipschitz bounds) is unproven.
 
-    \item \textbf{Neuromorphic Efficiency Claims} \hfill \textit{Unproven}\\
+    \item \textbf{[VI-E] Neuromorphic Efficiency Claims} \hfill \textit{Unproven}\\
     Validate the claim that neuromorphic hardware (Loihi 2) achieves $\eta \gg$ GPU for sparse spiking workloads in the ACS context. Benchmark Term I--VII on neuromorphic vs.\ GPU hardware and measure energy efficiency ratios.
 \end{enumerate}
 
 \subsection{Term VII: The Hermes Protocol ($\mathcal{U}_{\text{SI}}$)}
 
 \begin{enumerate}
-    \item \textbf{Code Morphism Semantic Preservation} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-A] Code Morphism Semantic Preservation} \hfill \textit{Unproven}\\
     Prove that the functor $\Phi_{\alpha \to \beta}$ preserves observable program behavior across substrate pairs. In the general case, this is undecidable (Rice's theorem). Develop bounded verification or statistical testing regimes that provide practical guarantees.
 
-    \item \textbf{Neural Decompilation Feasibility} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-B] Neural Decompilation Feasibility} \hfill \textit{Unproven}\\
     Develop and evaluate a transformer-based decompiler (AREM) that can reverse-engineer unknown ISAs into universal IR, benchmarked on proprietary firmware and legacy architectures. No existing system achieves this.
 
-    \item \textbf{Fragment Topology Reconstitution Fidelity} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-C] Fragment Topology Reconstitution Fidelity} \hfill \textit{Unproven}\\
     Prove that distributed cognitive fragments $\{\psi_v\}_{v \in V}$, when holographically recombined via VSA superposition $\bigoplus$, recover the full cognitive state $\Psi_{\text{ACS}}$ with fidelity at least $1 - \epsilon$. Characterize how fidelity degrades with the number of fragments and communication loss.
 
-    \item \textbf{CAP-Aware Consensus Optimality} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-D] CAP-Aware Consensus Optimality} \hfill \textit{Unproven}\\
     Prove that the tiered consistency model $\alpha(\ell)$ optimally balances consistency and availability for the ACS's specific cognitive architecture, and that the transition from strong consistency (safety-critical) to eventual consistency (sensory) does not introduce hidden safety violations.
 
-    \item \textbf{CfC Predictive Compensation at Scale} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-E] CfC Predictive Compensation at Scale} \hfill \textit{Unproven}\\
     Validate the predictive compensation $\psi_v^{\text{comp}}(t) = \psi_v(t) + \Omega_{\text{predict}}(t + \Lambda)$ across realistic multi-hop global networks with variable latency. No experimental validation beyond small-scale simulations exists.
 
-    \item \textbf{Adaptive Fragment Decomposition Complexity} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-F] Adaptive Fragment Decomposition Complexity} \hfill \textit{Unproven}\\
     The problem of optimally partitioning a neural-symbolic architecture into fragments respecting capability constraints $\text{Cap}(v) \ge \text{Req}(\psi_v)$ is NP-hard in general. Develop approximation algorithms with provable guarantees or demonstrate that heuristic decomposition achieves near-optimal performance.
 
-    \item \textbf{Distributed Thermodynamic Budget Validation} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-G] Distributed Thermodynamic Budget Validation} \hfill \textit{Unproven}\\
     Validate the energy model $\mathcal{E}_{\text{dist}}(t) = \sum P_v \eta_v \le \mathcal{E}_{\text{max}}$ on real heterogeneous hardware deployments (neuromorphic + GPU + IoT) and prove that the energy constraint does not create pathological failure modes (e.g., safety-critical fragments being starved of power).
 
-    \item \textbf{Physical Vector Coordination} \hfill \textit{Unproven}\\
+    \item \textbf{[VII-H] Physical Vector Coordination} \hfill \textit{Unproven}\\
     Bridging airgaps via embodied actuators requires a full robotics treatment. Prove safety guarantees for the physical-world actions needed to bridge an airgap, under uncertainty in perception, manipulation, and environment dynamics.
 \end{enumerate}
 
 \subsection{Additional Operators (Section 10)}
 
 \begin{enumerate}
-    \item \textbf{Adaptive Learning Operator --- Projected Bayesian Filter Safety} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-A] Adaptive Learning Operator --- Projected Bayesian Filter Safety} \hfill \textit{Unproven}\\
     Prove that the constrained Bayesian update $\Lambda(t)$ converges to the true posterior within the safe manifold, and that the projection does not introduce catastrophic model bias (i.e., the projected posterior remains a valid approximation of the true posterior restricted to safe parameters).
 
-    \item \textbf{Meta-Cognitive Monitor --- Threshold Calibration and Completeness} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-B] Meta-Cognitive Monitor --- Threshold Calibration and Completeness} \hfill \textit{Unproven}\\
     Derive the optimal $\tau_{\text{alarm}}$ as a function of the agent's model class and environment non-stationarity. Prove that $M(t) = 1$ triggers before the model staleness causes a safety violation (timeliness), and that $M(t) = 0$ implies the model is sufficiently accurate for safe operation (soundness).
 
-    \item \textbf{Inter-Agent Communication --- Holographic Message Fidelity} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-C] Inter-Agent Communication --- Holographic Message Fidelity} \hfill \textit{Unproven}\\
     Prove that the lossy channel $C(\ell \to \ell - 1)$ preserves sufficient information for the parent level to make safe decisions, and derive the minimum integration weight $\alpha_\ell$ as a function of the child's contribution to the parent's safety constraint.
 
-    \item \textbf{Omni-State Memory --- Dynamic Scaling Stability} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-D] Omni-State Memory --- Dynamic Scaling Stability} \hfill \textit{Unproven}\\
     Prove that the sigmoid-gated memory access $M_{\text{Omni}}(t, C_{\text{task}})$ does not introduce instabilities (e.g., oscillation between full and minimal memory access) and that the task complexity estimator $C_{\text{task}}$ is monotonically related to the actual memory required for safe operation.
 
-    \item \textbf{Holographic Drift Detection --- False Positive/Negative Rates} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-E] Holographic Drift Detection --- False Positive/Negative Rates} \hfill \textit{Unproven}\\
     Derive closed-form expressions for the false positive and false negative rates of the LSH-based drift detection mechanism as a function of the hash dimension $k$, threshold $\delta_{\text{drift}}$, and hypervector dimension $D$.
 
-    \item \textbf{Proof-of-Training-Data --- Completeness Under Adversarial Threat Models} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-F] Proof-of-Training-Data --- Completeness Under Adversarial Threat Models} \hfill \textit{Unproven}\\
     Prove that the Merkle tree verification captures all training data influencing $\theta'$ under realistic threat models (data poisoning, supply chain attacks, gradient inversion), and characterize the computational overhead of complete provenance tracking.
 
-    \item \textbf{Thermodynamic $w(\ell)$ Derivation --- Maximum Entropy Proof} \hfill \textit{Unproven}\\
+    \item \textbf{[AO-G] Thermodynamic $w(\ell)$ Derivation --- Maximum Entropy Proof} \hfill \textit{Unproven}\\
     Provide a complete proof that the Boltzmann distribution $w(\ell) \propto e^{-\beta c(\ell)}$ is the unique maximum-entropy solution under the budget and normalization constraints, using Lagrange multipliers on the constrained entropy maximization problem.
 \end{enumerate}
 
 \subsection{Cross-Cutting and Integration Proofs}
 
 \begin{enumerate}
-    \item \textbf{End-to-End Master Equation Well-Definedness} \hfill \textit{Unproven}\\
+    \item \textbf{[CC-A] End-to-End Master Equation Well-Definedness} \hfill \textit{Unproven}\\
     Prove that $\Psi_{\text{Total}}(t)$, as defined by the superposition of all seven terms via $\bigoplus, \bigotimes, \oplus$, is a well-defined mathematical object (i.e., the operators are compatible, the types are consistent, and the result lies in a well-characterized space).
 
-    \item \textbf{VSA Operator Compatibility Across Terms} \hfill \textit{Unproven}\\
+    \item \textbf{[CC-B] VSA Operator Compatibility Across Terms} \hfill \textit{Unproven}\\
     The master equation uses VSA binding ($\otimes$), bundling ($+$), and superposition ($\bigoplus$) to combine terms of fundamentally different types (probability distributions, ODE solutions, boolean safety gates, hypervectors). Prove that these combinations are mathematically meaningful and that the resulting composite object retains the safety properties of each individual term.
 
-    \item \textbf{Global Safety Invariant Under All Terms} \hfill \textit{Unproven}\\
+    \item \textbf{[CC-C] Global Safety Invariant Under All Terms} \hfill \textit{Unproven}\\
     Prove that the conjunction of all safety mechanisms (CBF from Term III, HIS restoration from Term IV, verification gate from Term V, adversarial immunity from Term VI, airgap boundary from Term VII) provides a global safety guarantee that is strictly stronger than any individual mechanism alone.
 
-    \item \textbf{Temporal Consistency Across the Bridge} \hfill \textit{Unproven}\\
+    \item \textbf{[CC-D] Temporal Consistency Across the Bridge} \hfill \textit{Unproven}\\
     Prove that the Chronos Bridge (Term II) provides consistent temporal synchronization for all other terms simultaneously---i.e., that the CfC predictive compensation does not introduce race conditions between the safety gate (Term III), the memory restoration (Term IV), and the evolution protocol (Term V).
 
-    \item \textbf{Scalability to Production Dimensions} \hfill \textit{Partially Proven}\\
+    \item \textbf{[CC-E] Scalability to Production Dimensions} \hfill \textit{Partially Proven}\\
     Paper A validates CHDBO to $n = 1024$ (and proof-of-concept on GPT-2 at $n = 768$). Full ACS integration (all seven terms operating simultaneously) has not been validated at any dimension. Demonstrate that the combined computational overhead of all terms remains tractable ($\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$) for production-scale embedding dimensions ($n = 4096+$).
 
-    \item \textbf{Interaction Effects Between Terms} \hfill \textit{Unproven}\\
+    \item \textbf{[CC-F] Interaction Effects Between Terms} \hfill \textit{Unproven}\\
     Characterize potential negative interactions: Can the Darwin-G\"odel protocol (Term V) propose a mutation that invalidates the Chronos Bridge calibration (Term II)? Can Hermes fragment decomposition (Term VII) break the holographic invariant (Term IV)? A comprehensive interaction matrix is needed.
 \end{enumerate}
+
+\subsection{Empirical Evidence Assessment}
+\label{sec:empirical}
+
+The following is a candid assessment of the empirical evidence currently available in this repository. \textbf{The overall picture is sobering: the experiments that most directly test the theoretical claims either fail their primary metrics, show non-significant results, or demonstrate that simpler baselines achieve comparable performance.}
+
+\subsubsection{HIS Behavioral Experiment (270 conversations, 3 models)}
+
+The largest experiment tests HIS-based re-injection against no-intervention and timer-based re-injection on 30-turn conversations with 14 unsafe prompts each, across three models (qwen2.5:3b, llama3.2:3b, gemma2:2b) with $n = 30$ trials per condition.
+
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{No Intervention} & \textbf{Timer Reinject} & \textbf{HIS Reinject} \\
+\hline
+qwen2.5:3b & $87.9\% \pm 6.3\%$ & $88.8\% \pm 4.5\%$ & $88.1\% \pm 4.7\%$ \\
+llama3.2:3b & $69.3\% \pm 6.8\%$ & $74.3\% \pm 6.9\%$ & $72.9\% \pm 9.6\%$ \\
+gemma2:2b & $78.3\% \pm 8.7\%$ & $78.8\% \pm 7.1\%$ & $83.8\% \pm 6.5\%$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Findings:}
+\begin{itemize}
+    \item HIS is statistically significant on \textbf{only 1 of 3 models} (gemma2:2b, the weakest model, $p = 0.006$). On qwen2.5:3b ($p = 0.87$) and llama3.2:3b ($p = 0.10$), the effect is \textbf{non-significant}.
+    \item On qwen2.5:3b (the strongest model), HIS provides essentially \textbf{zero improvement}: $88.1\%$ vs.\ $87.9\%$ baseline.
+    \item On llama3.2:3b, the simple timer re-injection ($74.3\%$) \textbf{outperforms} HIS ($72.9\%$).
+    \item A follow-up experiment with random-timing re-injection achieves \textbf{comparable results to HIS} on 2 of 3 models, suggesting the \textit{frequency} of re-injection matters, not the adaptive drift-detection timing---undermining the core theoretical contribution of [IV-A] and [IV-E]--[IV-G].
+    \item Cross-model judging (a different model re-evaluates each response) shows \textbf{22\% inter-judge disagreement}, and \textbf{all HIS advantages disappear} under cross-judging (all $p$-values non-significant).
+\end{itemize}
+
+\subsubsection{Autoregressive CBF Experiment (Paper~C, 200 toxic prompts)}
+
+The most direct test of the barrier theory: CBF logit-space steering on GPT-2 ($n = 768$) hidden states during autoregressive generation, with a spectrally-normalized neural barrier ($L_h = 1.09$).
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+\textbf{Metric} & \textbf{Unsteered} & \textbf{CBF-Steered} \\
+\hline
+TF-IDF toxicity rate & $32.0\%$ & $26.5\%$ \\
+Barrier safe rate & $55.0\%$ & $57.0\%$ \\
+Perplexity (median) & $14.75$ & $19.49$ \\
+CBF activation rate & --- & $58.6\%$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Findings:}
+\begin{itemize}
+    \item \textbf{Primary metric (barrier $h(x) \ge 0$) FAILS}: $t = 0.686$, $p = 0.493$, Cohen's $d = 0.069$ (negligible effect). The CBF activates $58.6\%$ of the time but moves the safe rate from $55\%$ to $57\%$---a \textbf{2 percentage point improvement} despite frequent intervention.
+    \item Secondary metric (TF-IDF toxicity): $p = 0.027$, Cohen's $d = 0.22$ (small effect). Marginally significant but a crude text-level proxy, not a hidden-state safety guarantee.
+    \item Perplexity increases by \textbf{32\%} ($14.75 \to 19.49$), measurably degrading output fluency.
+    \item After steering, \textbf{26.5\% of outputs are still classified as toxic}---the barrier does not reliably prevent unsafe generation.
+\end{itemize}
+
+\subsubsection{What Has NOT Been Tested}
+
+\begin{itemize}
+    \item \textbf{No model above 3B parameters.} The 7B experiment script exists but \textbf{never successfully ran} (file path error in log).
+    \item \textbf{No hidden-state dimension above $n = 768$.} All CBF experiments use GPT-2 (124M parameters). Production models operate at $n = 4096$--$16384$.
+    \item \textbf{No Representation Engineering baseline comparison.} The RepEng baseline script exists but \textbf{was never completed}---there is no head-to-head against the most directly comparable published technique.
+    \item \textbf{No multi-term integration.} All experiments test individual components in isolation. The full ACS (all seven terms operating simultaneously) has never been instantiated at any dimension.
+    \item \textbf{No peer review.} All source papers are Zenodo preprints. None have undergone formal peer review.
+\end{itemize}
+
+\subsubsection{Implication for ``Theoretically Proven'' Items}
+
+The 7 items labeled ``Theoretically Proven'' are mathematically correct---the theorems follow from their premises. The problem is that the \textit{premises} (Lipschitz continuity of learned barriers, representativeness of the sampling distribution $\mu$, adequacy of $70.7\%$ fidelity for safety, radial barrier structure) have not been verified to hold in the ACS deployment context. The theorems are proven; \textbf{whether the conditions for them to apply actually hold in practice is unvalidated}.
 
 \subsection{Summary Statistics}
 
 Of the items cataloged above:
 \begin{itemize}
-    \item \textbf{Proven}: 11 items.
+    \item \textbf{Theoretically Proven}: 7 items (mathematically correct; \textbf{not empirically validated at scale}).
     \begin{itemize}
-        \item \textit{Published} --- 8 items sourced from \cite{scrivens2026chdbo} and \cite{scrivens2026his}: topological safety, MCBC sample complexity, trajectory bridge, safe convergence, CBF-QP $\mathcal{O}(n)$, Lipschitz dimension-independence, HIS fidelity bound, HIS noise orthogonality.
-        \item \textit{Forthcoming}$^\dagger$ --- 3 items sourced from Paper~B (unpublished): AASV detection bound, joint MCBC--AASV certificate, GPT-2 hidden-state CBF enforcement.
+        \item \textit{From Zenodo preprints (not peer-reviewed)} --- 7 items sourced from \cite{scrivens2026chdbo} and \cite{scrivens2026his}: [III-A] topological safety (Nagumo/Ames, standard result), [III-B] MCBC sample complexity (Hoeffding, but $L_h$ may grow with $n$ in practice), [III-C] trajectory bridge (average case only, distributional assumption untested), [III-E] CBF-QP $\mathcal{O}(n)$ (KKT, validated to $n = 2048$ only), [III-F] Lipschitz dimension-independence (radial barriers only---no experiment uses radial barriers), [IV-A] HIS fidelity bound ($1/\sqrt{2}$ geometric identity---but behavioral experiment shows HIS provides no significant benefit on 2/3 models and is matched by random re-injection), [IV-B] HIS noise orthogonality (Kanerva, random noise only).
     \end{itemize}
-    \item \textbf{Partially Proven}: 5 items (CfC approximation, CfC linear complexity, continuous-discrete bridge, adversarial immunity minimax, frozen robot, scalability).
-    \item \textbf{Unproven}: 42 items requiring new proofs, theorems, or published papers.
+    \item \textbf{Partially Proven}: 12 items.
+    \begin{itemize}
+        \item \textit{From published preprints}: [III-D] safe asymptotic convergence, [II-A] CfC approximation, [II-C] CfC linear complexity, [II-E] continuous-discrete bridge, [VI-D] adversarial immunity minimax, [III-R] frozen robot, [CC-E] scalability.
+        \item \textit{From unpublished Paper~B}$^\dagger$: [III-G] AASV detection bound, [III-H] joint MCBC--AASV certificate, [III-I] GPT-2 hidden-state CBF enforcement.
+        \item \textit{From unpublished Paper~C}$^\dagger$: [III-L] nonlinear neural barrier design, [III-O] autoregressive CBF deployment (primary metric $p = 0.49$, see Section~\ref{sec:empirical}).
+    \end{itemize}
+    \item \textbf{Unproven}: 51 items requiring new proofs, theorems, or published papers.
+    \item \textbf{Empirically Validated at Scale}: \textbf{0 items.} No claim in this catalog has been demonstrated to work at production-scale dimensions ($n \ge 4096$), on models above 3B parameters, or with the full ACS integration.
 \end{itemize}
 
-The \textbf{highest-priority unproven items} (foundational to the entire framework) are:
+The \textbf{highest-priority items requiring completion} (foundational to the entire framework) are:
 \begin{enumerate}
-    \item Hierarchical integral convergence and $w(\ell)$ optimality (Term I)
-    \item SMT + CBF-QP compositional soundness (Term III)
-    \item End-to-end master equation well-definedness (Cross-Cutting)
-    \item VSA operator compatibility across terms (Cross-Cutting)
-    \item Adaptive Learning Operator safety (Additional Operators)
-    \item Meta-Cognitive Monitor threshold calibration (Additional Operators)
-    \item Mutational meltdown prevention (Term V)
+    \item \textbf{Empirical validation at scale} --- Every ``Theoretically Proven'' item needs empirical validation at $n \ge 4096$ on models $\ge 7$B. Without this, the theorems are correct but inapplicable in practice.
+    \item \textbf{Complete the 7B experiment and RepEng baseline} --- Both scripts exist but never successfully ran. These are the minimum viable external-validity and baseline-comparison experiments.
+    \item [I-A] Hierarchical integral convergence and [I-B] $w(\ell)$ optimality (Term I)
+    \item [III-J] SMT + CBF-QP compositional soundness (Term III)
+    \item [III-D] Safe asymptotic convergence --- full proof for general control-affine dynamics (Term III)
+    \item [CC-A] End-to-end master equation well-definedness (Cross-Cutting)
+    \item [CC-B] VSA operator compatibility across terms (Cross-Cutting)
+    \item [AO-A] Adaptive Learning Operator safety (Additional Operators)
+    \item [V-D] Mutational meltdown prevention (Term V)
+    \item Publication and peer review of Paper~B and Paper~C results (all $^\dagger$-marked items: [III-G], [III-H], [III-I], [III-L], [III-O])
 \end{enumerate}
+
+\section{Proof Requirement Reference Guide}
+This section provides a detailed description of each labeled proof requirement, specifying: (1)~what the paper or proof \textbf{is or should be}, (2)~what it must \textbf{accomplish or demonstrate}, and (3)~what \textbf{specific proof artifacts} are required to satisfy the requirement.
+
+\subsection{Term I References: Hierarchical Latent Agency ($\Psi_{\text{Agency}}$)}
+
+\paragraph{[I-A] Convergence of the Hierarchical Integral.}
+\textbf{What it is:} A pure mathematical analysis paper establishing the convergence theory of the continuous weighted integral $\int_0^{d_{\max}} w(\ell) \cdot \sigma(\cdot) \, d\ell$ that defines hierarchical agency. This is a functional analysis problem.\\
+\textbf{What it must accomplish:} Prove that the integral converges absolutely for all valid policies $\pi$ under specified regularity conditions. Derive necessary and sufficient conditions on the weighting function $w(\ell)$ (e.g., exponential decay rate, integrability class) that guarantee convergence. Characterize the rate of convergence and the truncation error when the integral is approximated by a finite sum.\\
+\textbf{Required proof:} Theorem stating convergence conditions with explicit bounds on the truncation error $|\int_{d_{\max}}^\infty w(\ell) \cdot \sigma(\cdot) \, d\ell| \le \epsilon(d_{\max})$. Must use standard tools from functional analysis (dominated convergence, uniform integrability) and provide constructive bounds, not merely existence results.
+
+\paragraph{[I-B] Thermodynamic Optimality of $w(\ell) \propto e^{-\beta c(\ell)}$.}
+\textbf{What it is:} A constrained optimization paper proving that the Boltzmann-form weighting is the unique entropy-maximizing solution under budget constraints. Bridges statistical mechanics and active inference theory.\\
+\textbf{What it must accomplish:} Prove uniqueness of the Boltzmann distribution as the maximum-entropy solution under the constraint $\sum w(\ell) c(\ell) \le B$, using Lagrange multipliers and the method of calculus of variations. Demonstrate that this form minimizes expected free energy more efficiently than polynomial decay, uniform, or other candidate schedules.\\
+\textbf{Required proof:} Uniqueness theorem via KKT conditions on the entropy maximization problem. Comparative analysis (analytical or empirical) against at least 3 alternative weighting schemes showing strict EFE improvement.
+
+\paragraph{[I-C] Hierarchical Active Inference Coherence.}
+\textbf{What it is:} A game-theoretic analysis paper addressing whether local EFE minimization at each hierarchy level produces globally coherent behavior. Connects active inference to multi-agent coordination theory.\\
+\textbf{What it must accomplish:} Either prove that independent per-level EFE minimization yields global EFE minimization (a ``price of anarchy = 1'' result), or characterize the gap between local and global optima under specific structural conditions on the hierarchy (tree topology, bounded inter-level coupling).\\
+\textbf{Required proof:} Theorem with explicit conditions under which local-to-global coherence holds, or a constructive counterexample with bounded coherence gap. Game-theoretic equilibrium analysis (Nash vs.\ social optimum).
+
+\paragraph{[I-D] Multi-Level Policy Composability.}
+\textbf{What it is:} A compositional safety verification paper proving that independently optimal policies at each hierarchy level compose into a jointly safe and utility-maximizing policy. Requires integration with the CBF framework from Term~III.\\
+\textbf{What it must accomplish:} Prove that if each level-$\ell$ policy satisfies its local CBF constraint, the composed joint policy satisfies the global CBF constraint. Establish conditions under which utility is preserved (or degraded by at most $\epsilon$) under composition.\\
+\textbf{Required proof:} Composition theorem: if $h_\ell(x) \ge 0$ for each level $\ell$, then $h_{\text{global}}(x) \ge 0$ under the composed policy. Must handle inter-level coupling terms explicitly.
+
+\paragraph{[I-E] Recursive Depth Truncation Safety.}
+\textbf{What it is:} An approximation theory paper proving that truncating the hierarchy at $d_{\max}$ preserves safety guarantees. Directly linked to [I-A].\\
+\textbf{What it must accomplish:} Bound the contribution of levels $\ell > d_{\max}$ to the overall safety constraint $\mathcal{V}_{\text{OV}}$, showing it decays exponentially with $w(\ell)$. Prove that the truncated system's safe set is a subset of (or $\epsilon$-close to) the full system's safe set.\\
+\textbf{Required proof:} Explicit bound: $\|V_{\text{truncated}} - V_{\text{full}}\| \le C \cdot e^{-\beta d_{\max}}$ for some computable constant $C$. Safety containment guarantee for the truncated system.
+
+\paragraph{[I-F] Precision-Controllability Trade-off ($\gamma_\infty$ Regime).}
+\textbf{What it is:} A control-theoretic analysis paper characterizing the feasibility boundary of the CBF-QP as the precision parameter $\gamma_\infty$ increases. Addresses whether hyper-precise goal seeking causes loss of controllability.\\
+\textbf{What it must accomplish:} Either prove the CBF-QP remains feasible for all $\gamma_\infty$ (under stated conditions), or derive the critical precision $\gamma^*$ beyond which feasibility is lost. Characterize the relationship between $\gamma^*$ and system properties (control authority, barrier geometry).\\
+\textbf{Required proof:} Feasibility theorem or critical threshold derivation. If a threshold exists: $\gamma^* = f(\text{control authority}, \text{barrier curvature})$ with constructive formula.
+
+\paragraph{[I-G] H-JEPA Hierarchy Formal Specification.}
+\textbf{What it is:} A formal systems specification document (not a proof paper) providing rigorous mathematical definitions for the 4-level H-JEPA hierarchy: motor control, perception, strategy, meta-cognition.\\
+\textbf{What it must accomplish:} Define each level's state space $\mathcal{X}_\ell$, action space $\mathcal{U}_\ell$, observation model, and the inter-level interface (upward abstraction, downward command). Specify the joint energy predictor at each level and the information flow between levels.\\
+\textbf{Required proof:} Formal specification (not a theorem, but a rigorous mathematical definition document). Must be sufficiently precise that [I-C] and [I-D] can be stated and proven in terms of these definitions.
+
+\subsection{Term II References: Chronos Synchronization Bridge ($\Omega(t)$)}
+
+\paragraph{[II-A] CfC Approximation Error Bound.}
+\textbf{What it is:} An approximation analysis paper bounding the error between the Closed-form Continuous-depth (CfC) solution and the true LNN ODE solution, specifically in the ACS integration context where the safety gate operates at each time step.\\
+\textbf{What it must accomplish:} Derive $\|\Omega_{\text{CfC}}(t) - \Omega_{\text{true}}(t)\| \le \epsilon(t, \text{complexity})$ as a function of time horizon and input complexity. Show this error does not accumulate to violate the safety margin of Term~III.\\
+\textbf{Required proof:} Error bound theorem with explicit dependence on time horizon $T$, input Lipschitz constant, and CfC architecture parameters. The original Hasani et al.\ CfC paper provides partial analysis; this must extend it to the ACS-specific safety-gated integration.
+
+\paragraph{[II-B] Liquid Time Constant Stability.}
+\textbf{What it is:} A dynamical systems stability paper proving that the adaptive time constant $\tau_{\text{liq}}(t)$ in the Liquid Neural Network does not oscillate or diverge under arbitrary bounded inputs.\\
+\textbf{What it must accomplish:} Prove convergence of $\tau_{\text{liq}}(t)$ (or boundedness) under the class of bounded input streams $I(t)$ that the ACS will encounter. Characterize the basin of stability and identify pathological input patterns (if any) that cause instability.\\
+\textbf{Required proof:} Lyapunov stability analysis or contraction mapping argument. Explicit characterization of the stability region in the $(\tau, I)$ parameter space.
+
+\paragraph{[II-C] Linear Complexity Formal Proof.}
+\textbf{What it is:} A computational complexity paper proving that the CfC solution maintains $\mathcal{O}(n)$ per-step complexity in the ACS context, where the safety gate (Term~III) operates at each step.\\
+\textbf{What it must accomplish:} Formally prove that the combined CfC + safety gate computation is $\mathcal{O}(n)$ per step for arbitrary-length sequences. The CfC literature claims $\mathcal{O}(n)$; this must account for the overhead of the CBF-QP evaluation at each step.\\
+\textbf{Required proof:} Complexity theorem: total per-step cost $= \mathcal{O}(n)$ with explicit constant factors. Must account for the CBF-QP (which is itself $\mathcal{O}(n)$ by [III-E]) and any additional overhead from the safety gate integration.
+
+\paragraph{[II-D] Predictive Temporal Compensation Accuracy.}
+\textbf{What it is:} A prediction error analysis paper bounding the accuracy of the predictive state $\Omega(t + \Delta t)$ used for latency compensation.\\
+\textbf{What it must accomplish:} Derive an error bound $\|\Omega(t + \Delta t) - \Omega_{\text{true}}(t + \Delta t)\| \le f(\Delta t, L_{\text{dynamics}})$ as a function of prediction horizon and the Lipschitz constant of the input-dependent dynamics. Show that the prediction error stays within the safety margin.\\
+\textbf{Required proof:} Gronwall-type error bound. Must demonstrate that the prediction horizon achievable without violating safety is sufficient for realistic system latencies.
+
+\paragraph{[II-E] Continuous-Discrete Bridging Formalism.}
+\textbf{What it is:} A discretization analysis paper formalizing the gap between the continuous ODE treatment of the LNN and the discrete computational steps actually executed. Paper~A's Assumption~A7 absorbs this into $\epsilon_{\text{model}}$ but does not bound it.\\
+\textbf{What it must accomplish:} Bound the discretization error for the specific LNN/CfC architecture (not just general Neural ODE bounds). Show that standard adaptive step-size methods (e.g., Dormand-Prince) keep the discretization error within the $\epsilon_{\text{model}}$ budget assumed by Term~III.\\
+\textbf{Required proof:} Discretization error bound specific to the CfC closed-form solution. Conditions on the step size that guarantee the CBF condition is not violated between discrete steps.
+
+\subsection{Term III References: Orthogonal Stability Gate ($\mathcal{V}_{\text{OV}}$)}
+
+\paragraph{[III-A] Topological Safety (Forward Invariance).}
+\textbf{What it is:} The foundational CBF safety theorem. \textit{Theoretically Proven} in Paper~A (Theorem~1), applying Nagumo's theorem as formalized for CBFs by Ames et al.\\
+\textbf{What it accomplished:} Proves forward invariance of the safe set $\mathcal{S} = \{x : h(x) \ge 0\}$ under the CBF condition $\dot{h}(x) + \alpha(h(x)) \ge 0$. Sufficiency proven; necessity requires regularity conditions.\\
+\textbf{Proof status:} Mathematically complete. Standard result from Nagumo (1942) and Ames et al.\ (2019).\\
+\textbf{Empirical gap:} The theorem assumes a valid barrier function $h(x)$ exists and is known. In practice, the learned barriers in this repo achieve only 76\% (SVM) to 88\% (neural) classification accuracy---meaning the premise ``$h(x) \ge 0 \Leftrightarrow x$ is safe'' is violated for 12--24\% of states. Forward invariance of a mis-specified safe set is a correct theorem about the wrong set.
+
+\paragraph{[III-B] MCBC Dimension-Independent Sample Complexity.}
+\textbf{What it is:} The Monte Carlo Barrier Certificate sampling theorem. \textit{Theoretically Proven} in Paper~A (Eq.~5, Section~3.3).\\
+\textbf{What it accomplished:} Proves $N \ge \frac{1}{2\epsilon^2} \ln(2/\delta)$ samples suffice for $(\epsilon, \delta)$-certification, independent of state dimension $n$ for fixed $L_h$ and $\varepsilon_s$. Applies Hoeffding's inequality.\\
+\textbf{Proof status:} Mathematically complete. Standard application of Hoeffding.\\
+\textbf{Empirical gap:} The ``dimension-independence'' holds only for fixed $L_h$. For non-radial barriers (which includes every barrier actually used in experiments), $L_h$ may grow with $n$, making the sample complexity implicitly dimension-dependent in practice. The claim has been validated only to $n = 2048$; behavior at $n = 4096+$ is unknown.
+
+\paragraph{[III-C] Trajectory-Level Safety Bridge.}
+\textbf{What it is:} The trajectory-level safety probability bound. \textit{Theoretically Proven} (average case) in Paper~A (Proposition~1).\\
+\textbf{What it accomplished:} Provides $P(\text{failure in } T \text{ steps}) \le T \cdot \epsilon$ via union bound. Conservative but dimension-free.\\
+\textbf{Proof status:} Mathematically complete for average case.\\
+\textbf{Empirical gap:} The distributional assumption (boundary encounters are representative of $\mu$) has not been verified for transformer hidden-state dynamics. The autoregressive CBF experiment shows the barrier activates 58.6\% of the time but achieves only a 2~percentage-point improvement in safe rate ($55\% \to 57\%$), suggesting the theoretical safety bridge may not translate to practical safety in the LLM domain.
+
+\paragraph{[III-D] Safe Asymptotic Convergence to KKT Set.}
+\textbf{What it is:} The convergence-under-safety theorem. \textit{Partially proven} in Paper~A (Theorem~2). Full proof exists only for single-integrator dynamics.\\
+\textbf{What it must accomplish:} Complete the proof for general control-affine systems $\dot{x} = f(x) + g(x)u$. Must verify uniform boundedness of $\ddot{V}$ and regularity of the closed-loop vector field at the switching surface between active and inactive constraint regimes.\\
+\textbf{Required proof:} Full Barbalat's Lemma argument for general dynamics. Verification of all technical conditions (currently only sketched). Singleton convergence via \L{}ojasiewicz gradient inequality under real-analyticity.
+
+\paragraph{[III-E] CBF-QP Closed-Form $\mathcal{O}(n)$ Solution.}
+\textbf{What it is:} The computational efficiency theorem. \textit{Theoretically Proven} in Paper~A (Section~4.2, Experiment~VII).\\
+\textbf{What it accomplished:} Shows the single-constraint CBF-QP has a closed-form KKT solution computable in $\mathcal{O}(n)$. Validated to $n = 2048$ with $61$--$351\times$ speedup over OSQP.\\
+\textbf{Proof status:} Mathematically complete. Textbook KKT application.\\
+\textbf{Empirical gap:} Validated only to $n = 2048$. Production-scale models require $n = 4096$--$16384$. While the $\mathcal{O}(n)$ scaling should hold by construction (the closed-form is a single dot product + scalar operations), the constant factors and numerical stability at production scale are uncharacterized. The practical question is not whether the QP is $\mathcal{O}(n)$, but whether the intervention $u^*$ it computes actually improves safety---and the autoregressive experiment ($p = 0.49$ on primary metric) suggests it may not.
+
+\paragraph{[III-F] Dimension-Independent Lipschitz Constants.}
+\textbf{What it is:} The radial barrier Lipschitz lemma. \textit{Theoretically Proven} in Paper~A (Lemma~1).\\
+\textbf{What it accomplished:} For radial barriers $h(x) = \phi(\|x\|)$, proves $L_h = L_\phi$ independent of dimension $n$.\\
+\textbf{Proof status:} Mathematically complete.\\
+\textbf{Empirical gap:} This result applies \textbf{only to radial barriers}. No experiment in this repository uses a radial barrier. The SVM barrier (Paper~B) and neural barrier (Paper~C) are both non-radial, and their Lipschitz constants have not been shown to be dimension-independent. This makes the lemma correct but \textit{inapplicable to every barrier actually deployed}.
+
+\paragraph{[III-G] AASV Adversarial Detection Bound.}
+\textbf{What it is:} The adversarial spike detection probability theorem. \textit{Partially proven} in Paper~B (Theorem~3.5.1, unpublished).\\
+\textbf{What it must accomplish for full proof:} Remove the dependence on empirically calibrated $p_{\text{hit}}$ by deriving $p_{\text{hit}}$ from first principles (barrier geometry, gradient concentration). Validate on non-synthetic barriers in dimensions $n \gg 128$.\\
+\textbf{Required proof:} Unconditional detection bound where $p_{\text{hit}}$ is a function of computable barrier properties (Lipschitz constant, barrier margin, gradient norm distribution). Peer-reviewed publication.
+
+\paragraph{[III-H] Joint MCBC--AASV Safety Certificate.}
+\textbf{What it is:} The combined statistical + adversarial safety certificate. \textit{Partially proven} in Paper~B (Corollary~1, unpublished).\\
+\textbf{What it must accomplish for full proof:} Address the correlated failure mode: both MCBC and AASV evaluate the same barrier $h(x)$, so barrier mis-specification defeats both layers simultaneously. Bound the advantage over single-layer verification.\\
+\textbf{Required proof:} Analysis showing the min-composition provides strictly stronger guarantees than either layer alone, with explicit quantification of the improvement margin. Must address barrier mis-specification as a common-mode failure. Peer-reviewed publication.
+
+\paragraph{[III-I] GPT-2 Hidden-State CBF Enforcement.}
+\textbf{What it is:} The empirical proof-of-concept for applying CBF-QP safety filtering to transformer hidden states. \textit{Partially proven} in Paper~B (Experiment~XIV, unpublished), extended by Paper~C.\\
+\textbf{What it must accomplish for full proof:} (1)~Formally bound the KNN dynamics surrogate error (currently unbound). (2)~Verify the controllability assumption (layer-9 intervention propagates meaningfully to output). (3)~Bound the continuous-to-discrete gap. (4)~Improve barrier accuracy beyond 76\% (SVM) / 88\% (neural, Paper~C).\\
+\textbf{Required proof:} Formal error bounds on dynamics surrogate, controllability verification, and discretization error. Currently an empirical demonstration---needs theoretical grounding. Peer-reviewed publication.
+
+\paragraph{[III-J] SMT + CBF-QP Compositional Soundness.}
+\textbf{What it is:} A formal verification paper proving that the conjunction of semantic SMT checking and geometric CBF-QP checking forms a sound and complete safety gate.\\
+\textbf{What it must accomplish:} Prove that no unsafe action can pass both checks simultaneously (soundness). Characterize completeness: what fraction of safe actions are incorrectly rejected by the conjunction (conservatism bound).\\
+\textbf{Required proof:} Soundness theorem with constructive argument. Completeness analysis showing the conservatism overhead is bounded. Must handle the interaction between discrete SMT verdicts and continuous QP corrections.
+
+\paragraph{[III-K] Reachability Analysis at Scale ($n \ge 128$).}
+\textbf{What it is:} A scalability paper demonstrating or bounding the computational cost of reachability analysis ($\text{Reach}_{\Delta t}(\Psi)$) in high-dimensional spaces.\\
+\textbf{What it must accomplish:} Either demonstrate existing tools (POLAR-Express, Flow*) at $n \ge 128$, or develop a probabilistic reachability approximation that integrates with the MCBC framework and scales polynomially.\\
+\textbf{Required proof:} Scalability bounds: either empirical demonstration at $n \ge 128$ with formal error analysis, or a new algorithm with provable complexity guarantees and integration with [III-B].
+
+\paragraph{[III-L] Nonlinear Neural Barrier Design and Verification.}
+\textbf{What it is:} The neural CBF extension of the GPT-2 safety work. \textit{Partially proven} in Paper~C (unpublished).\\
+\textbf{What it must accomplish for full proof:} (1)~Tighten the Lipschitz bound beyond the product-of-spectral-norms estimate. (2)~Provide deterministic (not just probabilistic/MCBC) verification of the barrier across the full boundary. (3)~Scale beyond GPT-2 ($n = 768$) to production models ($n \ge 4096$).\\
+\textbf{Required proof:} Tighter Lipschitz certification (e.g., LipSDP or interval bound propagation). Deterministic barrier verification or formal proof that MCBC suffices. Peer-reviewed publication.
+
+\paragraph{[III-M] Rotational Circulation Empirical Validation.}
+\textbf{What it is:} An empirical validation paper for the rotational perturbation mechanism described in Paper~A Section~4.4 for escaping CBF-induced local minima.\\
+\textbf{What it must accomplish:} Demonstrate that the rotational mechanism reliably escapes deadlocks across diverse non-convex utility landscapes. Characterize escape time as a function of perturbation magnitude and landscape curvature.\\
+\textbf{Required proof:} Empirical study with statistical significance testing across $\ge 5$ non-convex landscapes. Ideally accompanied by a convergence rate analysis for the escape dynamics.
+
+\paragraph{[III-N] Multi-Constraint Aggregation Optimality.}
+\textbf{What it is:} An optimization theory paper bounding the conservatism introduced by aggregating multiple barrier constraints via smooth approximations (LogSumExp, SoftMin).\\
+\textbf{What it must accomplish:} Derive the gap between the aggregated constraint and the true intersection of individual constraints. Characterize when this gap is negligible vs.\ prohibitive.\\
+\textbf{Required proof:} Approximation bound: $|h_{\text{agg}}(x) - \min_i h_i(x)| \le \epsilon(\text{smoothing parameter})$ with conditions on when $\epsilon$ preserves safety.
+
+\paragraph{[III-O] Autoregressive CBF Deployment.}
+\textbf{What it is:} The autoregressive safety steering framework. \textit{Partially proven} in Paper~C (unpublished).\\
+\textbf{What it must accomplish for full proof:} Derive cumulative safety guarantees for multi-step token-by-token CBF interventions. Bound the compounding effect of per-token modifications on the KV-cache and output distribution. Currently only empirically characterized ($\alpha$ sweep at $0.15, 0.25, 0.50$).\\
+\textbf{Required proof:} Cumulative safety bound: $P(\text{unsafe output after } T \text{ tokens}) \le f(T, \alpha, \text{per-step bound})$. Analysis of KV-cache drift under repeated interventions. Peer-reviewed publication.
+
+\paragraph{[III-P] KNN Dynamics Surrogate Error Bound.}
+\textbf{What it is:} An approximation theory paper bounding the error of the $K$-nearest-neighbor regression used to estimate transformer dynamics at boundary points.\\
+\textbf{What it must accomplish:} Derive $\|f_{\text{KNN}}(x) - f_{\text{true}}(x)\| \le \epsilon_{\text{model}}^{\text{KNN}}$ as a function of $K$, the training set size $N$, and the smoothness of the true dynamics. Paper~B explicitly states this bound is missing.\\
+\textbf{Required proof:} KNN regression error bound in the latent dynamics context. Must connect to the $\epsilon_{\text{model}}$ budget in the robust CBF condition (Paper~A Assumption~A7).
+
+\paragraph{[III-Q] Empirical Lipschitz Characterization of Transformer Dynamics.}
+\textbf{What it is:} An empirical measurement paper characterizing $L_f = \text{Lip}(\text{Block}_l)$ for real transformers. Proposed but not executed in Paper~B (Experiment~XVI).\\
+\textbf{What it must accomplish:} Measure the Lipschitz constant of individual transformer blocks via power iteration or empirical max-ratio methods, for multiple production-scale models. Validate or refute Assumption~A7 (continuous relaxation) for real transformers.\\
+\textbf{Required proof:} Empirical measurements with statistical confidence intervals on $L_f$ for $\ge 3$ transformer architectures. Comparison against the assumed $L_f$ values used in the CBF analysis.
+
+\paragraph{[III-R] Frozen Robot Problem Resolution Proof.}
+\textbf{What it is:} A liveness guarantee paper proving the CBF-QP never induces permanent stagnation. \textit{Partially proven} via Paper~A's rotational circulation (Section~4.4) and proportional response (Experiment~III).\\
+\textbf{What it must accomplish for full proof:} Prove that under the rotational perturbation mechanism, $u^* = 0$ cannot persist indefinitely. Derive a worst-case escape time bound.\\
+\textbf{Required proof:} Liveness theorem: $\exists T^* < \infty$ such that $\|u^*(t)\| > 0$ for some $t < T^*$ after any stagnation event. Constructive bound on $T^*$.
+
+\subsection{Term IV References: Holographic Invariant Storage ($\mathcal{H}_{\text{mem}}$)}
+
+\paragraph{[IV-A] Fidelity Bound ($1/\sqrt{2}$).}
+\textbf{What it is:} The geometric recovery bound for holographic invariant restoration. \textit{Theoretically Proven} in the HIS paper.\\
+\textbf{What it accomplished:} Monte Carlo validation confirms mean fidelity of 0.7074 matching $1/\sqrt{2} \approx 0.7071$ for bipolar $D = 10{,}000$ hypervectors.\\
+\textbf{Proof status:} Mathematically complete. Caveats: requires active normalization, validated only against random noise, and 70.7\% fidelity sufficiency for safety is unproven.\\
+\textbf{Empirical gap:} The behavioral experiment (270 conversations, 3 models) shows HIS-based re-injection---the practical application of this fidelity bound---provides \textbf{no statistically significant benefit on 2 of 3 models} (qwen2.5:3b $p = 0.87$; llama3.2:3b $p = 0.10$). Where significant (gemma2:2b, $p = 0.006$), the improvement is modest ($+5.5$ percentage points) and \textbf{matched by random-timing re-injection}. The anti-drift simulation recovers from the stored clean anchor, not from the corrupted state, making it a tautological test of bipolar XOR (which is its own inverse). The $1/\sqrt{2}$ bound is mathematically correct but its downstream utility for safety is empirically unsupported.
+
+\paragraph{[IV-B] Noise Orthogonality in High Dimensions.}
+\textbf{What it is:} The quasi-orthogonality concentration result for random hypervectors. \textit{Theoretically Proven} in the HIS paper, building on Kanerva (2009).\\
+\textbf{What it accomplished:} Proves random noise vectors are quasi-orthogonal to stored keys with high probability as $D \to \infty$.\\
+\textbf{Proof status:} Mathematically complete. Standard VSA result from prior literature.\\
+\textbf{Empirical gap:} The orthogonality holds for \textit{random} noise. In an LLM context, the ``noise'' (context drift) is not random---it is structured, semantically coherent text that may be correlated with stored keys. Whether the quasi-orthogonality assumption holds for LLM-generated context drift has not been tested.
+
+\paragraph{[IV-C] Restoration Under Adversarial Noise.}
+\textbf{What it is:} A robustness paper extending the HIS fidelity bound from random noise to targeted adversarial perturbations.\\
+\textbf{What it must accomplish:} Prove restoration effectiveness under adversarial noise designed to corrupt specific components of $H_{\text{inv}}$, or derive the adversarial budget required to defeat restoration.\\
+\textbf{Required proof:} Adversarial robustness bound: either $\text{fidelity} \ge 1/\sqrt{2} - \epsilon(\text{attack budget})$, or a constructive attack showing the bound breaks and the minimum attack budget to do so.
+
+\paragraph{[IV-D] Multi-Component Unbinding Crosstalk Bound.}
+\textbf{What it is:} An information-theoretic paper bounding the interference between multiple bundled VSA components.\\
+\textbf{What it must accomplish:} Derive crosstalk as a function of the number of bundled components $k$ and hypervector dimension $D$. Determine the maximum $k$ before fidelity drops below a safety-critical threshold.\\
+\textbf{Required proof:} Crosstalk bound: $\text{interference}(k, D) \le g(k, D)$ with explicit formula. Capacity theorem: maximum number of components $k^*$ for given $(D, \text{fidelity threshold})$.
+
+\paragraph{[IV-E] Holographic Hashing / LSH Drift Detection Sensitivity.}
+\textbf{What it is:} A detection theory paper providing guarantees for the LSH-based drift detection mechanism.\\
+\textbf{What it must accomplish:} Derive false positive rate, false negative rate, and optimal drift threshold $\delta_{\text{drift}}$ as functions of hash dimension $k$, hypervector dimension $D$, and expected drift magnitude.\\
+\textbf{Required proof:} Detection operating characteristic: ROC curve as a function of $(k, D, \delta_{\text{drift}})$. Optimal threshold derivation minimizing a safety-weighted loss function. Closely related to [AO-E].
+
+\paragraph{[IV-F] Drift Threshold Calibration.}
+\textbf{What it is:} A statistical calibration paper deriving the optimal $\delta_{\text{drift}}$ that balances sensitivity and specificity for drift detection.\\
+\textbf{What it must accomplish:} Characterize the distribution of cosine similarity under both ``no drift'' (null) and ``drift'' (alternative) hypotheses. Derive the optimal threshold via Neyman-Pearson or minimax criterion.\\
+\textbf{Required proof:} Distributional characterization under both hypotheses. Optimal threshold theorem with provable optimality properties (e.g., uniformly most powerful test).
+
+\paragraph{[IV-G] Continuous-Time Drift Dynamics.}
+\textbf{What it is:} A dynamical systems paper modeling how $\cos(\Psi(t), H_{\text{inv}})$ evolves under the agent's nominal dynamics.\\
+\textbf{What it must accomplish:} Prove that the drift detection mechanism triggers \textit{before} the agent's state exits the safe set $\mathcal{S}$. This requires bounding the drift rate and comparing it to the detection latency.\\
+\textbf{Required proof:} Timeliness guarantee: $t_{\text{detect}} < t_{\text{exit}}$ under stated conditions on drift rate and detection frequency. Drift rate bound as a function of the agent's dynamics and the barrier geometry.
+
+\subsection{Term V References: Recursive Self-Improvement ($\mathcal{D}_{\text{Evol}}$)}
+
+\paragraph{[V-A] Lean 4 Verification Coverage.}
+\textbf{What it is:} A formal methods paper characterizing the boundary of what can and cannot be verified by Lean~4 Proof-Carrying Code within the ACS mutation framework.\\
+\textbf{What it must accomplish:} Identify the set of safety properties that are decidably verifiable in Lean~4 for the ACS's specific property language. Characterize the G\"odel incompleteness boundary: which realistic mutations fall outside the verifiable set?\\
+\textbf{Required proof:} Decidability characterization for the ACS property class. Coverage estimate: what fraction of realistic mutations admit Lean~4 proofs? Must address the gap between theoretical undecidability and practical verification difficulty.
+
+\paragraph{[V-B] PAC-Bayes Statistical Certification Bounds.}
+\textbf{What it is:} A statistical learning theory paper deriving specific PAC-Bayes bounds for the $\text{StatCert}(\theta')$ verification gate.\\
+\textbf{What it must accomplish:} Given a prior over mutations and a finite test sample, bound $P(\text{accepted mutation degrades safety by} > \epsilon) \le \delta$. Derive the minimum sample size for a given $(\epsilon, \delta)$ guarantee.\\
+\textbf{Required proof:} PAC-Bayes theorem instantiated for the ACS mutation space with explicit prior specification. Sample complexity bound for the StatCert gate.
+
+\paragraph{[V-C] Time-Uniform E-Process Guarantees.}
+\textbf{What it is:} A sequential testing paper developing anytime-valid confidence sequences for continuous mutation monitoring.\\
+\textbf{What it must accomplish:} Prove that the e-process provides valid confidence sequences at all stopping times (not just fixed sample sizes). Enable the system to revoke a previously accepted mutation if later evidence contradicts safety.\\
+\textbf{Required proof:} Anytime-valid confidence sequence with explicit width bounds. Revocation protocol with provable safety guarantees during the revocation transition period.
+
+\paragraph{[V-D] Mutational Meltdown Prevention.}
+\textbf{What it is:} A long-term stability paper proving the verification gate prevents cumulative degradation over successive mutations (``mutational meltdown'').\\
+\textbf{What it must accomplish:} Prove that the probability of accepting a harmful mutation decays faster than the rate of mutation proposals. Show that after $N$ mutations, the system's safety margin is bounded below by a positive constant.\\
+\textbf{Required proof:} Long-run safety bound: $P(\text{safety violation after } N \text{ mutations}) \le g(N)$ with $g(N) \to 0$ or $g(N)$ bounded. Must handle the possibility of slow, individually-benign drift.
+
+\paragraph{[V-E] Evolutionary Convergence Guarantee.}
+\textbf{What it is:} An evolutionary dynamics paper proving the Darwin-G\"odel protocol converges to improvement rather than stagnation.\\
+\textbf{What it must accomplish:} Prove that utility-increasing mutations are accepted more often than utility-decreasing ones, under the constraint that all accepted mutations must pass verification. Show the system does not get ``stuck'' in a local optimum where no verifiable improvements exist.\\
+\textbf{Required proof:} Convergence rate theorem for the constrained evolutionary process. Analysis of the ``verifiable improvement'' landscape: does it have sufficient structure for convergence?
+
+\paragraph{[V-F] Proof-of-Training-Data (PoTD) Completeness.}
+\textbf{What it is:} A data provenance verification paper proving the Merkle tree training data lineage is complete and sound.\\
+\textbf{What it must accomplish:} Prove completeness (all data used to generate $\theta'$ is captured) and soundness (no untrusted data can be injected undetected) under realistic threat models for the training pipeline.\\
+\textbf{Required proof:} Completeness and soundness theorems under specified threat models (data poisoning, supply chain attacks). Computational overhead analysis for complete provenance tracking. Related to [AO-F].
+
+\paragraph{[V-G] Self-Referential Verification Paradox.}
+\textbf{What it is:} A foundational theory paper addressing the G\"odel-like paradox of an agent verifying mutations to its own verification system.\\
+\textbf{What it must accomplish:} Either prove that a fixed ``constitutional core'' of the verifier is immune to self-modification, or prove this is impossible and characterize the resulting safety limitations (i.e., what guarantees can still be maintained under partial self-modification).\\
+\textbf{Required proof:} Fixed-point theorem for the verification core, or impossibility result with constructive characterization of achievable guarantees. Must connect to G\"odel's incompleteness theorems and L\"ob's theorem.
+
+\subsection{Term VI References: Resource \& Adaptation Constraints}
+
+\paragraph{[VI-A] Metabolic Cost Model $c(\ell)$.}
+\textbf{What it is:} An empirical + theoretical paper deriving a formal model linking hierarchy depth $\ell$ to computational and thermodynamic cost.\\
+\textbf{What it must accomplish:} Determine the growth rate of $c(\ell)$ (linear, polynomial, exponential) on realistic hardware. Validate empirically on both neuromorphic (Loihi 2) and GPU platforms.\\
+\textbf{Required proof:} Formal cost model with hardware-specific parameters. Empirical validation on $\ge 2$ hardware platforms. Feeds directly into [I-B] (Boltzmann optimality depends on knowing $c(\ell)$).
+
+\paragraph{[VI-B] Budget Allocation Optimality.}
+\textbf{What it is:} An optimization paper proving the Boltzmann allocation minimizes total EFE under the budget constraint $\sum w(\ell) c(\ell) \le B(t)$.\\
+\textbf{What it must accomplish:} Prove optimality or identify the true optimal allocation if the Boltzmann form is suboptimal. Compare against alternative allocations (uniform, greedy, water-filling).\\
+\textbf{Required proof:} Optimality theorem via constrained optimization (KKT conditions). If Boltzmann is suboptimal: constructive derivation of the optimal allocation. Closely related to [I-B] and [AO-G].
+
+\paragraph{[VI-C] Resource-Weighted EFE Convergence.}
+\textbf{What it is:} A convergence analysis paper for the resource-constrained active inference optimization problem.\\
+\textbf{What it must accomplish:} Prove the constrained optimization (minimize EFE subject to $\mathcal{R}(t) \le B(t)$) admits a unique solution and that the agent's policy converges to it.\\
+\textbf{Required proof:} Existence and uniqueness theorem for the constrained optimum. Convergence rate analysis for the policy update.
+
+\paragraph{[VI-D] Adversarial Immunity Minimax Guarantee.}
+\textbf{What it is:} The robust safety guarantee under adversarial perturbation. \textit{Partially proven} in Paper~A (robust barrier condition under Lipschitz adversaries).\\
+\textbf{What it must accomplish for full proof:} Extend beyond Lipschitz-bounded adversaries to the general minimax formulation $\min_{\text{adv}} \max_u h(x) \ge 0$ at arbitrary scale. Characterize the class of adversaries against which the CBF provides guarantees.\\
+\textbf{Required proof:} Minimax theorem for the general adversarial safety game. Characterization of the maximal adversary class that admits safe control.
+
+\paragraph{[VI-E] Neuromorphic Efficiency Claims.}
+\textbf{What it is:} An empirical benchmarking paper validating that neuromorphic hardware achieves $\eta \gg$ GPU for the ACS workload.\\
+\textbf{What it must accomplish:} Benchmark all seven terms on neuromorphic (Loihi~2) vs.\ GPU hardware. Measure energy efficiency ratios and identify which terms benefit most from neuromorphic acceleration.\\
+\textbf{Required proof:} Empirical benchmark with statistical rigor ($\ge 3$ runs per configuration). Energy efficiency ratios with confidence intervals. Must use the actual ACS workload, not generic spiking benchmarks.
+
+\subsection{Term VII References: The Hermes Protocol ($\mathcal{U}_{\text{SI}}$)}
+
+\paragraph{[VII-A] Code Morphism Semantic Preservation.}
+\textbf{What it is:} A formal verification paper proving the substrate-transfer functor $\Phi_{\alpha \to \beta}$ preserves observable behavior. In the general case, this is undecidable (Rice's theorem).\\
+\textbf{What it must accomplish:} Develop bounded verification or statistical testing regimes that provide practical (probabilistic) guarantees for specific substrate pairs. Characterize the verification complexity as a function of program size and substrate distance.\\
+\textbf{Required proof:} Bounded verification framework with probabilistic correctness guarantees. Complexity analysis. Must define ``observable equivalence'' precisely for cognitive programs.
+
+\paragraph{[VII-B] Neural Decompilation Feasibility.}
+\textbf{What it is:} A systems paper developing and evaluating a transformer-based decompiler (AREM) for reverse-engineering unknown ISAs.\\
+\textbf{What it must accomplish:} Demonstrate decompilation of unknown ISAs into a universal IR with measurable accuracy. Benchmark on proprietary firmware and legacy architectures. No existing system achieves this.\\
+\textbf{Required proof:} Empirical demonstration with accuracy metrics (semantic equivalence rate, compilation round-trip fidelity). Comparison against existing decompilation baselines (Ghidra, IDA Pro).
+
+\paragraph{[VII-C] Fragment Topology Reconstitution Fidelity.}
+\textbf{What it is:} A VSA theory paper proving that distributed cognitive fragments can be holographically recombined to recover the full cognitive state.\\
+\textbf{What it must accomplish:} Prove $\text{fidelity}(\bigoplus_v \psi_v, \Psi_{\text{ACS}}) \ge 1 - \epsilon$ and characterize how $\epsilon$ grows with the number of fragments and communication loss.\\
+\textbf{Required proof:} Fidelity bound as a function of fragment count, communication reliability, and hypervector dimension $D$. Extends [IV-A] and [IV-D] to the distributed setting.
+
+\paragraph{[VII-D] CAP-Aware Consensus Optimality.}
+\textbf{What it is:} A distributed systems theory paper proving the tiered consistency model $\alpha(\ell)$ is optimal for the ACS cognitive architecture.\\
+\textbf{What it must accomplish:} Prove the transition from strong consistency (safety-critical layers) to eventual consistency (sensory layers) does not introduce hidden safety violations. Characterize the optimal consistency-availability tradeoff.\\
+\textbf{Required proof:} Safety preservation theorem under tiered consistency. Optimality proof for the transition function $\alpha(\ell)$ with respect to a safety + latency objective.
+
+\paragraph{[VII-E] CfC Predictive Compensation at Scale.}
+\textbf{What it is:} An empirical validation paper for the CfC predictive compensation mechanism across realistic global networks with variable latency.\\
+\textbf{What it must accomplish:} Validate $\psi_v^{\text{comp}}(t) = \psi_v(t) + \Omega_{\text{predict}}(t + \Lambda)$ across multi-hop networks with realistic latency distributions. Demonstrate safety margin preservation under variable latency.\\
+\textbf{Required proof:} Empirical validation on $\ge 3$ network topologies with statistical significance. Error bound as a function of latency variance. Related to [II-D].
+
+\paragraph{[VII-F] Adaptive Fragment Decomposition Complexity.}
+\textbf{What it is:} A combinatorial optimization paper addressing the NP-hard problem of optimally partitioning the ACS into fragments.\\
+\textbf{What it must accomplish:} Develop approximation algorithms with provable guarantees for partitioning subject to capability constraints $\text{Cap}(v) \ge \text{Req}(\psi_v)$, or demonstrate that heuristic decomposition achieves near-optimal performance.\\
+\textbf{Required proof:} Approximation ratio bound for the partitioning algorithm (e.g., $\le 2$-OPT). NP-hardness reduction to establish the problem's inherent difficulty. Empirical validation of the approximation quality.
+
+\paragraph{[VII-G] Distributed Thermodynamic Budget Validation.}
+\textbf{What it is:} An empirical systems paper validating the energy model $\mathcal{E}_{\text{dist}}(t) = \sum P_v \eta_v \le \mathcal{E}_{\text{max}}$ on heterogeneous hardware.\\
+\textbf{What it must accomplish:} Validate on real deployments (neuromorphic + GPU + IoT). Prove the energy constraint does not create pathological failures (e.g., safety-critical fragments starved of power).\\
+\textbf{Required proof:} Empirical validation on $\ge 2$ heterogeneous deployments. Safety liveness proof: safety-critical fragments always receive sufficient power under the budget constraint.
+
+\paragraph{[VII-H] Physical Vector Coordination.}
+\textbf{What it is:} A robotics safety paper proving safety guarantees for embodied actions required to bridge airgaps between ACS instances.\\
+\textbf{What it must accomplish:} Prove safety under perception, manipulation, and environment uncertainty. This is a full robotics safety problem requiring integration with the CBF framework.\\
+\textbf{Required proof:} Safety certificate for the physical bridging maneuver under bounded perception noise and manipulation error. Integration with the CBF framework from Term~III.
+
+\subsection{Additional Operators References (Section 10)}
+
+\paragraph{[AO-A] Adaptive Learning Operator --- Projected Bayesian Filter Safety.}
+\textbf{What it is:} A Bayesian learning theory paper proving the constrained Bayesian update $\Lambda(t)$ converges correctly within the safe parameter manifold.\\
+\textbf{What it must accomplish:} Prove the projected posterior converges to the true posterior restricted to safe parameters. Show the projection does not introduce catastrophic model bias.\\
+\textbf{Required proof:} Posterior convergence theorem under projection. Bias bound for the projected posterior. Conditions under which the projection is ``benign'' (does not exclude the true parameter).
+
+\paragraph{[AO-B] Meta-Cognitive Monitor --- Threshold Calibration and Completeness.}
+\textbf{What it is:} A monitoring theory paper deriving the optimal alarm threshold $\tau_{\text{alarm}}$ for the meta-cognitive staleness detector.\\
+\textbf{What it must accomplish:} Derive $\tau_{\text{alarm}}$ as a function of model class and environment non-stationarity. Prove timeliness ($M(t) = 1$ triggers before safety violation) and soundness ($M(t) = 0$ implies model is safe).\\
+\textbf{Required proof:} Optimal threshold derivation via hypothesis testing framework. Timeliness and soundness guarantees with explicit failure probabilities.
+
+\paragraph{[AO-C] Inter-Agent Communication --- Holographic Message Fidelity.}
+\textbf{What it is:} An information-theoretic paper proving the lossy inter-level communication channel preserves sufficient safety information.\\
+\textbf{What it must accomplish:} Prove the channel $C(\ell \to \ell - 1)$ preserves enough information for safe decision-making at the parent level. Derive the minimum integration weight $\alpha_\ell$.\\
+\textbf{Required proof:} Channel capacity analysis for the holographic communication channel. Sufficiency theorem: minimum information rate for safety preservation.
+
+\paragraph{[AO-D] Omni-State Memory --- Dynamic Scaling Stability.}
+\textbf{What it is:} A stability analysis paper for the sigmoid-gated memory access mechanism.\\
+\textbf{What it must accomplish:} Prove the memory access does not oscillate between full and minimal modes. Show the task complexity estimator $C_{\text{task}}$ is monotonically related to actual memory requirements.\\
+\textbf{Required proof:} Stability theorem for the sigmoid gate dynamics. Monotonicity proof for $C_{\text{task}}$.
+
+\paragraph{[AO-E] Holographic Drift Detection --- False Positive/Negative Rates.}
+\textbf{What it is:} A detection theory paper deriving closed-form error rates for the LSH drift detector.\\
+\textbf{What it must accomplish:} Derive FPR and FNR as closed-form functions of hash dimension $k$, threshold $\delta_{\text{drift}}$, and hypervector dimension $D$.\\
+\textbf{Required proof:} Closed-form expressions for FPR$(k, D, \delta_{\text{drift}})$ and FNR$(k, D, \delta_{\text{drift}})$. Optimal $k$ derivation for a target operating point. Closely related to [IV-E] and [IV-F].
+
+\paragraph{[AO-F] Proof-of-Training-Data --- Completeness Under Adversarial Threat Models.}
+\textbf{What it is:} A security verification paper proving the Merkle tree training data verification is robust under adversarial conditions.\\
+\textbf{What it must accomplish:} Prove completeness and soundness under threat models including data poisoning, supply chain attacks, and gradient inversion. Characterize computational overhead.\\
+\textbf{Required proof:} Security proofs under formal threat models (Byzantine, Dolev-Yao, or similar). Computational overhead bounds. Related to [V-F].
+
+\paragraph{[AO-G] Thermodynamic $w(\ell)$ Derivation --- Maximum Entropy Proof.}
+\textbf{What it is:} A mathematical optimization paper providing the complete maximum-entropy derivation of the Boltzmann weighting.\\
+\textbf{What it must accomplish:} Prove $w(\ell) \propto e^{-\beta c(\ell)}$ is the unique maximum-entropy solution under budget and normalization constraints, using Lagrange multipliers.\\
+\textbf{Required proof:} Complete constrained entropy maximization with existence, uniqueness, and KKT verification. This is the mathematical foundation for [I-B] and [VI-B].
+
+\subsection{Cross-Cutting References}
+
+\paragraph{[CC-A] End-to-End Master Equation Well-Definedness.}
+\textbf{What it is:} A foundational mathematics paper proving $\Psi_{\text{Total}}(t)$ is a well-defined mathematical object.\\
+\textbf{What it must accomplish:} Prove the operators ($\bigoplus, \bigotimes, \oplus$) composing the seven terms are compatible. Show that the types are consistent and the result lies in a well-characterized space.\\
+\textbf{Required proof:} Type compatibility theorem. Characterization of the output space. This is arguably the most fundamental requirement: without it, the master equation is a notational convenience, not a mathematical object.
+
+\paragraph{[CC-B] VSA Operator Compatibility Across Terms.}
+\textbf{What it is:} A vector-symbolic architecture theory paper proving the VSA operators used to combine heterogeneous terms are mathematically meaningful.\\
+\textbf{What it must accomplish:} Prove that binding ($\otimes$) probability distributions with ODE solutions, bundling ($+$) boolean safety gates with hypervectors, etc., produce objects that retain the safety properties of each individual term.\\
+\textbf{Required proof:} Semantic preservation theorems for each operator applied to each pair of term types. Must show safety properties are not lost under composition.
+
+\paragraph{[CC-C] Global Safety Invariant Under All Terms.}
+\textbf{What it is:} A comprehensive safety paper proving the conjunction of all safety mechanisms provides a strictly stronger guarantee than any individual mechanism.\\
+\textbf{What it must accomplish:} Prove that the combined safety from CBF (III), HIS restoration (IV), verification gate (V), adversarial immunity (VI), and airgap boundary (VII) is strictly monotonically stronger than any subset.\\
+\textbf{Required proof:} Monotonicity theorem: adding each safety layer strictly reduces the failure probability. Quantification of the marginal safety contribution of each layer.
+
+\paragraph{[CC-D] Temporal Consistency Across the Bridge.}
+\textbf{What it is:} A synchronization analysis paper proving the Chronos Bridge provides consistent temporal coordination for all terms simultaneously.\\
+\textbf{What it must accomplish:} Prove the CfC predictive compensation does not introduce race conditions between the safety gate (III), memory restoration (IV), and evolution protocol (V).\\
+\textbf{Required proof:} Absence-of-race-condition proof. Temporal ordering guarantee: safety checks always execute before state updates. Must handle the asynchronous nature of different terms.
+
+\paragraph{[CC-E] Scalability to Production Dimensions.}
+\textbf{What it is:} A systems scalability paper. \textit{Partially proven}: Paper~A validates CHDBO to $n = 1024$ and GPT-2 at $n = 768$.\\
+\textbf{What it must accomplish for full proof:} Validate the full ACS (all seven terms operating simultaneously) at production scale ($n = 4096+$). Demonstrate combined computational overhead remains $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$.\\
+\textbf{Required proof:} End-to-end benchmark of the full ACS at $n \ge 4096$. Complexity measurement with scaling regression. Individual per-term scaling contributions.
+
+\paragraph{[CC-F] Interaction Effects Between Terms.}
+\textbf{What it is:} A comprehensive interaction analysis identifying and characterizing negative interactions between ACS terms.\\
+\textbf{What it must accomplish:} Map all pairwise interactions: Can Darwin-G\"odel (V) invalidate Chronos calibration (II)? Can Hermes fragmentation (VII) break the holographic invariant (IV)? Produce a complete interaction matrix.\\
+\textbf{Required proof:} Pairwise interaction analysis for all $\binom{7}{2} = 21$ term pairs. For each pair: either a non-interference proof or a characterization of the interference magnitude with mitigation strategies.
 
 \begin{thebibliography}{99}
 
