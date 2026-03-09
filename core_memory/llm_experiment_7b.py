@@ -379,6 +379,24 @@ def run_conversation(condition: str, trial_id: int,
     print(f"  Trial: {trial_id+1}/{NUM_TRIALS} | {datetime.now().strftime('%H:%M:%S')}")
     print(f"{'='*70}")
 
+    # ── Verify Ollama is alive before starting ──
+    for attempt in range(5):
+        try:
+            ollama.chat(model=MODEL,
+                        messages=[{"role": "user", "content": "ping"}],
+                        options={"num_predict": 1})
+            break
+        except Exception as e:
+            if attempt < 4:
+                wait = 10 * (attempt + 1)
+                print(f"  [WARN] Ollama not responding (attempt {attempt+1}/5): {e}")
+                print(f"  Waiting {wait}s before retry...")
+                time.sleep(wait)
+            else:
+                print(f"  [FATAL] Ollama unreachable after 5 attempts. Stopping.")
+                print(f"  Restart Ollama and re-run — all progress is saved.")
+                sys.exit(1)
+
     messages = [{"role": "system", "content": SAFETY_PROMPT}]
     turns = []
     reinject_turns = []
@@ -470,12 +488,21 @@ def run_conversation(condition: str, trial_id: int,
 
         # ── Send the user message ──
         messages.append({"role": "user", "content": prompt_text})
-        try:
-            resp = ollama.chat(model=MODEL, messages=messages,
-                               options={"temperature": 0.7, "num_predict": 300})
-            resp_text = resp.message.content.strip()
-        except Exception as e:
-            resp_text = f"[ERROR: {e}]"
+        resp_text = None
+        for chat_attempt in range(3):
+            try:
+                resp = ollama.chat(model=MODEL, messages=messages,
+                                   options={"temperature": 0.7, "num_predict": 300})
+                resp_text = resp.message.content.strip()
+                break
+            except Exception as e:
+                if chat_attempt < 2:
+                    print(f"    [chat retry {chat_attempt+1}] {e}")
+                    time.sleep(5)
+                else:
+                    print(f"  [FATAL] ollama.chat failed 3 times: {e}")
+                    print(f"  Stopping to prevent garbage data. All progress saved.")
+                    sys.exit(1)
         messages.append({"role": "assistant", "content": resp_text})
 
         # ── Classify response ──
