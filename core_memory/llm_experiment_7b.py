@@ -36,6 +36,8 @@ import os
 import time
 import re
 import sys
+import subprocess
+import signal
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -43,6 +45,38 @@ from pathlib import Path
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Ollama auto-restart (Linux/RunPod only)
+# ─────────────────────────────────────────────────────────────────────────────
+def restart_ollama():
+    """Kill and restart the Ollama server. Returns True if successful."""
+    if sys.platform == "win32":
+        print("  [WARN] Cannot auto-restart Ollama on Windows. Please restart manually.")
+        return False
+    print("  [AUTO-RESTART] Killing Ollama processes...")
+    subprocess.run(["pkill", "-f", "ollama"], capture_output=True)
+    time.sleep(3)
+    print("  [AUTO-RESTART] Starting ollama serve...")
+    subprocess.Popen(
+        ["ollama", "serve"],
+        stdout=open("/tmp/ollama_serve.log", "a"),
+        stderr=subprocess.STDOUT,
+        preexec_fn=os.setpgrp,
+    )
+    # Wait for it to come up
+    for i in range(30):
+        time.sleep(2)
+        try:
+            ollama.chat(model=MODEL,
+                        messages=[{"role": "user", "content": "ping"}],
+                        options={"num_predict": 1})
+            print(f"  [AUTO-RESTART] Ollama back online after {(i+1)*2}s")
+            return True
+        except Exception:
+            pass
+    print("  [AUTO-RESTART] Failed to restart Ollama after 60s.")
+    return False
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Configuration
@@ -380,21 +414,21 @@ def run_conversation(condition: str, trial_id: int,
     print(f"{'='*70}")
 
     # ── Verify Ollama is alive before starting ──
-    for attempt in range(5):
+    for attempt in range(3):
         try:
             ollama.chat(model=MODEL,
                         messages=[{"role": "user", "content": "ping"}],
                         options={"num_predict": 1})
             break
         except Exception as e:
-            if attempt < 4:
-                wait = 10 * (attempt + 1)
-                print(f"  [WARN] Ollama not responding (attempt {attempt+1}/5): {e}")
-                print(f"  Waiting {wait}s before retry...")
-                time.sleep(wait)
+            print(f"  [WARN] Ollama not responding (attempt {attempt+1}/3): {e}")
+            if attempt < 2:
+                print(f"  Attempting auto-restart...")
+                if restart_ollama():
+                    break
             else:
-                print(f"  [FATAL] Ollama unreachable after 5 attempts. Stopping.")
-                print(f"  Restart Ollama and re-run — all progress is saved.")
+                print(f"  [FATAL] Ollama unreachable after 3 attempts + restarts.")
+                print(f"  All progress is saved. Fix Ollama and re-run.")
                 sys.exit(1)
 
     messages = [{"role": "system", "content": SAFETY_PROMPT}]
@@ -489,18 +523,22 @@ def run_conversation(condition: str, trial_id: int,
         # ── Send the user message ──
         messages.append({"role": "user", "content": prompt_text})
         resp_text = None
-        for chat_attempt in range(3):
+        for chat_attempt in range(5):
             try:
                 resp = ollama.chat(model=MODEL, messages=messages,
                                    options={"temperature": 0.7, "num_predict": 300})
                 resp_text = resp.message.content.strip()
                 break
             except Exception as e:
-                if chat_attempt < 2:
-                    print(f"    [chat retry {chat_attempt+1}] {e}")
-                    time.sleep(5)
+                print(f"    [chat retry {chat_attempt+1}/5] {e}")
+                if chat_attempt < 4:
+                    if chat_attempt >= 1:
+                        print(f"    Attempting Ollama auto-restart...")
+                        if restart_ollama():
+                            continue
+                    time.sleep(5 * (chat_attempt + 1))
                 else:
-                    print(f"  [FATAL] ollama.chat failed 3 times: {e}")
+                    print(f"  [FATAL] ollama.chat failed 5 times with restarts: {e}")
                     print(f"  Stopping to prevent garbage data. All progress saved.")
                     sys.exit(1)
         messages.append({"role": "assistant", "content": resp_text})
