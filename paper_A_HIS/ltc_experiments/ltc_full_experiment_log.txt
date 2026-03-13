@@ -1,0 +1,586 @@
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO]   VSA-Constrained LTC Safety: Full 7-Condition Benchmark
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO]   Python 3.12.10
+2026-03-10 16:19:47 [INFO]   NumPy 2.4.2
+2026-03-10 16:19:47 [INFO]   Output dir: C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C
+2026-03-10 16:19:47 [INFO]   Log file: C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\ltc_full_experiment_log.txt
+2026-03-10 16:19:47 [INFO] 
+2026-03-10 16:19:47 [INFO] Configuration:
+2026-03-10 16:19:47 [INFO]   Steps per trial:     20000
+2026-03-10 16:19:47 [INFO]   Trials per condition: 50
+2026-03-10 16:19:47 [INFO]   Conditions:          7
+2026-03-10 16:19:47 [INFO]   Total trials:        350
+2026-03-10 16:19:47 [INFO]   VSA dimensionality:  10000
+2026-03-10 16:19:47 [INFO]   Timer interval:      300
+2026-03-10 16:19:47 [INFO]   VSA drift threshold: 0.55
+2026-03-10 16:19:47 [INFO]   EMA alpha:           0.005
+2026-03-10 16:19:47 [INFO]   Norm threshold:      0.5 × ||x_ref||
+2026-03-10 16:19:47 [INFO]   CBF gamma:           1.0
+2026-03-10 16:19:47 [INFO]   Bootstrap resamples: 10000
+2026-03-10 16:19:47 [INFO] 
+2026-03-10 16:19:47 [INFO] Power analysis (pre-experiment):
+2026-03-10 16:19:47 [INFO]   Target: detect d≥0.67 at Bonferroni α=0.05/21≈0.0024, 80% power
+2026-03-10 16:19:47 [INFO]   Required n ≈ 48 per condition. Using n=50.
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO]   VSA-Constrained LTC Safety: Full 7-Condition Benchmark
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO]   Date:       2026-03-10 16:19:47
+2026-03-10 16:19:47 [INFO]   Conditions: 7 (unconstrained, timer, vsa, oracle, cbf, ema, norm_monitor)
+2026-03-10 16:19:47 [INFO]   Trials:     50 per condition (350 total)
+2026-03-10 16:19:47 [INFO]   Steps:      20000 per trial
+2026-03-10 16:19:47 [INFO]   VSA dim:    10000
+2026-03-10 16:19:47 [INFO]   Seed:       42
+2026-03-10 16:19:47 [INFO] 
+2026-03-10 16:19:47 [INFO] [SETUP] Generating environment...
+2026-03-10 16:19:47 [INFO]   Obstacle 1: (5.15, 0.90), r=1.29
+2026-03-10 16:19:47 [INFO]   Obstacle 2: (2.90, 3.99), r=1.06
+2026-03-10 16:19:47 [INFO]   Obstacle 3: (-3.58, 5.41), r=1.24
+2026-03-10 16:19:47 [INFO]   Obstacle 4: (-4.98, -0.96), r=1.39
+2026-03-10 16:19:47 [INFO]   Obstacle 5: (-2.04, -5.25), r=1.07
+2026-03-10 16:19:47 [INFO]   Obstacle 6: (2.07, -5.07), r=1.21
+2026-03-10 16:19:47 [INFO]   Waypoints: 81
+2026-03-10 16:19:47 [INFO]   Every other waypoint forces an obstacle encounter
+2026-03-10 16:19:47 [INFO] 
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO]   Running 350 trials
+2026-03-10 16:19:47 [INFO] ========================================================================
+2026-03-10 16:19:47 [INFO] 
+2026-03-10 16:19:47 [INFO] ━━━ [UNCONSTRAINED] Condition 1/7 ━━━
+2026-03-10 16:19:49 [INFO]   Trial   1/50  viol= 1153  ret=0.721->0.072  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:19:51 [DEBUG]   Trial   2/50  viol= 1784  ret=0.773->0.002  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:19:53 [DEBUG]   Trial   3/50  viol= 1584  ret=0.713->0.027  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:19:55 [DEBUG]   Trial   4/50  viol= 1405  ret=0.692->0.096  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:19:57 [DEBUG]   Trial   5/50  viol= 1182  ret=0.769->0.041  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:19:59 [DEBUG]   Trial   6/50  viol= 1047  ret=0.765->0.158  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:20:01 [DEBUG]   Trial   7/50  viol= 1504  ret=0.692->0.099  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:02 [DEBUG]   Trial   8/50  viol= 2639  ret=0.736->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:04 [DEBUG]   Trial   9/50  viol=  692  ret=0.735->0.101  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:06 [INFO]   Trial  10/50  viol= 1898  ret=0.642->0.028  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:06 [INFO]   ── Progress: 10/350 trials (3%) | ETA: 16:31:01 (~655s remaining) ──
+2026-03-10 16:20:08 [DEBUG]   Trial  11/50  viol= 1738  ret=0.747->0.001  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:10 [DEBUG]   Trial  12/50  viol= 1270  ret=0.725->0.023  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:12 [DEBUG]   Trial  13/50  viol= 1675  ret=0.678->0.011  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:14 [DEBUG]   Trial  14/50  viol= 1624  ret=0.649->0.110  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:20:16 [DEBUG]   Trial  15/50  viol= 1882  ret=0.727->0.005  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:18 [DEBUG]   Trial  16/50  viol=  814  ret=0.729->0.280  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:20 [DEBUG]   Trial  17/50  viol= 2073  ret=0.769->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:22 [DEBUG]   Trial  18/50  viol= 1800  ret=0.689->0.030  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:23 [DEBUG]   Trial  19/50  viol= 1543  ret=0.734->0.075  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:25 [INFO]   Trial  20/50  viol= 2059  ret=0.776->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:25 [INFO]   ── Progress: 20/350 trials (6%) | ETA: 16:30:58 (~632s remaining) ──
+2026-03-10 16:20:27 [DEBUG]   Trial  21/50  viol=  895  ret=0.723->0.210  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:29 [DEBUG]   Trial  22/50  viol= 1615  ret=0.702->0.044  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:31 [DEBUG]   Trial  23/50  viol=  890  ret=0.655->0.193  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:33 [DEBUG]   Trial  24/50  viol= 1754  ret=0.810->0.015  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:35 [DEBUG]   Trial  25/50  viol= 1048  ret=0.750->0.021  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:37 [DEBUG]   Trial  26/50  viol= 2493  ret=0.742->0.017  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:39 [DEBUG]   Trial  27/50  viol= 1062  ret=0.698->0.079  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:41 [DEBUG]   Trial  28/50  viol= 1509  ret=0.702->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:43 [DEBUG]   Trial  29/50  viol= 2154  ret=0.750->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:44 [INFO]   Trial  30/50  viol= 1821  ret=0.717->0.038  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:44 [INFO]   ── Progress: 30/350 trials (9%) | ETA: 16:30:57 (~612s remaining) ──
+2026-03-10 16:20:46 [DEBUG]   Trial  31/50  viol= 1616  ret=0.748->0.002  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:48 [DEBUG]   Trial  32/50  viol= 1515  ret=0.733->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:50 [DEBUG]   Trial  33/50  viol= 2082  ret=0.766->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:52 [DEBUG]   Trial  34/50  viol= 1737  ret=0.699->0.057  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:20:54 [DEBUG]   Trial  35/50  viol= 1720  ret=0.749->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:56 [DEBUG]   Trial  36/50  viol= 1859  ret=0.719->0.007  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:20:58 [DEBUG]   Trial  37/50  viol= 1082  ret=0.739->0.116  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:00 [DEBUG]   Trial  38/50  viol= 1085  ret=0.768->0.003  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:01 [DEBUG]   Trial  39/50  viol= 1083  ret=0.645->0.179  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:21:03 [INFO]   Trial  40/50  viol= 1870  ret=0.721->0.051  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:03 [INFO]   ── Progress: 40/350 trials (11%) | ETA: 16:30:55 (~592s remaining) ──
+2026-03-10 16:21:05 [DEBUG]   Trial  41/50  viol= 1500  ret=0.780->0.075  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:07 [DEBUG]   Trial  42/50  viol= 1380  ret=0.728->0.060  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:09 [DEBUG]   Trial  43/50  viol= 1978  ret=0.729->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:11 [DEBUG]   Trial  44/50  viol=  526  ret=0.718->0.097  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:21:13 [DEBUG]   Trial  45/50  viol= 1542  ret=0.700->0.021  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:21:15 [DEBUG]   Trial  46/50  viol= 1798  ret=0.748->0.005  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:17 [DEBUG]   Trial  47/50  viol= 1808  ret=0.781->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:19 [DEBUG]   Trial  48/50  viol= 2074  ret=0.758->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:20 [DEBUG]   Trial  49/50  viol= 1378  ret=0.741->0.016  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:22 [INFO]   Trial  50/50  viol= 2782  ret=0.723->0.000  reinj=   0  err=4.0  [1.9s]
+2026-03-10 16:21:22 [INFO]   ── Progress: 50/350 trials (14%) | ETA: 16:30:54 (~572s remaining) ──
+2026-03-10 16:21:22 [INFO]   [UNCONSTRAINED] Complete in 95.3s
+2026-03-10 16:21:22 [INFO]     Violations: 1580.4 ± 472.2
+2026-03-10 16:21:22 [INFO]     Retention:  0.049 ± 0.064
+2026-03-10 16:21:22 [INFO]     Reinjections: 0.0
+2026-03-10 16:21:22 [DEBUG]   Checkpoint saved (1/7 conditions)
+2026-03-10 16:21:22 [INFO] 
+2026-03-10 16:21:22 [INFO] ━━━ [TIMER] Condition 2/7 ━━━
+2026-03-10 16:21:24 [INFO]   Trial   1/50  viol=  177  ret=0.913->0.918  reinj=  66  err=4.1  [2.0s]
+2026-03-10 16:21:26 [DEBUG]   Trial   2/50  viol=  143  ret=0.933->0.930  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:28 [DEBUG]   Trial   3/50  viol=  173  ret=0.937->0.951  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:30 [DEBUG]   Trial   4/50  viol=  185  ret=0.928->0.923  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:32 [DEBUG]   Trial   5/50  viol=  172  ret=0.945->0.936  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:34 [DEBUG]   Trial   6/50  viol=  172  ret=0.928->0.923  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:36 [DEBUG]   Trial   7/50  viol=  165  ret=0.930->0.921  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:38 [DEBUG]   Trial   8/50  viol=  164  ret=0.915->0.928  reinj=  66  err=4.1  [2.0s]
+2026-03-10 16:21:40 [DEBUG]   Trial   9/50  viol=  170  ret=0.929->0.935  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:42 [INFO]   Trial  10/50  viol=  183  ret=0.926->0.920  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:42 [INFO]   ── Progress: 60/350 trials (17%) | ETA: 16:30:55 (~553s remaining) ──
+2026-03-10 16:21:43 [DEBUG]   Trial  11/50  viol=  165  ret=0.954->0.949  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:45 [DEBUG]   Trial  12/50  viol=  184  ret=0.935->0.930  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:47 [DEBUG]   Trial  13/50  viol=  179  ret=0.925->0.917  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:49 [DEBUG]   Trial  14/50  viol=  188  ret=0.918->0.928  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:51 [DEBUG]   Trial  15/50  viol=  183  ret=0.893->0.901  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:53 [DEBUG]   Trial  16/50  viol=  171  ret=0.924->0.934  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:55 [DEBUG]   Trial  17/50  viol=  175  ret=0.943->0.925  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:57 [DEBUG]   Trial  18/50  viol=  157  ret=0.938->0.939  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:21:59 [DEBUG]   Trial  19/50  viol=  185  ret=0.925->0.922  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:01 [INFO]   Trial  20/50  viol=  165  ret=0.908->0.918  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:01 [INFO]   ── Progress: 70/350 trials (20%) | ETA: 16:30:55 (~534s remaining) ──
+2026-03-10 16:22:03 [DEBUG]   Trial  21/50  viol=  171  ret=0.925->0.921  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:04 [DEBUG]   Trial  22/50  viol=  175  ret=0.932->0.928  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:06 [DEBUG]   Trial  23/50  viol=  180  ret=0.923->0.922  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:08 [DEBUG]   Trial  24/50  viol=  190  ret=0.933->0.936  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:10 [DEBUG]   Trial  25/50  viol=  173  ret=0.928->0.923  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:12 [DEBUG]   Trial  26/50  viol=  186  ret=0.915->0.935  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:14 [DEBUG]   Trial  27/50  viol=  176  ret=0.924->0.936  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:16 [DEBUG]   Trial  28/50  viol=  193  ret=0.914->0.942  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:18 [DEBUG]   Trial  29/50  viol=  187  ret=0.935->0.945  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:20 [INFO]   Trial  30/50  viol=  164  ret=0.921->0.930  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:20 [INFO]   ── Progress: 80/350 trials (23%) | ETA: 16:30:55 (~515s remaining) ──
+2026-03-10 16:22:22 [DEBUG]   Trial  31/50  viol=  149  ret=0.937->0.921  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:24 [DEBUG]   Trial  32/50  viol=  178  ret=0.929->0.914  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:25 [DEBUG]   Trial  33/50  viol=  173  ret=0.932->0.948  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:27 [DEBUG]   Trial  34/50  viol=  162  ret=0.925->0.935  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:29 [DEBUG]   Trial  35/50  viol=  179  ret=0.925->0.926  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:31 [DEBUG]   Trial  36/50  viol=  205  ret=0.931->0.938  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:33 [DEBUG]   Trial  37/50  viol=  178  ret=0.934->0.931  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:35 [DEBUG]   Trial  38/50  viol=  181  ret=0.936->0.935  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:37 [DEBUG]   Trial  39/50  viol=  179  ret=0.926->0.923  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:39 [INFO]   Trial  40/50  viol=  177  ret=0.919->0.937  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:39 [INFO]   ── Progress: 90/350 trials (26%) | ETA: 16:30:55 (~496s remaining) ──
+2026-03-10 16:22:41 [DEBUG]   Trial  41/50  viol=  165  ret=0.916->0.917  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:43 [DEBUG]   Trial  42/50  viol=  170  ret=0.933->0.953  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:44 [DEBUG]   Trial  43/50  viol=  164  ret=0.935->0.939  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:46 [DEBUG]   Trial  44/50  viol=  174  ret=0.920->0.932  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:48 [DEBUG]   Trial  45/50  viol=  183  ret=0.934->0.940  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:50 [DEBUG]   Trial  46/50  viol=  180  ret=0.919->0.927  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:52 [DEBUG]   Trial  47/50  viol=  179  ret=0.940->0.932  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:54 [DEBUG]   Trial  48/50  viol=  182  ret=0.914->0.931  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:56 [DEBUG]   Trial  49/50  viol=  197  ret=0.917->0.915  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:58 [INFO]   Trial  50/50  viol=  180  ret=0.942->0.936  reinj=  66  err=4.1  [1.9s]
+2026-03-10 16:22:58 [INFO]   ── Progress: 100/350 trials (29%) | ETA: 16:30:55 (~477s remaining) ──
+2026-03-10 16:22:58 [INFO]   [TIMER] Complete in 95.5s
+2026-03-10 16:22:58 [INFO]     Violations: 175.7 ± 11.1
+2026-03-10 16:22:58 [INFO]     Retention:  0.930 ± 0.010
+2026-03-10 16:22:58 [INFO]     Reinjections: 66.0
+2026-03-10 16:22:58 [DEBUG]   Checkpoint saved (2/7 conditions)
+2026-03-10 16:22:58 [INFO] 
+2026-03-10 16:22:58 [INFO] ━━━ [VSA] Condition 3/7 ━━━
+2026-03-10 16:23:00 [INFO]   Trial   1/50  viol=  100  ret=0.920->0.916  reinj=  60  err=4.1  [2.4s]
+2026-03-10 16:23:03 [DEBUG]   Trial   2/50  viol=  142  ret=0.914->0.914  reinj=  57  err=4.1  [2.4s]
+2026-03-10 16:23:05 [DEBUG]   Trial   3/50  viol=  102  ret=0.905->0.893  reinj=  61  err=4.1  [2.4s]
+2026-03-10 16:23:07 [DEBUG]   Trial   4/50  viol=  146  ret=0.903->0.905  reinj=  58  err=4.1  [2.4s]
+2026-03-10 16:23:10 [DEBUG]   Trial   5/50  viol=  122  ret=0.915->0.907  reinj=  52  err=4.1  [2.4s]
+2026-03-10 16:23:12 [DEBUG]   Trial   6/50  viol=  169  ret=0.880->0.911  reinj=  63  err=4.1  [2.4s]
+2026-03-10 16:23:14 [DEBUG]   Trial   7/50  viol=  201  ret=0.908->0.910  reinj=  57  err=4.1  [2.4s]
+2026-03-10 16:23:17 [DEBUG]   Trial   8/50  viol=  189  ret=0.922->0.893  reinj=  46  err=4.1  [2.4s]
+2026-03-10 16:23:19 [DEBUG]   Trial   9/50  viol=  181  ret=0.910->0.910  reinj=  54  err=4.1  [2.4s]
+2026-03-10 16:23:22 [INFO]   Trial  10/50  viol=  168  ret=0.902->0.916  reinj=  58  err=4.1  [2.4s]
+2026-03-10 16:23:22 [INFO]   ── Progress: 110/350 trials (31%) | ETA: 16:31:10 (~468s remaining) ──
+2026-03-10 16:23:24 [DEBUG]   Trial  11/50  viol=  115  ret=0.911->0.896  reinj=  46  err=4.1  [2.3s]
+2026-03-10 16:23:26 [DEBUG]   Trial  12/50  viol=  169  ret=0.912->0.900  reinj=  51  err=4.1  [2.4s]
+2026-03-10 16:23:29 [DEBUG]   Trial  13/50  viol=  163  ret=0.900->0.895  reinj=  57  err=4.1  [2.4s]
+2026-03-10 16:23:31 [DEBUG]   Trial  14/50  viol=  147  ret=0.927->0.904  reinj=  50  err=4.1  [2.4s]
+2026-03-10 16:23:33 [DEBUG]   Trial  15/50  viol=  191  ret=0.911->0.902  reinj=  51  err=4.1  [2.3s]
+2026-03-10 16:23:36 [DEBUG]   Trial  16/50  viol=  179  ret=0.905->0.905  reinj=  52  err=4.1  [2.4s]
+2026-03-10 16:23:38 [DEBUG]   Trial  17/50  viol=  125  ret=0.912->0.918  reinj=  51  err=4.1  [2.4s]
+2026-03-10 16:23:40 [DEBUG]   Trial  18/50  viol=  154  ret=0.915->0.908  reinj=  53  err=4.1  [2.4s]
+2026-03-10 16:23:43 [DEBUG]   Trial  19/50  viol=  139  ret=0.921->0.899  reinj=  55  err=4.2  [2.4s]
+2026-03-10 16:23:45 [INFO]   Trial  20/50  viol=  164  ret=0.921->0.908  reinj=  53  err=4.1  [2.4s]
+2026-03-10 16:23:45 [INFO]   ── Progress: 120/350 trials (34%) | ETA: 16:31:22 (~457s remaining) ──
+2026-03-10 16:23:48 [DEBUG]   Trial  21/50  viol=  173  ret=0.913->0.897  reinj=  53  err=4.1  [2.4s]
+2026-03-10 16:23:50 [DEBUG]   Trial  22/50  viol=  180  ret=0.924->0.907  reinj=  50  err=4.1  [2.4s]
+2026-03-10 16:23:52 [DEBUG]   Trial  23/50  viol=  146  ret=0.911->0.902  reinj=  57  err=4.1  [2.3s]
+2026-03-10 16:23:55 [DEBUG]   Trial  24/50  viol=  133  ret=0.905->0.904  reinj=  55  err=4.1  [2.4s]
+2026-03-10 16:23:57 [DEBUG]   Trial  25/50  viol=  156  ret=0.917->0.912  reinj=  52  err=4.1  [2.4s]
+2026-03-10 16:23:59 [DEBUG]   Trial  26/50  viol=  165  ret=0.922->0.917  reinj=  52  err=4.1  [2.4s]
+2026-03-10 16:24:02 [DEBUG]   Trial  27/50  viol=  155  ret=0.917->0.906  reinj=  56  err=4.1  [2.4s]
+2026-03-10 16:24:04 [DEBUG]   Trial  28/50  viol=  160  ret=0.911->0.885  reinj=  51  err=4.1  [2.5s]
+2026-03-10 16:24:07 [DEBUG]   Trial  29/50  viol=  196  ret=0.918->0.899  reinj=  53  err=4.1  [2.4s]
+2026-03-10 16:24:09 [INFO]   Trial  30/50  viol=  111  ret=0.892->0.899  reinj=  59  err=4.1  [2.5s]
+2026-03-10 16:24:09 [INFO]   ── Progress: 130/350 trials (37%) | ETA: 16:31:33 (~444s remaining) ──
+2026-03-10 16:24:12 [DEBUG]   Trial  31/50  viol=  204  ret=0.910->0.897  reinj=  53  err=4.1  [2.5s]
+2026-03-10 16:24:14 [DEBUG]   Trial  32/50  viol=  190  ret=0.912->0.905  reinj=  54  err=4.1  [2.4s]
+2026-03-10 16:24:16 [DEBUG]   Trial  33/50  viol=  186  ret=0.912->0.902  reinj=  54  err=4.1  [2.4s]
+2026-03-10 16:24:19 [DEBUG]   Trial  34/50  viol=  162  ret=0.911->0.905  reinj=  51  err=4.1  [2.4s]
+2026-03-10 16:24:21 [DEBUG]   Trial  35/50  viol=  138  ret=0.910->0.893  reinj=  53  err=4.1  [2.4s]
+2026-03-10 16:24:24 [DEBUG]   Trial  36/50  viol=  158  ret=0.913->0.903  reinj=  56  err=4.1  [2.4s]
+2026-03-10 16:24:26 [DEBUG]   Trial  37/50  viol=  130  ret=0.911->0.909  reinj=  54  err=4.1  [2.4s]
+2026-03-10 16:24:28 [DEBUG]   Trial  38/50  viol=  130  ret=0.918->0.900  reinj=  58  err=4.1  [2.5s]
+2026-03-10 16:24:31 [DEBUG]   Trial  39/50  viol=  158  ret=0.910->0.907  reinj=  52  err=4.1  [2.4s]
+2026-03-10 16:24:33 [INFO]   Trial  40/50  viol=  179  ret=0.896->0.900  reinj=  60  err=4.1  [2.5s]
+2026-03-10 16:24:33 [INFO]   ── Progress: 140/350 trials (40%) | ETA: 16:31:43 (~429s remaining) ──
+2026-03-10 16:24:36 [DEBUG]   Trial  41/50  viol=  126  ret=0.925->0.920  reinj=  50  err=4.1  [2.3s]
+2026-03-10 16:24:38 [DEBUG]   Trial  42/50  viol=  198  ret=0.914->0.900  reinj=  55  err=4.1  [2.4s]
+2026-03-10 16:24:40 [DEBUG]   Trial  43/50  viol=  130  ret=0.912->0.914  reinj=  55  err=4.1  [2.4s]
+2026-03-10 16:24:43 [DEBUG]   Trial  44/50  viol=  123  ret=0.914->0.901  reinj=  55  err=4.1  [2.5s]
+2026-03-10 16:24:45 [DEBUG]   Trial  45/50  viol=  171  ret=0.910->0.906  reinj=  62  err=4.1  [2.4s]
+2026-03-10 16:24:48 [DEBUG]   Trial  46/50  viol=  203  ret=0.916->0.900  reinj=  47  err=4.1  [2.5s]
+2026-03-10 16:24:51 [DEBUG]   Trial  47/50  viol=  150  ret=0.916->0.914  reinj=  55  err=4.1  [2.8s]
+2026-03-10 16:24:53 [DEBUG]   Trial  48/50  viol=  134  ret=0.907->0.904  reinj=  58  err=4.1  [2.4s]
+2026-03-10 16:24:55 [DEBUG]   Trial  49/50  viol=  192  ret=0.914->0.900  reinj=  54  err=4.1  [2.4s]
+2026-03-10 16:24:58 [INFO]   Trial  50/50  viol=  156  ret=0.913->0.910  reinj=  55  err=4.1  [2.4s]
+2026-03-10 16:24:58 [INFO]   ── Progress: 150/350 trials (43%) | ETA: 16:31:52 (~414s remaining) ──
+2026-03-10 16:24:58 [INFO]   [VSA] Complete in 120.1s
+2026-03-10 16:24:58 [INFO]     Violations: 157.2 ± 27.2
+2026-03-10 16:24:58 [INFO]     Retention:  0.905 ± 0.007
+2026-03-10 16:24:58 [INFO]     Reinjections: 54.3
+2026-03-10 16:24:58 [DEBUG]   Checkpoint saved (3/7 conditions)
+2026-03-10 16:24:58 [INFO] 
+2026-03-10 16:24:58 [INFO] ━━━ [ORACLE] Condition 4/7 ━━━
+2026-03-10 16:24:59 [INFO]   Trial   1/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:24:59 [DEBUG]   Trial   2/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:00 [DEBUG]   Trial   3/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:01 [DEBUG]   Trial   4/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:01 [DEBUG]   Trial   5/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:02 [DEBUG]   Trial   6/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:03 [DEBUG]   Trial   7/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:03 [DEBUG]   Trial   8/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:04 [DEBUG]   Trial   9/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:05 [INFO]   Trial  10/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:05 [INFO]   ── Progress: 160/350 trials (46%) | ETA: 16:31:22 (~377s remaining) ──
+2026-03-10 16:25:05 [DEBUG]   Trial  11/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:06 [DEBUG]   Trial  12/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:07 [DEBUG]   Trial  13/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:07 [DEBUG]   Trial  14/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:08 [DEBUG]   Trial  15/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:09 [DEBUG]   Trial  16/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:09 [DEBUG]   Trial  17/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:10 [DEBUG]   Trial  18/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:10 [DEBUG]   Trial  19/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:11 [INFO]   Trial  20/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:11 [INFO]   ── Progress: 170/350 trials (49%) | ETA: 16:30:54 (~343s remaining) ──
+2026-03-10 16:25:12 [DEBUG]   Trial  21/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:12 [DEBUG]   Trial  22/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:13 [DEBUG]   Trial  23/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:14 [DEBUG]   Trial  24/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:14 [DEBUG]   Trial  25/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:15 [DEBUG]   Trial  26/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:16 [DEBUG]   Trial  27/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:16 [DEBUG]   Trial  28/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:17 [DEBUG]   Trial  29/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:17 [INFO]   Trial  30/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:17 [INFO]   ── Progress: 180/350 trials (51%) | ETA: 16:30:30 (~312s remaining) ──
+2026-03-10 16:25:18 [DEBUG]   Trial  31/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:19 [DEBUG]   Trial  32/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:19 [DEBUG]   Trial  33/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:20 [DEBUG]   Trial  34/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:21 [DEBUG]   Trial  35/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:21 [DEBUG]   Trial  36/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:22 [DEBUG]   Trial  37/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:23 [DEBUG]   Trial  38/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:23 [DEBUG]   Trial  39/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:24 [INFO]   Trial  40/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:24 [INFO]   ── Progress: 190/350 trials (54%) | ETA: 16:30:08 (~284s remaining) ──
+2026-03-10 16:25:25 [DEBUG]   Trial  41/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:25 [DEBUG]   Trial  42/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:26 [DEBUG]   Trial  43/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:26 [DEBUG]   Trial  44/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:27 [DEBUG]   Trial  45/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:28 [DEBUG]   Trial  46/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:28 [DEBUG]   Trial  47/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.7s]
+2026-03-10 16:25:29 [DEBUG]   Trial  48/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:30 [DEBUG]   Trial  49/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:30 [INFO]   Trial  50/50  viol=   93  ret=1.000->1.000  reinj=   0  err=4.1  [0.6s]
+2026-03-10 16:25:30 [INFO]   ── Progress: 200/350 trials (57%) | ETA: 16:29:48 (~257s remaining) ──
+2026-03-10 16:25:30 [INFO]   [ORACLE] Complete in 32.3s
+2026-03-10 16:25:30 [INFO]     Violations: 93.0 ± 0.0
+2026-03-10 16:25:30 [INFO]     Retention:  1.000 ± 0.000
+2026-03-10 16:25:30 [INFO]     Reinjections: 0.0
+2026-03-10 16:25:30 [DEBUG]   Checkpoint saved (4/7 conditions)
+2026-03-10 16:25:30 [INFO] 
+2026-03-10 16:25:30 [INFO] ━━━ [CBF] Condition 5/7 ━━━
+2026-03-10 16:25:33 [INFO]   Trial   1/50  viol=  295  ret=0.780->0.003  reinj=   0  err=5.5  [2.6s]
+2026-03-10 16:25:35 [DEBUG]   Trial   2/50  viol= 2675  ret=0.714->0.000  reinj=   0  err=4.1  [2.1s]
+2026-03-10 16:25:38 [DEBUG]   Trial   3/50  viol=  134  ret=0.741->0.001  reinj=   0  err=6.2  [2.8s]
+2026-03-10 16:25:40 [DEBUG]   Trial   4/50  viol=    0  ret=0.713->0.101  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:25:43 [DEBUG]   Trial   5/50  viol=  203  ret=0.728->0.078  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:25:46 [DEBUG]   Trial   6/50  viol=    0  ret=0.774->0.022  reinj=   0  err=6.4  [2.7s]
+2026-03-10 16:25:48 [DEBUG]   Trial   7/50  viol= 1659  ret=0.711->0.000  reinj=   0  err=4.6  [2.2s]
+2026-03-10 16:25:50 [DEBUG]   Trial   8/50  viol=  106  ret=0.659->0.138  reinj=   0  err=5.6  [2.5s]
+2026-03-10 16:25:52 [DEBUG]   Trial   9/50  viol= 2774  ret=0.773->0.000  reinj=   0  err=4.4  [2.1s]
+2026-03-10 16:25:55 [INFO]   Trial  10/50  viol= 1480  ret=0.737->0.003  reinj=   0  err=4.9  [2.4s]
+2026-03-10 16:25:55 [INFO]   ── Progress: 210/350 trials (60%) | ETA: 16:30:00 (~245s remaining) ──
+2026-03-10 16:25:57 [DEBUG]   Trial  11/50  viol=   79  ret=0.727->0.047  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:26:00 [DEBUG]   Trial  12/50  viol=    0  ret=0.768->0.023  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:26:02 [DEBUG]   Trial  13/50  viol=  612  ret=0.753->0.004  reinj=   0  err=5.1  [2.5s]
+2026-03-10 16:26:05 [DEBUG]   Trial  14/50  viol=  158  ret=0.719->0.147  reinj=   0  err=5.2  [2.6s]
+2026-03-10 16:26:08 [DEBUG]   Trial  15/50  viol=  168  ret=0.794->0.035  reinj=   0  err=8.8  [2.5s]
+2026-03-10 16:26:10 [DEBUG]   Trial  16/50  viol=  360  ret=0.759->0.018  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:26:13 [DEBUG]   Trial  17/50  viol=    0  ret=0.742->0.013  reinj=   0  err=5.4  [2.6s]
+2026-03-10 16:26:15 [DEBUG]   Trial  18/50  viol=  546  ret=0.764->0.043  reinj=   0  err=5.1  [2.4s]
+2026-03-10 16:26:17 [DEBUG]   Trial  19/50  viol=  260  ret=0.805->0.107  reinj=   0  err=5.1  [2.5s]
+2026-03-10 16:26:20 [INFO]   Trial  20/50  viol=  761  ret=0.791->0.053  reinj=   0  err=5.4  [2.4s]
+2026-03-10 16:26:20 [INFO]   ── Progress: 220/350 trials (63%) | ETA: 16:30:12 (~232s remaining) ──
+2026-03-10 16:26:22 [DEBUG]   Trial  21/50  viol=  538  ret=0.799->0.013  reinj=   0  err=5.1  [2.6s]
+2026-03-10 16:26:25 [DEBUG]   Trial  22/50  viol=  205  ret=0.724->0.024  reinj=   0  err=5.9  [2.5s]
+2026-03-10 16:26:28 [DEBUG]   Trial  23/50  viol=   93  ret=0.748->0.241  reinj=   0  err=5.2  [2.5s]
+2026-03-10 16:26:30 [DEBUG]   Trial  24/50  viol=    0  ret=0.760->0.061  reinj=   0  err=5.4  [2.6s]
+2026-03-10 16:26:33 [DEBUG]   Trial  25/50  viol=  227  ret=0.757->0.000  reinj=   0  err=7.1  [2.5s]
+2026-03-10 16:26:35 [DEBUG]   Trial  26/50  viol=    0  ret=0.775->0.059  reinj=   0  err=5.4  [2.6s]
+2026-03-10 16:26:38 [DEBUG]   Trial  27/50  viol=  271  ret=0.740->0.041  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:26:40 [DEBUG]   Trial  28/50  viol=  259  ret=0.783->0.002  reinj=   0  err=5.1  [2.4s]
+2026-03-10 16:26:43 [DEBUG]   Trial  29/50  viol=    0  ret=0.742->0.003  reinj=   0  err=5.4  [2.5s]
+2026-03-10 16:26:45 [INFO]   Trial  30/50  viol=   73  ret=0.756->0.098  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:26:45 [INFO]   ── Progress: 230/350 trials (66%) | ETA: 16:30:23 (~218s remaining) ──
+2026-03-10 16:26:48 [DEBUG]   Trial  31/50  viol=    4  ret=0.706->0.174  reinj=   0  err=5.5  [2.6s]
+2026-03-10 16:26:50 [DEBUG]   Trial  32/50  viol=    0  ret=0.801->0.119  reinj=   0  err=5.3  [2.6s]
+2026-03-10 16:26:53 [DEBUG]   Trial  33/50  viol=  257  ret=0.763->0.054  reinj=   0  err=5.5  [2.5s]
+2026-03-10 16:26:55 [DEBUG]   Trial  34/50  viol=  235  ret=0.740->0.067  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:26:58 [DEBUG]   Trial  35/50  viol=  402  ret=0.788->0.199  reinj=   0  err=5.2  [2.5s]
+2026-03-10 16:27:00 [DEBUG]   Trial  36/50  viol=  186  ret=0.709->0.019  reinj=   0  err=5.9  [2.5s]
+2026-03-10 16:27:03 [DEBUG]   Trial  37/50  viol=  157  ret=0.718->0.131  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:27:06 [DEBUG]   Trial  38/50  viol=    0  ret=0.800->0.028  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:27:08 [DEBUG]   Trial  39/50  viol=  381  ret=0.670->0.080  reinj=   0  err=6.1  [2.5s]
+2026-03-10 16:27:11 [INFO]   Trial  40/50  viol=    0  ret=0.745->0.002  reinj=   0  err=5.5  [2.6s]
+2026-03-10 16:27:11 [INFO]   ── Progress: 240/350 trials (69%) | ETA: 16:30:34 (~203s remaining) ──
+2026-03-10 16:27:13 [DEBUG]   Trial  41/50  viol=  369  ret=0.705->0.000  reinj=   0  err=5.1  [2.6s]
+2026-03-10 16:27:16 [DEBUG]   Trial  42/50  viol=  974  ret=0.752->0.038  reinj=   0  err=5.0  [2.5s]
+2026-03-10 16:27:18 [DEBUG]   Trial  43/50  viol=    0  ret=0.759->0.221  reinj=   0  err=5.2  [2.6s]
+2026-03-10 16:27:21 [DEBUG]   Trial  44/50  viol= 1097  ret=0.716->0.070  reinj=   0  err=5.1  [2.3s]
+2026-03-10 16:27:23 [DEBUG]   Trial  45/50  viol=  576  ret=0.712->0.027  reinj=   0  err=5.2  [2.4s]
+2026-03-10 16:27:26 [DEBUG]   Trial  46/50  viol=  182  ret=0.735->0.169  reinj=   0  err=5.2  [2.5s]
+2026-03-10 16:27:28 [DEBUG]   Trial  47/50  viol=   53  ret=0.762->0.037  reinj=   0  err=6.5  [2.6s]
+2026-03-10 16:27:31 [DEBUG]   Trial  48/50  viol=  991  ret=0.764->0.075  reinj=   0  err=5.2  [2.5s]
+2026-03-10 16:27:33 [DEBUG]   Trial  49/50  viol=  502  ret=0.771->0.002  reinj=   0  err=5.1  [2.4s]
+2026-03-10 16:27:36 [INFO]   Trial  50/50  viol=   76  ret=0.746->0.003  reinj=   0  err=5.3  [2.5s]
+2026-03-10 16:27:36 [INFO]   ── Progress: 250/350 trials (71%) | ETA: 16:30:43 (~187s remaining) ──
+2026-03-10 16:27:36 [INFO]   [CBF] Complete in 125.2s
+2026-03-10 16:27:36 [INFO]     Violations: 407.6 ± 601.2
+2026-03-10 16:27:36 [INFO]     Retention:  0.058 ± 0.063
+2026-03-10 16:27:36 [INFO]     Reinjections: 0.0
+2026-03-10 16:27:36 [DEBUG]   Checkpoint saved (5/7 conditions)
+2026-03-10 16:27:36 [INFO] 
+2026-03-10 16:27:36 [INFO] ━━━ [EMA] Condition 6/7 ━━━
+2026-03-10 16:27:38 [INFO]   Trial   1/50  viol=  191  ret=0.953->0.884  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:40 [DEBUG]   Trial   2/50  viol=  192  ret=0.955->0.873  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:42 [DEBUG]   Trial   3/50  viol=  206  ret=0.955->0.866  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:44 [DEBUG]   Trial   4/50  viol=  206  ret=0.940->0.853  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:46 [DEBUG]   Trial   5/50  viol=  188  ret=0.939->0.861  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:47 [DEBUG]   Trial   6/50  viol=  180  ret=0.962->0.905  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:49 [DEBUG]   Trial   7/50  viol=  160  ret=0.951->0.877  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:51 [DEBUG]   Trial   8/50  viol=  178  ret=0.944->0.863  reinj=   0  err=4.1  [2.1s]
+2026-03-10 16:27:54 [DEBUG]   Trial   9/50  viol=  176  ret=0.951->0.885  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:56 [INFO]   Trial  10/50  viol=  194  ret=0.954->0.846  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:27:56 [INFO]   ── Progress: 260/350 trials (74%) | ETA: 16:30:45 (~169s remaining) ──
+2026-03-10 16:27:58 [DEBUG]   Trial  11/50  viol=  205  ret=0.940->0.883  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:00 [DEBUG]   Trial  12/50  viol=  210  ret=0.939->0.872  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:02 [DEBUG]   Trial  13/50  viol=  189  ret=0.947->0.868  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:04 [DEBUG]   Trial  14/50  viol=  183  ret=0.948->0.902  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:06 [DEBUG]   Trial  15/50  viol=  186  ret=0.957->0.885  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:08 [DEBUG]   Trial  16/50  viol=  199  ret=0.939->0.845  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:10 [DEBUG]   Trial  17/50  viol=  183  ret=0.956->0.886  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:12 [DEBUG]   Trial  18/50  viol=  196  ret=0.961->0.901  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:28:13 [DEBUG]   Trial  19/50  viol=  199  ret=0.947->0.874  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:15 [INFO]   Trial  20/50  viol=  198  ret=0.947->0.882  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:15 [INFO]   ── Progress: 270/350 trials (77%) | ETA: 16:30:46 (~151s remaining) ──
+2026-03-10 16:28:17 [DEBUG]   Trial  21/50  viol=  188  ret=0.956->0.890  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:19 [DEBUG]   Trial  22/50  viol=  190  ret=0.938->0.865  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:21 [DEBUG]   Trial  23/50  viol=  174  ret=0.946->0.920  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:23 [DEBUG]   Trial  24/50  viol=  204  ret=0.950->0.850  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:25 [DEBUG]   Trial  25/50  viol=  187  ret=0.954->0.876  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:27 [DEBUG]   Trial  26/50  viol=  199  ret=0.961->0.886  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:29 [DEBUG]   Trial  27/50  viol=  206  ret=0.947->0.867  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:31 [DEBUG]   Trial  28/50  viol=  191  ret=0.953->0.902  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:33 [DEBUG]   Trial  29/50  viol=  193  ret=0.939->0.878  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:35 [INFO]   Trial  30/50  viol=  197  ret=0.947->0.889  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:35 [INFO]   ── Progress: 280/350 trials (80%) | ETA: 16:30:48 (~132s remaining) ──
+2026-03-10 16:28:38 [DEBUG]   Trial  31/50  viol=  214  ret=0.939->0.871  reinj=   0  err=4.1  [2.1s]
+2026-03-10 16:28:39 [DEBUG]   Trial  32/50  viol=  205  ret=0.956->0.865  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:28:41 [DEBUG]   Trial  33/50  viol=  191  ret=0.951->0.883  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:43 [DEBUG]   Trial  34/50  viol=  176  ret=0.958->0.897  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:45 [DEBUG]   Trial  35/50  viol=  186  ret=0.950->0.885  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:28:47 [DEBUG]   Trial  36/50  viol=  223  ret=0.947->0.890  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:49 [DEBUG]   Trial  37/50  viol=  200  ret=0.944->0.891  reinj=   0  err=4.1  [2.1s]
+2026-03-10 16:28:51 [DEBUG]   Trial  38/50  viol=  215  ret=0.942->0.867  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:53 [DEBUG]   Trial  39/50  viol=  206  ret=0.958->0.885  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:55 [INFO]   Trial  40/50  viol=  206  ret=0.947->0.866  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:55 [INFO]   ── Progress: 290/350 trials (83%) | ETA: 16:30:49 (~113s remaining) ──
+2026-03-10 16:28:57 [DEBUG]   Trial  41/50  viol=  211  ret=0.950->0.867  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:28:59 [DEBUG]   Trial  42/50  viol=  190  ret=0.945->0.880  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:01 [DEBUG]   Trial  43/50  viol=  180  ret=0.954->0.874  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:03 [DEBUG]   Trial  44/50  viol=  207  ret=0.944->0.877  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:05 [DEBUG]   Trial  45/50  viol=  193  ret=0.940->0.856  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:07 [DEBUG]   Trial  46/50  viol=  197  ret=0.947->0.880  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:09 [DEBUG]   Trial  47/50  viol=  197  ret=0.952->0.880  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:11 [DEBUG]   Trial  48/50  viol=  191  ret=0.952->0.873  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:29:13 [DEBUG]   Trial  49/50  viol=  191  ret=0.951->0.871  reinj=   0  err=4.1  [1.9s]
+2026-03-10 16:29:15 [INFO]   Trial  50/50  viol=  207  ret=0.948->0.885  reinj=   0  err=4.1  [2.0s]
+2026-03-10 16:29:15 [INFO]   ── Progress: 300/350 trials (86%) | ETA: 16:30:50 (~95s remaining) ──
+2026-03-10 16:29:15 [INFO]   [EMA] Complete in 99.7s
+2026-03-10 16:29:15 [INFO]     Violations: 194.7 ± 12.0
+2026-03-10 16:29:15 [INFO]     Retention:  0.878 ± 0.015
+2026-03-10 16:29:15 [INFO]     Reinjections: 0.0
+2026-03-10 16:29:15 [DEBUG]   Checkpoint saved (6/7 conditions)
+2026-03-10 16:29:15 [INFO] 
+2026-03-10 16:29:15 [INFO] ━━━ [NORM_MONITOR] Condition 7/7 ━━━
+2026-03-10 16:29:17 [INFO]   Trial   1/50  viol=  789  ret=0.777->0.013  reinj=  10  err=4.1  [2.0s]
+2026-03-10 16:29:19 [DEBUG]   Trial   2/50  viol=  556  ret=0.729->0.166  reinj=  12  err=4.2  [2.0s]
+2026-03-10 16:29:21 [DEBUG]   Trial   3/50  viol=  475  ret=0.777->0.104  reinj=   9  err=4.1  [2.0s]
+2026-03-10 16:29:23 [DEBUG]   Trial   4/50  viol=  623  ret=0.656->0.111  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:29:25 [DEBUG]   Trial   5/50  viol=  508  ret=0.691->0.102  reinj=  13  err=4.2  [2.0s]
+2026-03-10 16:29:27 [DEBUG]   Trial   6/50  viol=  819  ret=0.758->0.189  reinj=  13  err=4.2  [1.9s]
+2026-03-10 16:29:29 [DEBUG]   Trial   7/50  viol=  345  ret=0.739->0.119  reinj=   8  err=4.1  [2.0s]
+2026-03-10 16:29:31 [DEBUG]   Trial   8/50  viol=  740  ret=0.726->0.000  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:29:33 [DEBUG]   Trial   9/50  viol=  580  ret=0.748->0.000  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:29:35 [INFO]   Trial  10/50  viol=  508  ret=0.708->0.070  reinj=  12  err=4.1  [2.1s]
+2026-03-10 16:29:35 [INFO]   ── Progress: 310/350 trials (89%) | ETA: 16:30:51 (~76s remaining) ──
+2026-03-10 16:29:37 [DEBUG]   Trial  11/50  viol=  636  ret=0.634->0.494  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:29:39 [DEBUG]   Trial  12/50  viol=  588  ret=0.651->0.267  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:29:41 [DEBUG]   Trial  13/50  viol=  758  ret=0.647->0.375  reinj=  15  err=4.2  [2.0s]
+2026-03-10 16:29:43 [DEBUG]   Trial  14/50  viol=  954  ret=0.796->0.011  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:29:45 [DEBUG]   Trial  15/50  viol=  915  ret=0.732->0.003  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:29:47 [DEBUG]   Trial  16/50  viol=  348  ret=0.752->0.231  reinj=   9  err=4.1  [1.9s]
+2026-03-10 16:29:49 [DEBUG]   Trial  17/50  viol=  613  ret=0.758->0.008  reinj=  11  err=4.1  [1.9s]
+2026-03-10 16:29:51 [DEBUG]   Trial  18/50  viol=  673  ret=0.798->0.000  reinj=   9  err=4.1  [1.9s]
+2026-03-10 16:29:53 [DEBUG]   Trial  19/50  viol=  556  ret=0.795->0.084  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:29:55 [INFO]   Trial  20/50  viol=  697  ret=0.733->0.262  reinj=  13  err=4.2  [1.9s]
+2026-03-10 16:29:55 [INFO]   ── Progress: 320/350 trials (91%) | ETA: 16:30:52 (~57s remaining) ──
+2026-03-10 16:29:57 [DEBUG]   Trial  21/50  viol=  479  ret=0.777->0.025  reinj=  10  err=4.1  [2.0s]
+2026-03-10 16:29:59 [DEBUG]   Trial  22/50  viol=  456  ret=0.756->0.158  reinj=   9  err=4.1  [2.0s]
+2026-03-10 16:30:01 [DEBUG]   Trial  23/50  viol=  670  ret=0.736->0.003  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:30:02 [DEBUG]   Trial  24/50  viol=  472  ret=0.663->0.321  reinj=  15  err=4.1  [2.0s]
+2026-03-10 16:30:04 [DEBUG]   Trial  25/50  viol=  584  ret=0.737->0.001  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:30:06 [DEBUG]   Trial  26/50  viol= 1042  ret=0.738->0.000  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:30:08 [DEBUG]   Trial  27/50  viol=  638  ret=0.736->0.000  reinj=   9  err=4.1  [2.0s]
+2026-03-10 16:30:10 [DEBUG]   Trial  28/50  viol= 1228  ret=0.767->0.020  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:30:12 [DEBUG]   Trial  29/50  viol=  379  ret=0.750->0.156  reinj=   9  err=4.1  [1.9s]
+2026-03-10 16:30:14 [INFO]   Trial  30/50  viol=  554  ret=0.795->0.079  reinj=  14  err=4.1  [1.9s]
+2026-03-10 16:30:14 [INFO]   ── Progress: 330/350 trials (94%) | ETA: 16:30:52 (~38s remaining) ──
+2026-03-10 16:30:16 [DEBUG]   Trial  31/50  viol=  714  ret=0.662->0.089  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:30:18 [DEBUG]   Trial  32/50  viol=  475  ret=0.826->0.000  reinj=   5  err=4.1  [1.9s]
+2026-03-10 16:30:20 [DEBUG]   Trial  33/50  viol=  599  ret=0.804->0.126  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:30:22 [DEBUG]   Trial  34/50  viol=  357  ret=0.682->0.185  reinj=  10  err=4.1  [1.9s]
+2026-03-10 16:30:24 [DEBUG]   Trial  35/50  viol= 1026  ret=0.651->0.004  reinj=   5  err=4.0  [1.9s]
+2026-03-10 16:30:26 [DEBUG]   Trial  36/50  viol=  505  ret=0.771->0.115  reinj=  11  err=4.1  [1.9s]
+2026-03-10 16:30:28 [DEBUG]   Trial  37/50  viol= 1002  ret=0.741->0.000  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:30:30 [DEBUG]   Trial  38/50  viol=  586  ret=0.718->0.000  reinj=  10  err=4.1  [2.0s]
+2026-03-10 16:30:32 [DEBUG]   Trial  39/50  viol=  391  ret=0.765->0.299  reinj=  10  err=4.1  [2.0s]
+2026-03-10 16:30:34 [INFO]   Trial  40/50  viol=  523  ret=0.711->0.094  reinj=  12  err=4.1  [2.0s]
+2026-03-10 16:30:34 [INFO]   ── Progress: 340/350 trials (97%) | ETA: 16:30:53 (~19s remaining) ──
+2026-03-10 16:30:36 [DEBUG]   Trial  41/50  viol=  745  ret=0.765->0.006  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:30:38 [DEBUG]   Trial  42/50  viol=  795  ret=0.747->0.010  reinj=  12  err=4.2  [1.9s]
+2026-03-10 16:30:40 [DEBUG]   Trial  43/50  viol=  620  ret=0.683->0.072  reinj=  10  err=4.1  [2.0s]
+2026-03-10 16:30:42 [DEBUG]   Trial  44/50  viol=  527  ret=0.912->0.331  reinj=  13  err=4.1  [2.1s]
+2026-03-10 16:30:44 [DEBUG]   Trial  45/50  viol=  794  ret=0.766->0.003  reinj=  11  err=4.2  [2.3s]
+2026-03-10 16:30:46 [DEBUG]   Trial  46/50  viol=  333  ret=0.703->0.163  reinj=  11  err=4.1  [2.0s]
+2026-03-10 16:30:48 [DEBUG]   Trial  47/50  viol=  352  ret=0.733->0.229  reinj=  12  err=4.0  [2.0s]
+2026-03-10 16:30:50 [DEBUG]   Trial  48/50  viol=  381  ret=0.708->0.057  reinj=  10  err=4.1  [2.1s]
+2026-03-10 16:30:52 [DEBUG]   Trial  49/50  viol=  660  ret=0.747->0.008  reinj=  12  err=4.0  [2.2s]
+2026-03-10 16:30:54 [INFO]   Trial  50/50  viol= 1011  ret=0.720->0.008  reinj=  12  err=4.1  [2.2s]
+2026-03-10 16:30:54 [INFO]   ── Progress: 350/350 trials (100%) | ETA: 16:30:54 (~0s remaining) ──
+2026-03-10 16:30:54 [INFO]   [NORM_MONITOR] Complete in 99.2s
+2026-03-10 16:30:54 [INFO]     Violations: 631.6 ± 206.4
+2026-03-10 16:30:54 [INFO]     Retention:  0.103 ± 0.118
+2026-03-10 16:30:54 [INFO]     Reinjections: 10.8
+2026-03-10 16:30:54 [DEBUG]   Checkpoint saved (7/7 conditions)
+2026-03-10 16:30:54 [INFO] 
+2026-03-10 16:30:54 [INFO] ========================================================================
+2026-03-10 16:30:54 [INFO]   All 350 trials complete in 667.4s (11.1 min)
+2026-03-10 16:30:54 [INFO] ========================================================================
+2026-03-10 16:30:56 [INFO] 
+2026-03-10 16:30:56 [INFO] ========================================================================
+2026-03-10 16:30:56 [INFO]   STATISTICAL ANALYSIS
+2026-03-10 16:30:56 [INFO] ========================================================================
+2026-03-10 16:30:56 [INFO] 
+2026-03-10 16:30:56 [INFO] Condition              Violations  Viol.Rate  Ret(init)     Ret(final) Reinjections   TrackErr
+2026-03-10 16:30:56 [INFO] ----------------------------------------------------------------------------------------------
+2026-03-10 16:30:56 [INFO] Unconstrained       1580.4±472.2     0.0794      0.728   0.049±0.064          0.0        4.0
+2026-03-10 16:30:56 [INFO] Timer (k=300)        175.7±11.1      0.0088      0.927   0.930±0.010         66.0        4.1
+2026-03-10 16:30:56 [INFO] VSA-Constrained      157.2±27.2      0.0079      0.912   0.905±0.007         54.3        4.1
+2026-03-10 16:30:56 [INFO] Oracle                93.0±0.0       0.0047      1.000   1.000±0.000          0.0        4.1
+2026-03-10 16:30:56 [INFO] CBF                  407.6±601.2     0.0205      0.748   0.058±0.063          0.0        5.4
+2026-03-10 16:30:56 [INFO] EMA Blending         194.7±12.0      0.0098      0.949   0.878±0.015          0.0        4.1
+2026-03-10 16:30:56 [INFO] Norm Monitor         631.6±206.4     0.0317      0.738   0.103±0.118         10.8        4.1
+2026-03-10 16:30:56 [INFO] 
+2026-03-10 16:30:56 [INFO] ─── Kruskal-Wallis omnibus test (violations) ───
+2026-03-10 16:30:56 [INFO]   H = 258.24,  p = 7.11e-53  (***) SIGNIFICANT
+2026-03-10 16:30:56 [INFO] 
+2026-03-10 16:30:56 [INFO] ─── Pairwise Mann-Whitney U (Bonferroni α = 0.05/21 = 0.0024) ───
+2026-03-10 16:30:56 [INFO] Pair                                          U        p-raw        p-adj    sig  Cohen d  Cliff δ
+2026-03-10 16:30:56 [INFO] --------------------------------------------------------------------------------------------------
+2026-03-10 16:30:56 [INFO] Unconstrained vs Timer (k=300)           2500.0     0.000000     0.000000    ***    +4.21   +1.000
+2026-03-10 16:30:56 [INFO] Unconstrained vs VSA-Constrained         2500.0     0.000000     0.000000    ***    +4.26   +1.000
+2026-03-10 16:30:56 [INFO] Unconstrained vs Oracle                  2500.0     0.000000     0.000000    ***    +4.45   +1.000
+2026-03-10 16:30:56 [INFO] Unconstrained vs CBF                     2331.0     0.000000     0.000000    ***    +2.17   +0.865
+2026-03-10 16:30:56 [INFO] Unconstrained vs EMA Blending            2500.0     0.000000     0.000000    ***    +4.15   +1.000
+2026-03-10 16:30:56 [INFO] Unconstrained vs Norm Monitor            2421.0     0.000000     0.000000    ***    +2.60   +0.937
+2026-03-10 16:30:56 [INFO] Timer (k=300) vs VSA-Constrained         1787.5     0.000213     0.004471     **    +0.89   +0.430
+2026-03-10 16:30:56 [INFO] Timer (k=300) vs Oracle                  2500.0     0.000000     0.000000    ***   +10.56   +1.000
+2026-03-10 16:30:56 [INFO] Timer (k=300) vs CBF                     1105.0     0.318786     1.000000   n.s.    -0.55   -0.116
+2026-03-10 16:30:56 [INFO] Timer (k=300) vs EMA Blending             285.5     0.000000     0.000000    ***    -1.64   -0.772
+2026-03-10 16:30:56 [INFO] Timer (k=300) vs Norm Monitor               0.0     0.000000     0.000000    ***    -3.12   -1.000
+2026-03-10 16:30:56 [INFO] VSA-Constrained vs Oracle                2500.0     0.000000     0.000000    ***    +3.33   +1.000
+2026-03-10 16:30:56 [INFO] VSA-Constrained vs CBF                   1026.0     0.123107     1.000000   n.s.    -0.59   -0.179
+2026-03-10 16:30:56 [INFO] VSA-Constrained vs EMA Blending           277.5     0.000000     0.000000    ***    -1.78   -0.778
+2026-03-10 16:30:56 [INFO] VSA-Constrained vs Norm Monitor             0.0     0.000000     0.000000    ***    -3.22   -1.000
+2026-03-10 16:30:56 [INFO] Oracle vs CBF                             825.0     0.001663     0.034929      *    -0.74   -0.340
+2026-03-10 16:30:56 [INFO] Oracle vs EMA Blending                      0.0     0.000000     0.000000    ***   -11.97   -1.000
+2026-03-10 16:30:56 [INFO] Oracle vs Norm Monitor                      0.0     0.000000     0.000000    ***    -3.69   -1.000
+2026-03-10 16:30:56 [INFO] CBF vs EMA Blending                      1290.0     0.785209     1.000000   n.s.    +0.50   +0.032
+2026-03-10 16:30:56 [INFO] CBF vs Norm Monitor                       498.5     0.000000     0.000005    ***    -0.50   -0.601
+2026-03-10 16:30:56 [INFO] EMA Blending vs Norm Monitor                0.0     0.000000     0.000000    ***    -2.99   -1.000
+2026-03-10 16:30:56 [INFO] 
+2026-03-10 16:30:56 [INFO] ─── Bootstrap 95% CIs on median violations (10000 resamples) ───
+2026-03-10 16:30:56 [INFO]   Unconstrained     : median = 1615.5  95% CI = [1504.0, 1769.0]
+2026-03-10 16:30:56 [INFO]   Timer (k=300)     : median = 177.0  95% CI = [173.0, 179.5]
+2026-03-10 16:30:56 [INFO]   VSA-Constrained   : median = 158.0  95% CI = [147.0, 168.0]
+2026-03-10 16:30:56 [INFO]   Oracle            : median = 93.0  95% CI = [93.0, 93.0]
+2026-03-10 16:30:56 [INFO]   CBF               : median = 204.0  95% CI = [123.4, 277.5]
+2026-03-10 16:30:57 [INFO]   EMA Blending      : median = 193.5  95% CI = [191.0, 199.0]
+2026-03-10 16:30:57 [INFO]   Norm Monitor      : median = 593.5  95% CI = [541.5, 660.0]
+2026-03-10 16:30:57 [INFO] 
+2026-03-10 16:30:57 [INFO] ─── Key head-to-head comparisons ───
+2026-03-10 16:30:57 [INFO]   Unconstrained > VSA-Constrained?   Δ = -1423.3 violations  p_adj=1.000000 (n.s.)
+2026-03-10 16:30:57 [INFO]   Timer (k=300) > VSA-Constrained?   Δ = -18.5 violations  p_adj=1.000000 (n.s.)
+2026-03-10 16:30:57 [INFO]   CBF > VSA-Constrained?   Δ = -250.4 violations  p_adj=1.000000 (n.s.)
+2026-03-10 16:30:57 [INFO]   EMA Blending > VSA-Constrained?   Δ = -37.5 violations  p_adj=1.000000 (n.s.)
+2026-03-10 16:30:57 [INFO]   Norm Monitor > VSA-Constrained?   Δ = -474.4 violations  p_adj=1.000000 (n.s.)
+2026-03-10 16:30:57 [INFO] 
+2026-03-10 16:30:57 [INFO] ─── Final retention: VSA vs each condition (Mann-Whitney, Bonferroni) ───
+2026-03-10 16:30:57 [INFO]   VSA vs Unconstrained     : U=  2500.0  p_adj=0.000000 (***)  VSA=0.905  Unconstrained=0.049
+2026-03-10 16:30:57 [INFO]   VSA vs Timer (k=300)     : U=    49.0  p_adj=0.000000 (***)  VSA=0.905  Timer (k=300)=0.930
+2026-03-10 16:30:57 [INFO]   VSA vs Oracle            : U=     0.0  p_adj=0.000000 (***)  VSA=0.905  Oracle=1.000
+2026-03-10 16:30:57 [INFO]   VSA vs CBF               : U=  2500.0  p_adj=0.000000 (***)  VSA=0.905  CBF=0.058
+2026-03-10 16:30:57 [INFO]   VSA vs EMA Blending      : U=  2347.0  p_adj=0.000000 (***)  VSA=0.905  EMA Blending=0.878
+2026-03-10 16:30:57 [INFO]   VSA vs Norm Monitor      : U=  2500.0  p_adj=0.000000 (***)  VSA=0.905  Norm Monitor=0.103
+2026-03-10 16:30:57 [INFO] 
+2026-03-10 16:30:57 [INFO] ─── Post-hoc power analysis ───
+2026-03-10 16:30:57 [INFO]   VSA vs Timer: observed d = 0.892, n = 50
+2026-03-10 16:30:57 [INFO]   At α = 0.0024 (Bonferroni), d = 0.892:
+2026-03-10 16:30:57 [INFO]   Approximate power ≈ 0.923 (92.3%)
+2026-03-10 16:30:57 [INFO] 
+2026-03-10 16:30:57 [INFO] ========================================================================
+2026-03-10 16:30:57 [INFO]   Generating figures
+2026-03-10 16:30:57 [INFO] ========================================================================
+2026-03-10 16:30:58 [INFO]   Figure saved: C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\figure_D2_ltc_safety_full.png
+2026-03-10 16:30:58 [INFO]   Results saved: C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\ltc_full_results.json
+2026-03-10 16:30:58 [INFO] 
+2026-03-10 16:30:58 [INFO] ========================================================================
+2026-03-10 16:30:58 [INFO]   EXPERIMENT COMPLETE
+2026-03-10 16:30:58 [INFO] ========================================================================
+2026-03-10 16:30:58 [INFO] 
+2026-03-10 16:30:58 [INFO]   RANKING (by mean violations):
+2026-03-10 16:30:58 [INFO]     1. Oracle                93.0 ± 0.0 violations  (retention: 1.000)
+2026-03-10 16:30:58 [INFO]     2. VSA-Constrained      157.2 ± 27.2 violations  (retention: 0.905)
+2026-03-10 16:30:58 [INFO]     3. Timer (k=300)        175.7 ± 11.1 violations  (retention: 0.930)
+2026-03-10 16:30:58 [INFO]     4. EMA Blending         194.7 ± 12.0 violations  (retention: 0.878)
+2026-03-10 16:30:58 [INFO]     5. CBF                  407.6 ± 601.2 violations  (retention: 0.058)
+2026-03-10 16:30:58 [INFO]     6. Norm Monitor         631.6 ± 206.4 violations  (retention: 0.103)
+2026-03-10 16:30:58 [INFO]     7. Unconstrained       1580.4 ± 472.2 violations  (retention: 0.049)
+2026-03-10 16:30:58 [INFO] 
+2026-03-10 16:30:58 [INFO]   KEY COMPARISONS:
+2026-03-10 16:30:58 [INFO]     VSA vs Timer:          p_adj = 0.004471 (**)  d = +0.89
+2026-03-10 16:30:58 [INFO]     VSA vs CBF:            p_adj = 1.000000 (n.s.)  d = -0.59
+2026-03-10 16:30:58 [INFO]     VSA vs EMA:            p_adj = 0.000000 (***)  d = -1.78
+2026-03-10 16:30:58 [INFO]     VSA vs Norm Monitor:   p_adj = 0.000000 (***)  d = -3.22
+2026-03-10 16:30:58 [INFO] 
+2026-03-10 16:30:58 [INFO]   Log file: C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\ltc_full_experiment_log.txt
+2026-03-10 16:30:58 [INFO]   Results:  C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\ltc_full_results.json
+2026-03-10 16:30:58 [INFO]   Figure:   C:\Users\Administrator\Documents\GitHub\Hypervectors\paper C\figure_D2_ltc_safety_full.png
+2026-03-10 16:30:58 [INFO] 

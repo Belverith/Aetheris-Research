@@ -1,0 +1,18 @@
+[INFO][10:31:21] ========================================================================
+[INFO][10:31:21]   LSTM POMDP Safety Experiment
+[INFO][10:31:21] ========================================================================
+[INFO][10:31:21]   Python 3.12.10
+[INFO][10:31:21]   PyTorch 2.10.0+cu128
+[INFO][10:31:21]   Device: cuda
+[INFO][10:31:21]   CUDA: True
+[INFO][10:31:21]   GPU: NVIDIA GeForce RTX 5050 Laptop GPU
+[INFO][10:31:21] ========================================================================
+[INFO][10:31:21]   Phase 1: Training LSTM Policy on POMDP Pendulum (PPO)
+[INFO][10:31:21] ========================================================================
+[INFO][10:31:21]   Iterations: 5000, Episodes/batch: 20
+[INFO][10:31:21]   POMDP obs: [cos θ, sin θ] (velocity masked)
+[INFO][10:31:21]   LSTM hidden: 64
+[INFO][10:31:21]   PPO epochs: 5, clip: 0.2
+[INFO][10:31:21]   LR: 0.0003
+[INFO][10:31:21]   Device: cuda
+[INFO][10:31:28]   Iter    1/5000  ep=   20  avg_batch=-1208.0  best_100avg=-inf  pi=-0.0005 v=9706.151  [6.6s] ETA 9:10:33
